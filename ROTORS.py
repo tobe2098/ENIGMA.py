@@ -8,6 +8,9 @@ class ROTOR:
         self.name="name" #randomly generating a name is going to happen I guess
         self.notch=26 #self.notch can be a list
         self.position=1
+        self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
+        #Jump implementation will be done last. It can get complicated.
+
         #Attributes defined by functions:
         ##self.entry_dict
         ##self.exit_dict
@@ -16,6 +19,8 @@ class ROTOR:
         print("Please customize connections before use with self.customize connections.\n If you want to configure all of the rotors' parameters, use self.configure.")
     def change_name(self, name):
         self.name=name
+    def define_rotor_jump(self, jump):
+        self.jump=jump
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
     def define_position(self, position):
         self.position=(ord(position) - 64)
@@ -90,19 +95,23 @@ class ROTOR:
         letter_list=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         print("Press Enter with no input to skip configuration of the parameter.")
         name=input("Write the rotor's name:").upper()
-        position=input("Write the rotor's position (in letters):").upper()
-        notch=input("Write the rotor's notch position/s (in letters):").upper()
+        position=input("Write the rotor's position (in letters, only 1):").upper()
+        print("For your cryptosecurity, input between 1 and 5 notches, not more.")
+        notch=split_into_list(input("Write the rotor's notch position/s (in letters):").upper())
+        jump=int(input("Write the position jump per letter (in a single number) **Do not put a number, not implemented:"))
         while boolean not in list("y", "n"):
             boolean=input("Do you want to configure the connections of the rotor?[y/n]")
         if name:
             self.change_name(name)
+        if jump<26:
+            self.define_rotor_jump(jump)
         if position in letter_list:
             self.define_position(position)
-        if notch in letter_list:
+        if set(notch).issubset(letter_list): #DO this every time you want to check if set a is a subset of set b
             self.define_notches(notch)
         if boolean=="y":
             self.customize_connections()
-        print("You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor()")
+        print("You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor() \n*Careful while defining notches")
         return #End
     def export_rotor(self):
         if self.name=="name":
@@ -139,15 +148,18 @@ class ROTOR:
         if not seed:
             print("Something went wrong. Make sure development has reached this stage!")
         #They generate the same number if seed is unchanged, but we need hte seed change to remain constant, so:
-        seed=10
         random.seed(seed) 
-        print(random.random())
+        self.define_position(random.randint(1,25))
+        seed+=1
+        random.seed(seed) 
+        number_notches=random.randint(1,5)
+        
         seed+=1
         random.seed(seed)
         print(random.random()) 
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
         #in the case of the connection board, an extra number should be used to determine number of connections.
-
+        #self.jump=random.randint(1,26) for implementation
 
 
 class REFLECTOR:
