@@ -3,6 +3,17 @@ import random
 from ROTORS import *
 def split_into_list(string):
     return [character for character in string]
+def gen_rnd_26list(seed=None):
+    if not seed:
+        print("Problem in gen_rnd_26list()'s call")
+    random.seed(seed) 
+    poplist=[i+1 for i in range (26)]
+    endlist=[]
+    for i in range(len(poplist)):
+        rm=random.randint(1, len(poplist))
+        endlist.append(poplist.pop(rm-1))
+    return endlist
+
 def simplify_board_config(board_dict):
     seen_pairs=[]
     pairs=[]
@@ -24,9 +35,10 @@ def simplify_board_config(board_dict):
 class ENIGMAmachine:
     def __init__(self, name, seed=None):
         self.name=name
+        #Include seed storages?
         #Write a default config
         if not seed:
-            self.seed=random.randint(0, 999999)
+            self.seed=random.randint(0, 99999999) #Number has to be big
         else:
             self.seed=seed
         #For now, default is nothingness
@@ -39,10 +51,12 @@ class ENIGMAmachine:
         return ("Machine name is %, and its random seed is %" % (self.name, self.seed))
     def randomize_board_config(self):
         pass
-    def fast_config(self, rnd_seed=None):
+    def random_setup(self, rnd_seed=None):
+        #Every random generation of an object should have the seed shifted so that elements do not repeat themselves.
+        #Inside element seeds should +1, between elements seeds should +10 or -10.
         if rnd_seed:
             self.seed=rnd_seed
-        self.fast_config()
+        self.random_setup()
     #Change the name of the machine
     def change_name(self, new_name):
         self.name=new_name

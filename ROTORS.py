@@ -1,5 +1,8 @@
 #from turtle import position #???????????? wtf
-from ENIGMA import split_into_list, simplify_board_config
+import random
+from ENIGMA import split_into_list, simplify_board_config, gen_rnd_26list
+import pickle
+import os
 class ROTOR:
     def __init__(self):
         self.name="name" #randomly generating a name is going to happen I guess
@@ -102,7 +105,6 @@ class ROTOR:
         print("You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor()")
         return #End
     def export_rotor(self):
-        import os
         if self.name=="name":
             print("Please assign a new name to the rotor with the function self.configure() or self.change_name()")
         current_path=path = os.getcwd()
@@ -111,14 +113,11 @@ class ROTOR:
         if not os.path.exists(path):
             os.mkdir(path)
             print("Directory '% s' created" % new_folder) 
-        import pickle 
         save_file = open('{}/{}.rotor'.format(path,self.name), 'w') 
         pickle.dump(self, save_file)
         print("{} has been saved into {}.rotor".format(self.name, self.name))
         return #End
     def import_rotor_config(self):
-        import os
-        import pickle
         current_path=path = os.getcwd()
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
@@ -139,7 +138,6 @@ class ROTOR:
         #Seed has to be added from the machine calling the function, where the seed is stored/generated
         if not seed:
             print("Something went wrong. Make sure development has reached this stage!")
-        import random
         #They generate the same number if seed is unchanged, but we need hte seed change to remain constant, so:
         seed=10
         random.seed(seed) 
@@ -161,6 +159,5 @@ def create_real_rotor(rotor_name):
         rotor=ROTOR
         return rotor
 def import_rotor(filename):
-    import pickle 
     filehandler = open(filename, 'r') 
     object = pickle.load(filehandler)
