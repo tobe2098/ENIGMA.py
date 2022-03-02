@@ -1,16 +1,16 @@
 #from turtle import position #???????????? wtf
 import random
-from ENIGMA import split_into_list, simplify_board_config, gen_rnd_26list
+from ENutils import *
 import pickle
 import os
 class ROTOR:
     def __init__(self):
+        #Note: variables can be defined on the fly
         self.name="name" #randomly generating a name is going to happen I guess
-        self.notch=26 #self.notch can be a list
-        self.position=1
+        self.notch=26 #self.notch can be a list. When does the next rotor move relative to the notch?
+        self.position=1 #Can go from 1 to 26
         self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         #Jump implementation will be done last. It can get complicated.
-
         #Attributes defined by functions:
         ##self.entry_dict
         ##self.exit_dict
@@ -19,8 +19,10 @@ class ROTOR:
         print("Please customize connections before use with self.customize connections.\n If you want to configure all of the rotors' parameters, use self.configure.")
     def change_name(self, name):
         self.name=name
+        print("Now name of the rotor is:", name)
     def define_rotor_jump(self, jump):
         self.jump=jump
+        print("Now rotor jumps ", jump, " spaces for every input")
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
     def define_position(self, position):
         self.position=(ord(position) - 64)
@@ -29,26 +31,41 @@ class ROTOR:
         position=split_into_list(position)
         notch_list=[ord(notch)-64 for notch in position]
         self.notch=notch_list
+        print("Now the rotor has {} notches in positions {}".format(len(notch_list), position))
     def configure_numeric_dicts(self):
         #First, forward dict
-        rev_dict=self.entry_dict
-        new_values=[ord(i)-64 for i in rev_dict.values()]
-        new_keys=[ord(i)-64 for i in rev_dict.keys()]
-        num_dict=dict(zip(new_keys, new_values))
-        self.entry_num_dict=num_dict
+        new_values=[ord(i)-64 for i in self.entry_dict.values()]
+        new_keys=[ord(i)-64 for i in self.entry_dict.keys()]
+        self.entry_num_dict=dict(zip(new_keys, new_values))
         #Second, reverse dict
-        rev_dict=self.exit_dict
-        new_values=[ord(i)-64 for i in rev_dict.values()]
-        new_keys=[ord(i)-64 for i in rev_dict.keys()]
-        num_dict=dict(zip(new_keys, new_values))
-        self.exit_num_dict=num_dict
+        sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
+        self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
         return #End
-
+    def configure_character_dicts(self):
+        new_values=[chr(i+64) for i in self.entry_num_dict.values()]
+        new_keys=[chr(i+64) for i in self.entry_num_dict.keys()]
+        self.entry_dict=dict(zip(new_keys, new_values))
+        #Second, reverse dict (in case current code does not work)
+        #rev_dict=self.exit_num_dict
+        #new_values=[chr(i+64) for i in rev_dict.values()]
+        #new_keys=[chr(i+64) for i in rev_dict.keys()]
+        #chr_dict=dict(zip(new_keys, new_values))
+        #self.exit_dict=chr_dict
+        sorted_dict=dict(sorted(self.entry_dict.items(), key=lambda x:x[1]))
+        self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        return #End
     def customize_connections(self):
         #PENDING: Make it stop after 26 letters have been assigned. Update from board config.
         i=0
         entry_seen_letters=[]
         exit_seen_letters=[]
+        if self.entry_dict and self.exit_dict:
+            print("Current setup is:")
+            print("Forward connections in the rotor:", self.entry_dict)
+            print("Backward connections in the rotor:", self.exit_dict)
+            accbool=input("Input N if you do not want to change the configuration:")
+            if accbool=="N":
+                return
         entry_rotor_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
         exit_rotor_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
         entry_list=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -142,34 +159,45 @@ class ROTOR:
         filehandler = open("{}/{}.rotor".format(path, list_of_files[rotor-1]), 'r') 
         self = pickle.load(filehandler)
         return #End
-
+    def show_rotor_setup(self): #Everything from the rotor, it will be launched from the machine though
+        print("Rotor position :", chr(self.position+64))
+        print("Rotor letter jumps:", self.jump)
+        notchlist=[chr(i+64) for i in self.notch]
+        print("Rotor notches:", notchlist)
+        print("Forward connections in the rotor:", self.entry_dict)
+        print("Backward connections in the rotor:", self.exit_dict)
+        print("Rotor name:", self.name)
+        pass
     def random_rotor_setup(self, seed=None): 
+        #Randomly generate a rotor and store it in a folder
+
+
         #Seed has to be added from the machine calling the function, where the seed is stored/generated
         if not seed:
             print("Something went wrong. Make sure development has reached this stage!")
-        #They generate the same number if seed is unchanged, but we need hte seed change to remain constant, so:
+        #Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed) 
-        self.define_position(random.randint(1,25))
-        seed+=1
-        random.seed(seed) 
-        number_notches=random.randint(1,5)
-        
-        seed+=1
-        random.seed(seed)
-        print(random.random()) 
+        #Position
+        self.define_position(random.randint(1,26))
+        #Notches
+        notch_list = set(random.sample(range(1, 27), random.randint(1,5)))
+        self.define_notches(notch_list)
+        #Name generation
+        name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 13)]
+        name_list[0:9]=[chr(num+64) for num in name_list[0:9]]
+        name_list[9:13]=[str(i%10) for i in name_list[9:13]]
+        string1=""
+        name=string1.join(name_list)
+        self.change_name(name)
+        #Forward dictionary
+        num_list=[i for i in range(1,27)]
+        self.entry_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
+        sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
+        self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        self.configure_character_dicts()
+        self.show_rotor_setup()
+        self.export_rotor()
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
-        #in the case of the connection board, an extra number should be used to determine number of connections.
+        #in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
         #self.jump=random.randint(1,26) for implementation
 
-
-class REFLECTOR:
-    def __init__(self):
-        self
-    #Easiest of all
-def create_real_rotor(rotor_name):
-    if rotor_name=="I":
-        rotor=ROTOR
-        return rotor
-def import_rotor(filename):
-    filehandler = open(filename, 'r') 
-    object = pickle.load(filehandler)

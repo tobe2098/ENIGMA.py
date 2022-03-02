@@ -1,5 +1,8 @@
 import random
-from ROTORS import *
+import pickle
+from ROTOR import ROTOR
+from ENutils import *
+from REFLECTOR import REFLECTOR
 class ENIGMAmachine:
     def __init__(self, name, seed=None):
         self.name=name
@@ -7,6 +10,7 @@ class ENIGMAmachine:
         #Write a default config
         if not seed:
             self.seed=random.randint(0, 99999999) #Number has to be big
+            print("Seed has been randomly generated, and is now:", self.seed)
         else:
             self.seed=seed
         #For now, default is nothingness

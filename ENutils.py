@@ -12,9 +12,6 @@ def gen_rnd_26list(seed=None):
         rm=random.randint(1, len(poplist))
         endlist.append(poplist.pop(rm-1))
     return endlist
-def pull_n_rnd_numbers(n, maxrange):
-    numberlist=list(range(1,maxrange))
-    
 def simplify_board_config(board_dict):
     seen_pairs=[]
     pairs=[]
@@ -33,3 +30,5 @@ def simplify_board_config(board_dict):
     board_config_simpl=pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
     board_config_simpl["Unpaired"]=unpaired
     return board_config_simpl
+
+    ##Conda activation: conda info --envs, conda activate {}
