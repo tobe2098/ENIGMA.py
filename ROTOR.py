@@ -171,10 +171,11 @@ class ROTOR:
         #Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed) 
         #Position
-        self.define_position(random.randint(1,26))
+        self.define_position(random.randint(1,26))      #Check in the future whether this setups are correct
         #Notches
         notch_list = set(random.sample(range(1, 27), random.randint(1,5)))
         self.define_notches(notch_list)
+        self.define_rotor_jump(random.randint(1,26))
         #Name generation
         name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 13)]
         name_list[0:9]=[chr(num+64) for num in name_list[0:9]]
@@ -192,4 +193,4 @@ class ROTOR:
         self.export_rotor()
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
         #in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
-        self.define_rotor_jump(random.randint(1,26))
+
