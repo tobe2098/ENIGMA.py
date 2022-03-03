@@ -4,12 +4,12 @@ from ROTOR import ROTOR
 from ENutils import *
 from REFLECTOR import REFLECTOR
 class ENIGMAmachine:
-    def __init__(self, name, seed=None):
+    def __init__(self, name="name", seed=None):
         self.name=name
         #Include seed storages?
         #Write a default config
         if not seed:
-            self.seed=random.randint(0, 99999999) #Number has to be big
+            self.seed=random.randint(0, 99999999) #Number has to be big, but how
             print("Seed has been randomly generated, and is now:", self.seed)
         else:
             self.seed=seed
@@ -37,42 +37,47 @@ class ENIGMAmachine:
     def manual_board_config(self):
         #Configuration of the cable board
         #PENDING: Make it stop after 26 letters have been assigned
-            i=0
-            seen_letters=[]
-            board_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
-            all_letters=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-            while i==0:
-                print("If you want to stop configurating the board, press Enter")
-                configpair=input("Enter pair of letters for board configuration:").upper()
-                if configpair.isalpha() or not configpair:
-                    pass
-                else:
-                    print("Error: Input 2 letters please")
-                    continue
-                configpair=split_into_list(configpair)
-                if len(list(set(all_letters)-set(seen_letters)))==0:
-                    break
-                if len(configpair)==2:
-                    pass
-                elif len(configpair)==0:
-                    break
-                else:
-                    print("Error: Input 2 letters please")
-                    continue
-                if any(map(lambda v: v in configpair, seen_letters)):
-                    print("Already plugged")
-                    continue
-                else:
-                    seen_letters.append(configpair[0])
-                    seen_letters.append(configpair[1])
-                    board_dict[configpair[0]]=configpair[1]
-                    board_dict[configpair[1]]=configpair[0]
-                print("Current config:\n", simplify_board_config(board_dict))
-                print("Not connected letters:\n", list(set(all_letters)-set(seen_letters)))
-            print("Finished")
-            self.board_config=board_dict
+        if self.board_config:
+            print("Current board setup is:", simplify_board_config(self.board_config))
+            accbool=input("Input N if you do NOT want to change the board setup:")
+            if accbool=="N":
+                return
+        i=0
+        seen_letters=[]
+        board_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
+        all_letters=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        while i==0:
+            print("If you want to stop configurating the board, press Enter")
+            configpair=input("Enter pair of letters for board configuration:").upper()
+            if configpair.isalpha() or not configpair:
+                pass
+            else:
+                print("Error: Input 2 letters please")
+                continue
+            configpair=split_into_list(configpair)
+            if len(list(set(all_letters)-set(seen_letters)))==0:
+                break
+            if len(configpair)==2:
+                pass
+            elif len(configpair)==0:
+                break
+            else:
+                print("Error: Input 2 letters please")
+                continue
+            if any(map(lambda v: v in configpair, seen_letters)):
+                print("Already plugged")
+                continue
+            else:
+                seen_letters.append(configpair[0])
+                seen_letters.append(configpair[1])
+                board_dict[configpair[0]]=configpair[1]
+                board_dict[configpair[1]]=configpair[0]
+            print("Current config:\n", simplify_board_config(board_dict))
+            print("Not connected letters:\n", list(set(all_letters)-set(seen_letters)))
+        print("Finished")
+        self.board_config=board_dict
     def show_config(self):
-        print("Board config:", simplify_board_config(self))
+        print("Board config:", simplify_board_config(self.board_config))
     def encrypt_decrypt(self):
         for char in input('Write Text: ').upper():
             print(char)

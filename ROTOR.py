@@ -55,7 +55,6 @@ class ROTOR:
         self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
         return #End
     def customize_connections(self):
-        #PENDING: Make it stop after 26 letters have been assigned. Update from board config.
         i=0
         entry_seen_letters=[]
         exit_seen_letters=[]
