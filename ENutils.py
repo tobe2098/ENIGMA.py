@@ -38,8 +38,8 @@ def transform_single_dict(dictio):
         convdict=dict(zip(new_keys, new_values))
         return convdict
     elif "A" in dictio.values():
-        new_values=[ord(i)-64 for i in dictio()]
-        new_keys=[ord(i)-64 for i in dictio()]
+        new_values=[ord(i)-64 for i in dictio.values()]
+        new_keys=[ord(i)-64 for i in dictio.keys()]
         convdict=dict(zip(new_keys, new_values))
         return convdict
     ##Conda activation: conda info --envs, conda activate {}
