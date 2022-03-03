@@ -13,16 +13,7 @@ def import_rotor(filename):
     object = pickle.load(filehandler)
 def seed_list_show():
     pass #.txt with a list of seeds and attached non-related names?
-def save_n_random_rotors(n, seed):
-    for i in range(0,n):
-        rotor=ROTOR()
-        rotor.random_rotor_setup(seed+i)
-def save_n_random_reflectors(n, seed):
-    #Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
-    for i in range(0,n):
-        rotor=ROTOR()
-        rotor.random_rotor_setup(seed+i)    
-    pass
+
 '''
 #on positions: Also, change 26 by the notches
 self.alpha.position+=self.alpha.jump

@@ -171,9 +171,9 @@ class ROTOR:
         #Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed) 
         #Position
-        self.define_position(random.randint(1,26))      #Check in the future whether this setups are correct
+        self.define_position(chr(random.randint(1,26)+64))      #Check in the future whether this setups are correct
         #Notches
-        notch_list = set(random.sample(range(1, 27), random.randint(1,5)))
+        notch_list = [chr(i+64) for i in set(random.sample(range(1, 27), random.randint(1,5)))]
         self.define_notches(notch_list)
         self.define_rotor_jump(random.randint(1,26))
         #Name generation
