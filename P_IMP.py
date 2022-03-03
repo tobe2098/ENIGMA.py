@@ -13,6 +13,7 @@ def import_rotor(filename):
 def save_n_random_rotors(seed):
     #Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
     pass
+'''
 #on positions: Also, change 26 by the notches
 self.alpha.position+=self.alpha.jump
 if self.alpha.position % 26==0:
@@ -21,3 +22,4 @@ if self.alpha.position % 26==0:
     if self.beta.position % 26==0:
         self.beta.position=0
         self.gamma.position+=1
+        '''
