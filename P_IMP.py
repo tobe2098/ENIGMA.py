@@ -2,6 +2,7 @@ from ROTOR import ROTOR
 from REFLECTOR import REFLECTOR
 import pickle
 import random
+#Look into installation of the module
 def create_real_rotor(rotor_name):
     #Scripted creation of Wermacht rotors
     if rotor_name=="I":

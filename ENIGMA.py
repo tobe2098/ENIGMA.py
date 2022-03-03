@@ -1,8 +1,8 @@
 import random
 import pickle
-from ROTOR import ROTOR
-from ENutils import *
-from REFLECTOR import REFLECTOR
+from ENIGMA.ROTOR import ROTOR
+from ENIGMA.ENutils import *
+from ENIGMA.REFLECTOR import REFLECTOR
 class ENIGMAmachine:
     def __init__(self, name="name", seed=None):
         self.name=name

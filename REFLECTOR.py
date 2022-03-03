@@ -1,7 +1,7 @@
 import random
 import pickle
 import os
-from ENutils import *
+from ENIGMA.ENutils import *
 class REFLECTOR:
     def __init__(self):
         self.name="name"

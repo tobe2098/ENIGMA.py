@@ -1,6 +1,6 @@
 #from turtle import position #???????????? wtf
 import random
-from ENutils import *
+from ENIGMA.ENutils import *
 import pickle
 import os
 class ROTOR:
