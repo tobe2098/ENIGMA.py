@@ -1,7 +1,5 @@
 import pandas as pd
 import random
-from ROTOR import ROTOR
-from REFLECTOR import REFLECTOR
 def split_into_list(string):
     return [character for character in string]
 def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does exactly the same
@@ -44,15 +42,3 @@ def transform_single_dict(dictio):
         new_keys=[ord(i)-64 for i in dictio.keys()]
         convdict=dict(zip(new_keys, new_values))
         return convdict
-def save_n_random_rotors(n, seed):
-    for i in range(0,n):
-        rotor=ROTOR()
-        rotor.random_rotor_setup(seed+i)
-    return "Done"
-def save_n_random_reflectors(n, seed):
-    #Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
-    for i in range(0,n):
-        rotor=REFLECTOR()
-        rotor.random_reflector_setup(seed+i)
-    return "Done"
-    ##Conda activation: conda info --envs, conda activate {}

@@ -16,7 +16,7 @@ class ROTOR:
         ##self.exit_dict
         ##self.entry_num_dict
         ##self.exit_num_dict
-        print("Please customize connections before use with self.customize connections.\n If you want to configure all of the rotors' parameters, use self.configure.")
+        print("Please customize connections before use with self.customize connections.\nIf you want to configure all of the rotors' parameters, use self.configure.")
     def change_name(self, name):
         self.name=name
         print("Now name of the rotor is:", name)
@@ -126,15 +126,17 @@ class ROTOR:
     def export_rotor(self):
         if self.name=="name":
             print("Please assign a new name to the rotor with the function self.configure() or self.change_name()")
-        current_path=path = os.getcwd()
+        current_path=path = os.path.realpath(__file__)
+        current_path = os.path.dirname(current_path)
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
             os.mkdir(path)
             print("Directory '% s' created" % new_folder) 
-        save_file = open('{}/{}.rotor'.format(path,self.name), 'w') 
+        save_file = open(r'{}/{}.rotor'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
         print("{} has been saved into {}.rotor".format(self.name, self.name))
+        save_file.close()
         return #End
     def import_rotor_config(self):
         current_path=path = os.getcwd()
@@ -149,8 +151,9 @@ class ROTOR:
             return
         print("Your available rotors are: {}".format(list_of_files))
         rotor=input("Input rotor's position in the list:")
-        filehandler = open("{}/{}.rotor".format(path, list_of_files[rotor-1]), 'r') 
+        filehandler = open(r"{}/{}.rotor".format(path, list_of_files[rotor-1]), 'rb') 
         self = pickle.load(filehandler)
+        filehandler.close()
         return #End
     def show_rotor_setup(self): #Everything from the rotor, it will be launched from the machine though
         print("Rotor position :", chr(self.position+64))
@@ -194,3 +197,8 @@ class ROTOR:
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
         #in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
 
+def save_n_random_rotors(n, seed):
+    for i in range(0,n):
+        rotor=ROTOR()
+        rotor.random_rotor_setup(seed+i)
+    return "Done"

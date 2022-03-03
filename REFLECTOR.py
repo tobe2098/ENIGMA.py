@@ -109,3 +109,10 @@ class REFLECTOR:
         self.show_config()
         #Export
         self.export_reflector()
+def save_n_random_reflectors(n, seed):
+    #Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
+    for i in range(0,n):
+        rotor=REFLECTOR()
+        rotor.random_reflector_setup(seed+i)
+    return "Done"
+    ##Conda activation: conda info --envs, conda activate {}
