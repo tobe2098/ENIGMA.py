@@ -44,12 +44,14 @@ class REFLECTOR:
                 reflector_dict[configpair[1]]=configpair[0]
             print("Current config:\n", simplify_board_config(reflector_dict))
             print("Not connected letters:\n", list(set(all_letters)-set(seen_letters)))
-        print("Finished")
         self.show_config()
         self.refl_dict=reflector_dict
+        self.refl_num_dict=transform_single_dict(self.refl_dict)
+        print("Finished")
     def show_config(self):
         print("Reflector config:", simplify_board_config(self.refl_dict))
     def random_config(self, seed):
         random.seed(seed)
+
 
 

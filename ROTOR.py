@@ -22,7 +22,7 @@ class ROTOR:
         print("Now name of the rotor is:", name)
     def define_rotor_jump(self, jump):
         self.jump=jump
-        print("Now rotor jumps ", jump, " spaces for every input")
+        print("Now rotor jumps ", jump, " spaces for every input (not yet implemented in the machine)")
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
     def define_position(self, position):
         self.position=(ord(position) - 64)
@@ -34,25 +34,19 @@ class ROTOR:
         print("Now the rotor has {} notches in positions {}".format(len(notch_list), position))
     def configure_numeric_dicts(self):
         #First, forward dict
-        new_values=[ord(i)-64 for i in self.entry_dict.values()]
-        new_keys=[ord(i)-64 for i in self.entry_dict.keys()]
-        self.entry_num_dict=dict(zip(new_keys, new_values))
+        self.entry_num_dict=transform_single_dict(self.entry_dict)
         #Second, reverse dict
-        sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
-        self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        self.exit_num_dict=transform_single_dict(self.exit_dict)
+        #Original code:
+        #new_values=[ord(i)-64 for i in self.entry_dict.values()]
+        #new_keys=[ord(i)-64 for i in self.entry_dict.keys()]
+        #self.entry_num_dict=dict(zip(new_keys, new_values))
+        #sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
+        #self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
         return #End
     def configure_character_dicts(self):
-        new_values=[chr(i+64) for i in self.entry_num_dict.values()]
-        new_keys=[chr(i+64) for i in self.entry_num_dict.keys()]
-        self.entry_dict=dict(zip(new_keys, new_values))
-        #Second, reverse dict (in case current code does not work)
-        #rev_dict=self.exit_num_dict
-        #new_values=[chr(i+64) for i in rev_dict.values()]
-        #new_keys=[chr(i+64) for i in rev_dict.keys()]
-        #chr_dict=dict(zip(new_keys, new_values))
-        #self.exit_dict=chr_dict
-        sorted_dict=dict(sorted(self.entry_dict.items(), key=lambda x:x[1]))
-        self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        self.entry_dict=transform_single_dict(self.entry_num_dict)
+        self.exit_dict=transform_single_dict(self.exit_num_dict)
         return #End
     def customize_connections(self):
         i=0
@@ -114,7 +108,7 @@ class ROTOR:
         position=input("Write the rotor's position (in letters, only 1):").upper()
         print("For your cryptosecurity, input between 1 and 5 notches, not more.")
         notch=split_into_list(input("Write the rotor's notch position/s (in letters):").upper())
-        jump=int(input("Write the position jump per letter (in a single number) **Do not put a number, not implemented:"))
+        jump=int(input("Write the position jump per letter (in a single number) * [0<x<26]:"))
         while boolean not in list("y", "n"):
             boolean=input("Do you want to configure the connections of the rotor?[y/n]")
         if name:
@@ -198,5 +192,4 @@ class ROTOR:
         self.export_rotor()
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
         #in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
-        #self.jump=random.randint(1,26) for implementation
-
+        self.define_rotor_jump(random.randint(1,26))

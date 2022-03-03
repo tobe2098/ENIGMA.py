@@ -30,5 +30,16 @@ def simplify_board_config(board_dict):
     board_config_simpl=pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
     board_config_simpl["Unpaired"]=unpaired
     return board_config_simpl
-
+def transform_single_dict(dictio):
+    #Code of this function replaces the original functions in ROTOR.py, if there are errors check them here
+    if 1 in dictio.values(): 
+        new_values=[chr(i+64) for i in dictio.values()]
+        new_keys=[chr(i+64) for i in dictio.keys()]
+        convdict=dict(zip(new_keys, new_values))
+        return convdict
+    elif "A" in dictio.values():
+        new_values=[ord(i)-64 for i in dictio()]
+        new_keys=[ord(i)-64 for i in dictio()]
+        convdict=dict(zip(new_keys, new_values))
+        return convdict
     ##Conda activation: conda info --envs, conda activate {}
