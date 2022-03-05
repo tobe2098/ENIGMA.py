@@ -16,7 +16,7 @@ def seed_list_show():
     pass #.txt with a list of seeds and attached non-related names?
     def import_rotor_list(self):
         return #list_of_rotors
-        #Not finished, for ENIGMA.py
+        #Not finished, for ENIGMA_py.py
 '''
 #on positions: Also, change 26 by the notches
 self.alpha.position+=self.alpha.jump

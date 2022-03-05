@@ -1,8 +1,8 @@
 import random
 import pickle
-from ENIGMA.ROTOR import *
-from ENIGMA.ENutils import *
-from ENIGMA.REFLECTOR import *
+from ENIGMA_py.ROTOR import *
+from ENIGMA_py.ENutils import *
+from ENIGMA_py.REFLECTOR import *
 class ENIGMAmachine:
     def __init__(self, name="name", seed=None):
         self.name=name
