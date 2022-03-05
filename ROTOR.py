@@ -194,6 +194,7 @@ class ROTOR:
         self.configure_character_dicts()
         self.show_rotor_setup()
         self.export_rotor()
+        return 
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
         #in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
 
@@ -202,3 +203,5 @@ def save_n_random_rotors(n, seed):
         rotor=ROTOR()
         rotor.random_rotor_setup(seed+i)
     return "Done"
+def tune_existing_rotor():
+    pass

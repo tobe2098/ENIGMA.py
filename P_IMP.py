@@ -14,7 +14,9 @@ def import_rotor(filename):
     object = pickle.load(filehandler)
 def seed_list_show():
     pass #.txt with a list of seeds and attached non-related names?
-
+    def import_rotor_list(self):
+        return #list_of_rotors
+        #Not finished, for ENIGMA.py
 '''
 #on positions: Also, change 26 by the notches
 self.alpha.position+=self.alpha.jump
@@ -26,3 +28,7 @@ if self.alpha.position % 26==0:
         self.gamma.position+=1
         '''
 #Put better character prints so that it looks more aesthetic
+#Put print("\a") somewhere? Does not work
+#In case pickling does not work: "a" is for appending, "w" for writing, "b" for binary
+# with open('mypickle.pickle', 'wb') as f:
+#    pickle.dump(some_obj, f)

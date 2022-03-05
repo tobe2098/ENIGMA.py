@@ -96,8 +96,8 @@ class REFLECTOR:
         random.seed(seed)
         #Set name
         name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 10)]
-        name_list[0:9]=[chr(num+64) for num in name_list[0:6]]
-        name_list[9:13]=[str(i%10) for i in name_list[6:9]]
+        name_list[0:5]=[chr(num+64) for num in name_list[0:5]]
+        name_list[5:8]=[str(i%10) for i in name_list[5:8]]
         string1=""
         new_name=string1.join(name_list)
         self.change_name(new_name)
@@ -109,10 +109,13 @@ class REFLECTOR:
         self.show_config()
         #Export
         self.export_reflector()
+        return self
 def save_n_random_reflectors(n, seed):
     #Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
     for i in range(0,n):
         rotor=REFLECTOR()
         rotor.random_reflector_setup(seed+i)
     return "Done"
+def tune_existing_reflector():
+    pass
     ##Conda activation: conda info --envs, conda activate {}
