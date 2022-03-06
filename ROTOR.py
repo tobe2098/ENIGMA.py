@@ -1,6 +1,6 @@
 #from turtle import position #???????????? wtf
 import random
-from ENIGMA_py.ENutils import *
+from ENutils import *
 import pickle
 import os
 class ROTOR:
@@ -26,7 +26,7 @@ class ROTOR:
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
     def define_position(self, position):
         self.position=(ord(position) - 64)
-        print("Now notch is in position {}".format(chr((self.position +64))))
+        print("Now rotor is in letter position {}".format(chr((self.position +64))))
     def define_notches(self, position):
         position=split_into_list(position)
         notch_list=[ord(notch)-64 for notch in position]
@@ -92,8 +92,8 @@ class ROTOR:
                 exit_seen_letters.append(configpair[1])
                 entry_rotor_dict[configpair[0]]=configpair[1]
                 exit_rotor_dict[configpair[1]]=configpair[0]
-            print("Current entry config:\n", simplify_board_config(entry_rotor_dict))
-            print("Current exit config:\n", simplify_board_config(exit_rotor_dict))
+            print("Current entry config:\n", simplify_board_dict(entry_rotor_dict))
+            print("Current exit config:\n", simplify_board_dict(exit_rotor_dict))
             print("Not connected entry letters:\n", list(set(entry_list)-set(entry_seen_letters)))
             print("Not connected exit letters:\n", list(set(exit_list)-set(exit_seen_letters)))
         self.entry_dict=entry_rotor_dict
@@ -156,7 +156,7 @@ class ROTOR:
         filehandler.close()
         return #End
     def show_rotor_setup(self): #Everything from the rotor, it will be launched from the machine though
-        print("Rotor position :", chr(self.position+64))
+        print("Rotor letter position :", chr(self.position+64))
         print("Rotor letter jumps:", self.jump)
         notchlist=[chr(i+64) for i in self.notch]
         print("Rotor notches:", notchlist)
@@ -166,8 +166,6 @@ class ROTOR:
         pass
     def random_rotor_setup(self, seed=None): 
         #Randomly generate a rotor and store it in a folder
-
-
         #Seed has to be added from the machine calling the function, where the seed is stored/generated
         if not seed:
             print("Something went wrong. Make sure development has reached this stage!")
@@ -204,4 +202,8 @@ def save_n_random_rotors(n, seed):
         rotor.random_rotor_setup(seed+i)
     return "Done"
 def tune_existing_rotor():
-    pass
+    rotor=ROTOR()
+    rotor.import_rotor_config()
+    rotor.configure()
+    rotor.export_rotor()
+    return "Rotor was edited and saved"

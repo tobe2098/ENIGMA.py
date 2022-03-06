@@ -1,7 +1,7 @@
 import random
 import pickle
 import os
-from ENIGMA_py.ENutils import *
+from ENutils import *
 class REFLECTOR:
     def __init__(self):
         self.name="name"
@@ -13,7 +13,7 @@ class REFLECTOR:
         #PENDING: Make it stop after 26 letters have been assigned
         if self.refl_dict:
             print("Current reflector setup is:")
-            print("Connections:", simplify_board_config(self.refl_dict))
+            print("Connections:", simplify_board_dict(self.refl_dict))
             print("Name:", self.name)
             accbool=input("Input N if you do NOT want to change the reflector setup:")
             if accbool=="N":
@@ -53,7 +53,7 @@ class REFLECTOR:
                 seen_letters.append(configpair[1])
                 reflector_dict[configpair[0]]=configpair[1]
                 reflector_dict[configpair[1]]=configpair[0]
-            print("Current config:\n", simplify_board_config(reflector_dict))
+            print("Current config:\n", simplify_board_dict(reflector_dict))
             print("Not connected letters:\n", list(set(all_letters)-set(seen_letters)))
         self.show_config()
         self.refl_dict=reflector_dict
@@ -62,7 +62,7 @@ class REFLECTOR:
         print("Finished")
     def show_config(self):
         print("Reflector name:", self.name)
-        print("Reflector config:", simplify_board_config(self.refl_dict))
+        print("Reflector config:", simplify_board_dict(self.refl_dict))
     def export_reflector(self):
         if self.name=="name":
             print("Please assign a new name to the reflector with the function self.configure() or self.change_name()")
@@ -72,7 +72,7 @@ class REFLECTOR:
         if not os.path.exists(path):
             os.mkdir(path)
             print("Directory '% s' created" % new_folder) 
-        save_file = open('{}/{}.reflector'.format(path,self.name), 'w') 
+        save_file = open(r'{}/{}.reflector'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
         print("{} has been saved into {}.reflector".format(self.name, self.name))
         return #End
@@ -89,15 +89,15 @@ class REFLECTOR:
             return
         print("Your available reflectors are: {}".format(list_of_files))
         reflector=input("Input reflector's position in the list:")
-        filehandler = open("{}/{}.reflector".format(path, list_of_files[reflector-1]), 'r') 
+        filehandler = open(r"{}/{}.reflector".format(path, list_of_files[reflector-1]), 'rb') 
         self = pickle.load(filehandler)
         return #End
     def random_reflector_setup(self, seed):
         random.seed(seed)
         #Set name
         name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 10)]
-        name_list[0:5]=[chr(num+64) for num in name_list[0:5]]
-        name_list[5:8]=[str(i%10) for i in name_list[5:8]]
+        name_list[0:6]=[chr(num+64) for num in name_list[0:6]]
+        name_list[6:10]=[str(i%10) for i in name_list[6:10]]
         string1=""
         new_name=string1.join(name_list)
         self.change_name(new_name)
@@ -109,7 +109,7 @@ class REFLECTOR:
         self.show_config()
         #Export
         self.export_reflector()
-        return self
+        return
 def save_n_random_reflectors(n, seed):
     #Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
     for i in range(0,n):
@@ -117,5 +117,9 @@ def save_n_random_reflectors(n, seed):
         rotor.random_reflector_setup(seed+i)
     return "Done"
 def tune_existing_reflector():
-    pass
+    reflector=REFLECTOR()
+    reflector.import_reflector_config()
+    reflector.manual_reflector_config()
+    reflector.export_reflector()
+    return "Reflector was edited and saved"
     ##Conda activation: conda info --envs, conda activate {}

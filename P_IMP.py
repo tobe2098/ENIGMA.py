@@ -32,3 +32,4 @@ if self.alpha.position % 26==0:
 #In case pickling does not work: "a" is for appending, "w" for writing, "b" for binary
 # with open('mypickle.pickle', 'wb') as f:
 #    pickle.dump(some_obj, f)
+#ord(" ")=32

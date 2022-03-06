@@ -12,7 +12,7 @@ def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does e
         rm=random.randint(1, len(poplist))
         endlist.append(poplist.pop(rm-1))
     return endlist
-def simplify_board_config(board_dict):
+def simplify_board_dict(board_dict):
     seen_pairs=[]
     pairs=[]
     all_letters=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -26,10 +26,10 @@ def simplify_board_config(board_dict):
         pairs.append([letter_a, letter_b])
         seen_pairs.append(letter_a)
         seen_pairs.append(letter_b)
-    unpaired=list(set(all_letters)-set(seen_pairs))
-    board_config_simpl=pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
-    board_config_simpl["Unpaired"]=unpaired
-    return board_config_simpl
+    #unpaired=list(set(all_letters)-set(seen_pairs)) #Deprecated for conflict reasons
+    board_dict_simpl=pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
+    #board_dict_simpl["Unpaired"]=unpaired
+    return board_dict_simpl
 def transform_single_dict(dictio):
     #Code of this function replaces the original functions in ROTOR.py, if there are errors check them here
     if 1 in dictio.values(): 

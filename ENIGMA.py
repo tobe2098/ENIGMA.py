@@ -1,8 +1,9 @@
 import random
 import pickle
-from ENIGMA_py.ROTOR import *
-from ENIGMA_py.ENutils import *
-from ENIGMA_py.REFLECTOR import *
+import pandas as pd
+from ROTOR import *
+from ENutils import *
+from REFLECTOR import *
 class ENIGMAmachine:
     def __init__(self, name="name", seed=None):
         self.name=name
@@ -19,8 +20,9 @@ class ENIGMAmachine:
         else:
             self.seed=seed
         #For now, default is nothingness
-        self.board_config={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
-    #Basic functions
+        self.board_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
+        print(">>>WARNING:Machine was just created, it is not ready for use")
+#Basic functions
     def name_seed(self):
         print(self.__repr__())
     def __repr__(self):
@@ -33,18 +35,57 @@ class ENIGMAmachine:
     def add_fourth_rotor(self):
         self.rotor4=ROTOR()
         print("Fourth rotor added. Use self.manual_rotor_setup or tune_current_machine(machine) to modify.")
-    #Showing configs
+#Showing configs
     def show_rotor_config(self):
-        pass #Complete after manual config
+        print("Start of rotor config")
+        print("First rotor:", self.rotor1.name)
+        self.rotor1.show_rotor_setup()
+        print("Second rotor:", self.rotor2.name)
+        self.rotor2.show_rotor_setup()
+        print("Third rotor:", self.rotor3.name)
+        self.rotor3.show_rotor_setup()
+        if self.rotor4:
+            print("Fourth rotor:", self.rotor4.name)
+            self.rotor4.show_rotor_setup()
+        return "End of rotor config"
     def show_refl_config(self):
-        pass
+        self.reflector.show_config()
+        return 
     def show_config(self):
-        print("Board config:", simplify_board_config(self.board_config))
+        print("Board config:", simplify_board_dict(self.board_dict))
         print("Rotor configs:")
         self.show_rotor_config()
         print("Reflector config:")
         self.show_refl_config()
-    #Manual configs
+    def simple_show_config(self):
+        config=pd.DataFrame()
+        if self.rotor4:
+            config["Rotor position"]=[1,2,3,4]
+            config["Rotors"]=[self.rotor1.name,self.rotor2.name,self.rotor3.name,self.rotor4.name]
+            config["Letter position"]=[self.rotor1.position,self.rotor2.position,self.rotor3.position,self.rotor4.position]
+            notchlist1=[chr(i+64) for i in self.rotor1.notch]
+            notchlist2=[chr(i+64) for i in self.rotor2.notch]
+            notchlist3=[chr(i+64) for i in self.rotor3.notch]
+            notchlist4=[chr(i+64) for i in self.rotor4.notch]
+            config["Notches"]=[notchlist1, notchlist2, notchlist3, notchlist4]
+            print("Board config:", simplify_board_dict(self.board_dict))
+            print("Reflector:", self.reflector.name)
+            print("Rotor config:", config)
+            print("Machine name and seed:", self.name_seed())
+        else:
+            config["Rotor position"]=[1,2,3]
+            config["Rotors"]=[self.rotor1.name,self.rotor2.name,self.rotor3.name]
+            config["Letter position"]=[self.rotor1.position,self.rotor2.position,self.rotor3.position]
+            notchlist1=[chr(i+64) for i in self.rotor1.notch]
+            notchlist2=[chr(i+64) for i in self.rotor2.notch]
+            notchlist3=[chr(i+64) for i in self.rotor3.notch]
+            config["Notches"]=[notchlist1, notchlist2, notchlist3]
+            print("Board config:", simplify_board_dict(self.board_dict))
+            print("Reflector:", self.reflector.name)
+            print("Rotor config:", config)
+            print("Machine name and seed:", self.name_seed())
+        return config #Only names, positions, letter positions and notches, and board, reflector name
+#Manual configs
     def _all_rotor_setup(self, rotor=None):
         self.show_rotor_config()
         if rotor:
@@ -97,11 +138,11 @@ class ENIGMAmachine:
     def manual_refl_setup(self):
         self.reflector.manual_reflector_config()
         return #End
-    def manual_board_config(self):
+    def manual_board_dict(self):
         #Configuration of the cable board
         #PENDING: Make it stop after 26 letters have been assigned
-        if self.board_config:
-            print("Current board setup is:", simplify_board_config(self.board_config))
+        if self.board_dict:
+            print("Current board setup is:", simplify_board_dict(self.board_dict))
             accbool=input("Input N if you do NOT want to change the board setup:")
             if accbool=="N":
                 return
@@ -135,14 +176,15 @@ class ENIGMAmachine:
                 seen_letters.append(configpair[1])
                 board_dict[configpair[0]]=configpair[1]
                 board_dict[configpair[1]]=configpair[0]
-            print("Current config:\n", simplify_board_config(board_dict))
+            print("Current config:\n", simplify_board_dict(board_dict))
             print("Not connected letters:\n", list(set(all_letters)-set(seen_letters)))
+        self.board_dict=board_dict
+        self.board_num_dict=transform_single_dict(self.board_dict)
         print("Finished")
-        self.board_config=board_dict
     def manual_complete_config(self):
         #Board
         print(">>>Configurating the connection board:")
-        self.manual_board_config()
+        self.manual_board_dict()
         #Rotors
         print(">>>Configurating rotors:")
         self.manual_rotor_setup()
@@ -155,12 +197,42 @@ class ENIGMAmachine:
         name=input("Input machine name (previous save with the same name will be overwritten):")
         self.change_name(name)
         self.save_machine()
-    #Pickled functions
+#Pickled functions
     def save_machine(self):
-        pass
-    def load_machine(self):
-        pass
-    #Intern setup functions
+        if self.name=="name":
+            print("Please assign a new name to the machine with the function self.manual_complete_config() or self.change_name(name)")
+        current_path=path = os.path.realpath(__file__)
+        current_path = os.path.dirname(current_path)
+        new_folder = "SAVED_MACHINES"
+        path = os.path.join(current_path, new_folder)       
+        if not os.path.exists(path):
+            os.mkdir(path)
+            print("Directory '% s' created" % new_folder) 
+        save_file = open(r'{}/{}.machine'.format(path,self.name), 'wb') 
+        pickle.dump(self, save_file)
+        print("{} has been saved into {}.machine".format(self.name, self.name))
+        save_file.close()
+        return #End
+    def load_machine(self): #NO LOAD FUNCTION HAS BEEN TESTED YET
+        current_path=path = os.getcwd()
+        new_folder = "SAVED_MACHINES"
+        path = os.path.join(current_path, new_folder)       
+        if not os.path.exists(path):
+            print("There is no SAVED_MACHINES folder")
+            return
+        list_of_files=[element.rsplit(('.', 1)[0])[0] for element in os.listdir(path)]
+        if len(list_of_files)==0:
+            print("There are no machines saved")
+            return
+        print("Your available machines are:")
+        for i in list_of_files:
+            print(i)
+        machine=input("Input machine's position in the list:")
+        filehandler = open(r"{}/{}.rotor".format(path, list_of_files[machine-1]), 'rb') 
+        self = pickle.load(filehandler)
+        filehandler.close()
+        return #End
+#Intern setup functions
     def change_rletter_position(self):
         pos1=input("Letter position for rotor 1:")
         pos2=input("Letter position for rotor 2:")
@@ -272,20 +344,45 @@ class ENIGMAmachine:
             self.rotor4.customize_connections()
         print("All connections configurated")
         return
-    def tune_loaded_reflector(self):
-        pass
-    #RNG functions
-    def generate_random_rotors(self):
-        pass
-    def randomize_board_config(self):
-        pass
+#RNG functions
+    def generate_random_rotors_and_reflector(self, jump):
+        self.rotor1.random_rotor_setup(self.seed+jump)
+        self.rotor2.random_rotor_setup(self.seed-jump)
+        self.rotor3.random_rotor_setup(self.seed+(jump*2))
+        if self.rotor4:
+            self.rotor4.random_rotor_setup(self.seed-(jump*2))
+        self.reflector.random_reflector_setup(self.seed*jump)
+        return "Rotors and reflector set up and saved"
+    def randomize_board_dict(self, seed):
+        random.seed(seed)
+        #Now set the connections
+        num_list=[i for i in range(1,27)]
+        self.board_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
+        self.board_dict=transform_single_dict(self.board_num_dict)
+        #Show final configuration
+        print("Board config:", simplify_board_dict(self.board_dict))
+        return "Board setup is generated"
     def random_machine(self):
-        #Use seed to generate the seed intervals between rotors, between 1 and 30?
-        self.seed #This exists
-        pass
-    #Finally, the crypt function
+        rotor4=input("Do you want an extra rotor? [y/n]")
+        if rotor4=="y":
+            self.add_fourth_rotor()
+        random.seed(self.seed)
+        jump=random.randint(1,3000000)
+        self.generate_random_rotors_and_reflector(jump)
+        self.randomize_board_dict(self.seed)
+        #Generating the name
+        name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 20)]
+        name_list[0:14]=[chr(num+64) for num in name_list[0:14]]
+        name_list[14:20]=[str(i%10) for i in name_list[14:20]]
+        string1=""
+        name=string1.join(name_list)
+        self.change_name(name)
+        self.save_machine()
+        return "Machine is generated, saved and ready for use"
+#Finally, the crypt function
     def encrypt_decrypt(self):
         print(">>>Every time you write a message, the machine will return to the configuration it is now. \n>>>WARNING: Do NOT use spaces, please.")
+        self.simple_show_config()
         for char in input('>>>Write Text: ').upper():
             print(char)
             number=(ord(char) - 64)
