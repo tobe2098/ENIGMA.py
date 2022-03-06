@@ -12,6 +12,7 @@ class ENIGMAmachine:
         self.rotor1=ROTOR()
         self.rotor2=ROTOR()
         self.rotor3=ROTOR()
+        self.rotor4=None
         self.reflector=REFLECTOR()
         if not seed:
             #Number has to be big, but how
@@ -52,7 +53,7 @@ class ENIGMAmachine:
         self.reflector.show_config()
         return 
     def show_config(self):
-        print("Board config:", simplify_board_dict(self.board_dict))
+        print("Board config:\n", simplify_board_dict(self.board_dict))
         print("Rotor configs:")
         self.show_rotor_config()
         print("Reflector config:")
@@ -346,12 +347,12 @@ class ENIGMAmachine:
         return
 #RNG functions
     def generate_random_rotors_and_reflector(self, jump):
+        self.reflector.random_reflector_setup(self.seed*jump)
         self.rotor1.random_rotor_setup(self.seed+jump)
         self.rotor2.random_rotor_setup(self.seed-jump)
         self.rotor3.random_rotor_setup(self.seed+(jump*2))
         if self.rotor4:
             self.rotor4.random_rotor_setup(self.seed-(jump*2))
-        self.reflector.random_reflector_setup(self.seed*jump)
         return "Rotors and reflector set up and saved"
     def randomize_board_dict(self, seed):
         random.seed(seed)
@@ -363,6 +364,7 @@ class ENIGMAmachine:
         print("Board config:", simplify_board_dict(self.board_dict))
         return "Board setup is generated"
     def random_machine(self):
+        print(">>>Randomly generating your ENIGMA machine:")
         rotor4=input("Do you want an extra rotor? [y/n]")
         if rotor4=="y":
             self.add_fourth_rotor()

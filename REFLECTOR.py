@@ -62,7 +62,7 @@ class REFLECTOR:
         print("Finished")
     def show_config(self):
         print("Reflector name:", self.name)
-        print("Reflector config:", simplify_board_dict(self.refl_dict))
+        print("Reflector config:\n", simplify_board_dict(self.refl_dict))
     def export_reflector(self):
         if self.name=="name":
             print("Please assign a new name to the reflector with the function self.configure() or self.change_name()")
@@ -77,7 +77,8 @@ class REFLECTOR:
         print("{} has been saved into {}.reflector".format(self.name, self.name))
         return #End
     def import_reflector_config(self):
-        current_path=path = os.getcwd()
+        current_path=path = os.path.realpath(__file__)
+        current_path = os.path.dirname(current_path)
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
@@ -123,3 +124,4 @@ def tune_existing_reflector():
     reflector.export_reflector()
     return "Reflector was edited and saved"
     ##Conda activation: conda info --envs, conda activate {}
+print("REFLECTOR.py loaded")
