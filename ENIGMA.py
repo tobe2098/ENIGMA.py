@@ -35,7 +35,7 @@ class ENIGMAmachine:
         print("The machine's name is now:", self.name )
     def add_fourth_rotor(self):
         self.rotor4=ROTOR()
-        print("Fourth rotor added. Use self.manual_rotor_setup or tune_current_machine(machine) to modify.")
+        print(">>>Fourth rotor added. Use self.manual_rotor_setup() to modify.")
 #Showing configs
     def show_rotor_config(self):
         print("Start of rotor config")
@@ -347,13 +347,13 @@ class ENIGMAmachine:
         return
 #RNG functions
     def generate_random_rotors_and_reflector(self, jump):
-        self.reflector.random_reflector_setup(self.seed*jump)
-        self.rotor1.random_rotor_setup(self.seed+jump)
-        self.rotor2.random_rotor_setup(self.seed-jump)
-        self.rotor3.random_rotor_setup(self.seed+(jump*2))
+        self.reflector.random_reflector_setup(self.seed*jump, randomE=False)
+        self.rotor1.random_rotor_setup(self.seed+jump, randomE=False)
+        self.rotor2.random_rotor_setup(self.seed-jump, randomE=False)
+        self.rotor3.random_rotor_setup(self.seed+(jump*2), randomE=False)
         if self.rotor4:
-            self.rotor4.random_rotor_setup(self.seed-(jump*2))
-        return "Rotors and reflector set up and saved"
+            self.rotor4.random_rotor_setup(self.seed-(jump*2), randomE=False)
+        return ">>>Rotors and reflector set up and saved."
     def randomize_board_dict(self, seed):
         random.seed(seed)
         #Now set the connections
@@ -361,11 +361,11 @@ class ENIGMAmachine:
         self.board_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
         self.board_dict=transform_single_dict(self.board_num_dict)
         #Show final configuration
-        print("Board config:", simplify_board_dict(self.board_dict))
-        return "Board setup is generated"
+        #print(">>>Board config:\n", simplify_board_dict(self.board_dict))
+        return ">>>Board setup is generated"
     def random_machine(self):
         print(">>>Randomly generating your ENIGMA machine:")
-        rotor4=input("Do you want an extra rotor? [y/n]")
+        rotor4=input(">>>Do you want an extra rotor? [y/n]:")
         if rotor4=="y":
             self.add_fourth_rotor()
         random.seed(self.seed)
@@ -379,8 +379,9 @@ class ENIGMAmachine:
         string1=""
         name=string1.join(name_list)
         self.change_name(name)
+        self.show_config()
         self.save_machine()
-        return "Machine is generated, saved and ready for use"
+        return ">>>Machine has been generated, saved and it is ready for use!"
 #Finally, the crypt function
     def encrypt_decrypt(self):
         print(">>>Every time you write a message, the machine will return to the configuration it is now. \n>>>WARNING: Do NOT use spaces, please.")

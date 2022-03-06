@@ -17,8 +17,13 @@ machine.random_machine()
 
 -Load previously saved machine with the code:
 
+-To get the same configuration as someone else, you can physically receive the pickled object and load it with:
+
+-Or, you can receive the seed number, insert it into the machine and perform a random setup:
+
 ## Recommendations:
--For easy use and fun, randomly generated setups are the best.
+-For easy use and fun, randomly generated setups are the best. You can previously agree to a number or deliver it after generating it. Random generation of the seed is recommended, even if delivery can be tricky (always use secure channels ;)). If you agree to a number, remember, the bigger the better! It will be harder for someone using the same software to predict your seed number that way.
+-If you are using random generation it is always recommended to do a minor adjustment in either rotors, board or reflector. Simple enough to be replicable but it will make it much much harder to decrypt your messages without indications.
 -For airtight security, setup your ENIGMA machine manually and keep the machine saved. Communicating the setup to another party is considerably harder, but if done appropiately should be as secure as encryption is able to be.
 -Use a fourth rotor always. Many more will be implemented in the future ;)
 

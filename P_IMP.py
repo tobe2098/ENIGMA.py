@@ -16,7 +16,9 @@ def seed_list_show():
     pass #.txt with a list of seeds and attached non-related names?
     def import_rotor_list(self):
         return #list_of_rotors
-        #Not finished, for ENIGMA_py.py
+        #Not finished, for ENIGMA_py.pyç
+def encrypt_decrypt_txt_file(self, filepath):
+    pass #Basically loop every character and if .upper() is between 64 and 64+25, decrypt, otherwise input the same character (like spaces)
 '''
 #on positions: Also, change 26 by the notches
 self.alpha.position+=self.alpha.jump

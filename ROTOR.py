@@ -16,22 +16,22 @@ class ROTOR:
         ##self.exit_dict
         ##self.entry_num_dict
         ##self.exit_num_dict
-        print("Please customize connections before use with self.customize connections.\nIf you want to configure all of the rotors' parameters, use self.configure.")
+        print(">>>Rotor has been created")
     def change_name(self, name):
         self.name=name
-        print("Now name of the rotor is:", name)
+        print(">Now name of the rotor is:", name)
     def define_rotor_jump(self, jump):
         self.jump=jump
-        print("Now rotor jumps ", jump, " spaces for every input (not yet implemented in the machine)")
+        print(">Now rotor jumps ", jump, " spaces for every input (not yet implemented in the machine)")
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
     def define_position(self, position):
         self.position=(ord(position) - 64)
-        print("Now rotor is in letter position {}".format(chr((self.position +64))))
+        print(">Now rotor is in letter position {}".format(chr((self.position +64))))
     def define_notches(self, position):
         position=split_into_list(position)
         notch_list=[ord(notch)-64 for notch in position]
         self.notch=notch_list
-        print("Now the rotor has {} notches in positions {}".format(len(notch_list), position))
+        print(">Now the rotor has {} notches in positions {}".format(len(notch_list), position))
     def configure_numeric_dicts(self):
         #First, forward dict
         self.entry_num_dict=transform_single_dict(self.entry_dict)
@@ -53,10 +53,10 @@ class ROTOR:
         entry_seen_letters=[]
         exit_seen_letters=[]
         if self.entry_dict and self.exit_dict:
-            print("Current setup is:")
-            print("Forward connections in the rotor:", self.entry_dict)
-            print("Backward connections in the rotor:", self.exit_dict)
-            accbool=input("Input N if you do not want to change the configuration:")
+            print(">Current setup is:")
+            print(">Forward connections in the rotor:", self.entry_dict)
+            print(">Backward connections in the rotor:", self.exit_dict)
+            accbool=input(">>>Input N if you do not want to change the configuration:")
             if accbool=="N":
                 return
         entry_rotor_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
@@ -64,12 +64,12 @@ class ROTOR:
         entry_list=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         exit_list=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         while i==0:
-            print("If you want to stop configurating the rotor, press Enter")
-            configpair=input("Enter pair of letters for board configuration:").upper()
+            print(">If you want to stop configurating the rotor, press Enter")
+            configpair=input(">>>Enter pair of letters for board configuration:").upper()
             if configpair.isalpha() or not configpair:
                 pass
             else:
-                print("Error: Input 2 letters please")
+                print(">Error: Input 2 letters please")
                 continue
             if len(list(set(entry_list)-set(entry_seen_letters)))==0:
                 break
@@ -79,27 +79,27 @@ class ROTOR:
             elif len(configpair)==0:
                 break
             else:
-                print("Error: Input 2 letters please")
+                print(">Error: Input 2 letters please")
                 continue
             if any(map(lambda v: v in configpair, entry_seen_letters)):
-                print("Already plugged")
+                print(">Already plugged")
                 continue
             if any(map(lambda v: v in configpair, exit_seen_letters)):
-                print("Already plugged")
+                print(">Already plugged")
                 continue
             else:
                 entry_seen_letters.append(configpair[0])
                 exit_seen_letters.append(configpair[1])
                 entry_rotor_dict[configpair[0]]=configpair[1]
                 exit_rotor_dict[configpair[1]]=configpair[0]
-            print("Current entry config:\n", simplify_board_dict(entry_rotor_dict))
-            print("Current exit config:\n", simplify_board_dict(exit_rotor_dict))
-            print("Not connected entry letters:\n", list(set(entry_list)-set(entry_seen_letters)))
-            print("Not connected exit letters:\n", list(set(exit_list)-set(exit_seen_letters)))
+            print(">Current entry config:\n", simplify_board_dict(entry_rotor_dict))
+            print(">Current exit config:\n", simplify_board_dict(exit_rotor_dict))
+            print(">Not connected entry letters:\n", list(set(entry_list)-set(entry_seen_letters)))
+            print(">Not connected exit letters:\n", list(set(exit_list)-set(exit_seen_letters)))
         self.entry_dict=entry_rotor_dict
         self.exit_dict=exit_rotor_dict
         self.configure_numeric_dicts()
-        print("Finished")
+        print(">Finished")
 
     def configure(self):
         letter_list=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -125,17 +125,17 @@ class ROTOR:
         return #End
     def export_rotor(self):
         if self.name=="name":
-            print("Please assign a new name to the rotor with the function self.configure() or self.change_name()")
+            print(">Please assign a new name to the rotor with the function self.configure() or self.change_name()")
         current_path=path = os.path.realpath(__file__)
         current_path = os.path.dirname(current_path)
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
             os.mkdir(path)
-            print("Directory '% s' created" % new_folder) 
+            print(">Directory '% s' created" % new_folder) 
         save_file = open(r'{}/{}.rotor'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
-        print("{} has been saved into {}.rotor".format(self.name, self.name))
+        print(">{} has been saved into {}.rotor".format(self.name, self.name))
         save_file.close()
         return #End
     def import_rotor_config(self):
@@ -164,19 +164,13 @@ class ROTOR:
         print("Backward connections in the rotor:", self.exit_dict)
         print("Rotor name:", self.name)
         pass
-    def random_rotor_setup(self, seed=None): 
+    def random_rotor_setup(self, seed=None, randomE=True): 
         #Randomly generate a rotor and store it in a folder
         #Seed has to be added from the machine calling the function, where the seed is stored/generated
         if not seed:
-            print("Something went wrong. Make sure development has reached this stage!")
+            print(">>Something went wrong. Make sure development has reached this stage!")
         #Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed) 
-        #Position
-        self.define_position(chr(random.randint(1,26)+64))      #Check in the future whether this setups are correct
-        #Notches
-        notch_list = [chr(i+64) for i in set(random.sample(range(1, 27), random.randint(1,5)))]
-        self.define_notches(notch_list)
-        self.define_rotor_jump(random.randint(1,26))
         #Name generation
         name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 13)]
         name_list[0:9]=[chr(num+64) for num in name_list[0:9]]
@@ -184,13 +178,21 @@ class ROTOR:
         string1=""
         name=string1.join(name_list)
         self.change_name(name)
+        #Position
+        self.define_position(chr(random.randint(1,26)+64))      #Check in the future whether this setups are correct
+        #Notches
+        notch_list = [chr(i+64) for i in set(random.sample(range(1, 27), random.randint(1,5)))]
+        self.define_notches(notch_list)
+        self.define_rotor_jump(random.randint(1,26))
         #Forward dictionary
         num_list=[i for i in range(1,27)]
         self.entry_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
         sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
         self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        print(">Rotor connections established")
         self.configure_character_dicts()
-        self.show_rotor_setup()
+        if randomE:
+            self.show_rotor_setup()
         self.export_rotor()
         return 
         #And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
@@ -200,10 +202,10 @@ def save_n_random_rotors(n, seed):
     for i in range(0,n):
         rotor=ROTOR()
         rotor.random_rotor_setup(seed+i)
-    return "Done"
+    return ">Done"
 def tune_existing_rotor():
     rotor=ROTOR()
     rotor.import_rotor_config()
     rotor.configure()
     rotor.export_rotor()
-    return "Rotor was edited and saved"
+    return ">Rotor was edited and saved"
