@@ -1,9 +1,9 @@
 import random
 import pickle
 import pandas as pd
-from ROTOR import *
-from ENutils import *
-from REFLECTOR import *
+from ENIGMA_py.ROTOR import *
+from ENIGMA_py.ENutils import *
+from ENIGMA_py.REFLECTOR import *
 class ENIGMAmachine:
     def __init__(self, name="name", seed=None):
         self.name=name
@@ -202,7 +202,7 @@ class ENIGMAmachine:
     def save_machine(self):
         if self.name=="name":
             print("Please assign a new name to the machine with the function self.manual_complete_config() or self.change_name(name)")
-        current_path=path = os.getcwd()
+        current_path=os.path.dirname(__file__)
         new_folder = "SAVED_MACHINES"
         path = os.path.join(current_path, new_folder)   
         if not os.path.exists(path):
@@ -214,7 +214,7 @@ class ENIGMAmachine:
         save_file.close()
         return #End
     def load_machine(self): #NO LOAD FUNCTION HAS BEEN TESTED YET
-        current_path=path = os.getcwd()
+        current_path=os.path.dirname(__file__)
         new_folder = "SAVED_MACHINES"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):

@@ -1,5 +1,5 @@
-from ROTOR import ROTOR
-from REFLECTOR import REFLECTOR
+from ENIGMA_py.ROTOR import ROTOR
+from ENIGMA_py.REFLECTOR import REFLECTOR
 import pickle
 import random
 #Look into installation of the module

@@ -1,7 +1,7 @@
 import random
 import pickle
 import os
-from ENutils import *
+from ENIGMA_py.ENutils import *
 class REFLECTOR:
     def __init__(self):
         self.name="name"
@@ -66,7 +66,7 @@ class REFLECTOR:
     def export_reflector(self):
         if self.name=="name":
             print(">Please assign a new name to the reflector with the function self.configure() or self.change_name()")
-        current_path=path = os.getcwd()
+        current_path=os.path.dirname(__file__)
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
@@ -77,7 +77,7 @@ class REFLECTOR:
         print(">{} has been saved into {}.reflector in {}".format(self.name, self.name, path))
         return #End
     def import_reflector_config(self):
-        current_path=path = os.getcwd()
+        current_path=os.path.dirname(__file__)
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):

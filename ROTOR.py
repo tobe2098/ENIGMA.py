@@ -1,6 +1,6 @@
 #from turtle import position #???????????? wtf
 import random
-from ENutils import *
+from ENIGMA_py.ENutils import *
 import pickle
 import os
 class ROTOR:
@@ -126,7 +126,7 @@ class ROTOR:
     def export_rotor(self):
         if self.name=="name":
             print(">Please assign a new name to the rotor with the function self.configure() or self.change_name()")
-        current_path=path = os.getcwd()
+        current_path=os.path.dirname(__file__)
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
@@ -138,7 +138,7 @@ class ROTOR:
         save_file.close()
         return #End
     def import_rotor_config(self):
-        current_path=path = os.getcwd()
+        current_path=os.path.dirname(__file__)
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
