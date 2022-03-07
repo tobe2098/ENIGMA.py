@@ -35,3 +35,4 @@ if self.alpha.position % 26==0:
 # with open('mypickle.pickle', 'wb') as f:
 #    pickle.dump(some_obj, f)
 #ord(" ")=32
+#randomE is not implemented yet

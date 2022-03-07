@@ -202,16 +202,15 @@ class ENIGMAmachine:
     def save_machine(self):
         if self.name=="name":
             print("Please assign a new name to the machine with the function self.manual_complete_config() or self.change_name(name)")
-        current_path=path = os.path.realpath(__file__)
-        current_path = os.path.dirname(current_path)
+        current_path=path = os.getcwd()
         new_folder = "SAVED_MACHINES"
-        path = os.path.join(current_path, new_folder)       
+        path = os.path.join(current_path, new_folder)   
         if not os.path.exists(path):
             os.mkdir(path)
-            print("Directory '% s' created" % new_folder) 
+            print("Directory '% s' created" % path) 
         save_file = open(r'{}/{}.machine'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
-        print("{} has been saved into {}.machine".format(self.name, self.name))
+        print("{} has been saved into {}.machine in ".format(self.name, self.name, path))
         save_file.close()
         return #End
     def load_machine(self): #NO LOAD FUNCTION HAS BEEN TESTED YET
@@ -219,7 +218,7 @@ class ENIGMAmachine:
         new_folder = "SAVED_MACHINES"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
-            print("There is no SAVED_MACHINES folder")
+            print("There is no {} folder".format(path))
             return
         list_of_files=[element.rsplit(('.', 1)[0])[0] for element in os.listdir(path)]
         if len(list_of_files)==0:
@@ -347,16 +346,18 @@ class ENIGMAmachine:
         return
 #RNG functions
     def generate_random_rotors_and_reflector(self, jump):
-        self.reflector.random_reflector_setup(self.seed*jump, randomE=False)
-        self.rotor1.random_rotor_setup(self.seed+jump, randomE=False)
-        self.rotor2.random_rotor_setup(self.seed-jump, randomE=False)
-        self.rotor3.random_rotor_setup(self.seed+(jump*2), randomE=False)
+        randomE=False
+        self.reflector.random_reflector_setup(self.seed*jump)
+        self.rotor1.random_rotor_setup(self.seed+jump)
+        self.rotor2.random_rotor_setup(self.seed-jump)
+        self.rotor3.random_rotor_setup(self.seed+(jump*2))
         if self.rotor4:
-            self.rotor4.random_rotor_setup(self.seed-(jump*2), randomE=False)
+            self.rotor4.random_rotor_setup(self.seed-(jump*2))
         return ">>>Rotors and reflector set up and saved."
     def randomize_board_dict(self, seed):
         random.seed(seed)
         #Now set the connections
+        ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
         num_list=[i for i in range(1,27)]
         self.board_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
         self.board_dict=transform_single_dict(self.board_num_dict)

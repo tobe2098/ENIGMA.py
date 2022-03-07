@@ -71,18 +71,17 @@ class REFLECTOR:
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
             os.mkdir(path)
-            print(">Directory '% s' created" % new_folder) 
+            print(">Directory '% s' created" % path) 
         save_file = open(r'{}/{}.reflector'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
-        print(">{} has been saved into {}.reflector".format(self.name, self.name))
+        print(">{} has been saved into {}.reflector in {}".format(self.name, self.name, path))
         return #End
     def import_reflector_config(self):
-        current_path=path = os.path.realpath(__file__)
-        current_path = os.path.dirname(current_path)
+        current_path=path = os.getcwd()
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
-            print(">There is no SAVED_REFLECTORS folder")
+            print(">There is no {} folder".format(path))
             return
         list_of_files=[element.rsplit(('.', 1)[0])[0] for element in os.listdir(path)]
         if len(list_of_files)==0:
@@ -96,6 +95,7 @@ class REFLECTOR:
     def random_reflector_setup(self, seed, randomE=True):
         random.seed(seed)
         #Set name
+        ### !!! Make sure letters do not connect to themselves!!!
         name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 10)]
         name_list[0:6]=[chr(num+64) for num in name_list[0:6]]
         name_list[6:10]=[str(i%10) for i in name_list[6:10]]

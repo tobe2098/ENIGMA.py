@@ -126,8 +126,7 @@ class ROTOR:
     def export_rotor(self):
         if self.name=="name":
             print(">Please assign a new name to the rotor with the function self.configure() or self.change_name()")
-        current_path=path = os.path.realpath(__file__)
-        current_path = os.path.dirname(current_path)
+        current_path=path = os.getcwd()
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
@@ -135,7 +134,7 @@ class ROTOR:
             print(">Directory '% s' created" % new_folder) 
         save_file = open(r'{}/{}.rotor'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
-        print(">{} has been saved into {}.rotor".format(self.name, self.name))
+        print(">{} has been saved into {}.rotor in {}".format(self.name, self.name, path))
         save_file.close()
         return #End
     def import_rotor_config(self):
@@ -143,7 +142,7 @@ class ROTOR:
         new_folder = "SAVED_ROTORS"
         path = os.path.join(current_path, new_folder)       
         if not os.path.exists(path):
-            print("There is no SAVED_ROTORS folder")
+            print("There is no {} folder".format(path))
             return
         list_of_files=[element.rsplit(('.', 1)[0])[0] for element in os.listdir(path)]
         if len(list_of_files)==0:
