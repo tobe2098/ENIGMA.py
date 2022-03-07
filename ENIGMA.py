@@ -22,6 +22,7 @@ class ENIGMAmachine:
             self.seed=seed
         #For now, default is nothingness
         self.board_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
+        self.board_num_dict=transform_single_dict(self.board_dict)
         print(">>>WARNING:Machine was just created, it is not ready for use")
 #Basic functions
     def name_seed(self):
@@ -210,7 +211,7 @@ class ENIGMAmachine:
             print("Directory '% s' created" % path) 
         save_file = open(r'{}/{}.machine'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
-        print("{} has been saved into {}.machine in ".format(self.name, self.name, path))
+        print("{} has been saved into {}.machine in {}".format(self.name, self.name, path))
         save_file.close()
         return #End
     def load_machine(self): #NO LOAD FUNCTION HAS BEEN TESTED YET
@@ -347,19 +348,29 @@ class ENIGMAmachine:
 #RNG functions
     def generate_random_rotors_and_reflector(self, jump):
         randomE=False
-        self.reflector.random_reflector_setup(self.seed*jump)
-        self.rotor1.random_rotor_setup(self.seed+jump)
-        self.rotor2.random_rotor_setup(self.seed-jump)
-        self.rotor3.random_rotor_setup(self.seed+(jump*2))
+        self.reflector.random_reflector_setup(self.seed*jump, randomE)
+        self.rotor1.random_rotor_setup(self.seed+jump, randomE)
+        self.rotor2.random_rotor_setup(self.seed-jump, randomE)
+        self.rotor3.random_rotor_setup(self.seed+(jump*2), randomE)
         if self.rotor4:
-            self.rotor4.random_rotor_setup(self.seed-(jump*2))
+            self.rotor4.random_rotor_setup(self.seed-(jump*2), randomE)
         return ">>>Rotors and reflector set up and saved."
     def randomize_board_dict(self, seed):
         random.seed(seed)
         #Now set the connections
         ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
         num_list=[i for i in range(1,27)]
-        self.board_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
+        cable_num=random.randint(0,13)
+        for i in range(cable_num):
+            indexA=random.randint(0,len(num_list)-1)
+            letterA=num_list.pop(indexA)
+            if len(num_list)==1:
+                indexB=0
+            else:
+                indexB=random.randint(0,len(num_list)-1)
+            letterB=num_list.pop(indexB)
+            self.board_num_dict[letterA]=letterB
+            self.board_num_dict[letterB]=letterA
         self.board_dict=transform_single_dict(self.board_num_dict)
         #Show final configuration
         #print(">>>Board config:\n", simplify_board_dict(self.board_dict))

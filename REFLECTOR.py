@@ -5,6 +5,8 @@ from ENIGMA_py.ENutils import *
 class REFLECTOR:
     def __init__(self):
         self.name="name"
+        self.refl_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
+        self.refl_num_dict=transform_single_dict(self.refl_dict)
     def change_name(self, name):
         self.name=name
         print(">Now name of the reflector is:", name)
@@ -92,7 +94,7 @@ class REFLECTOR:
         filehandler = open(r"{}/{}.reflector".format(path, list_of_files[reflector-1]), 'rb') 
         self = pickle.load(filehandler)
         return #End
-    def random_reflector_setup(self, seed, randomE=True):
+    def random_reflector_setup(self, seed=None, randomE=True):
         random.seed(seed)
         #Set name
         ### !!! Make sure letters do not connect to themselves!!!
@@ -104,7 +106,16 @@ class REFLECTOR:
         self.change_name(new_name)
         #Now set the connections
         num_list=[i for i in range(1,27)]
-        self.refl_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
+        for i in range(13):
+            indexA=random.randint(0,len(num_list)-1)
+            letterA=num_list.pop(indexA)
+            if len(num_list)==1:
+                indexB=0
+            else:
+                indexB=random.randint(0,len(num_list)-1)
+            letterB=num_list.pop(indexB)
+            self.refl_num_dict[letterA]=letterB
+            self.refl_num_dict[letterB]=letterA
         self.refl_dict=transform_single_dict(self.refl_num_dict)
         #Show final configuration
         if randomE:
