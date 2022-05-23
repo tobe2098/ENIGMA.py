@@ -4,6 +4,7 @@ Personal adaptation of the classic ENIGMA machine to a python environment, with 
 ## Stage:
 Completely developed, editing options are maximized, trying to improve user interface from scratch.
 For now there are options for 3 and 4 rotors, more could come in the future.
+Version: 1.0.1
 
 ## Instructions for use:
 -Obtain a brand new ENIGMA machine with just some simple lines! Ready for use in one go!
