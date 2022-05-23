@@ -184,7 +184,7 @@ class ROTOR:
         self.define_notches(notch_list)
         self.define_rotor_jump(random.randint(1,26))
         #Forward dictionary
-        num_list=[i for i in range(1,27)]
+        num_list=[i for i in range(0,26)]
         self.entry_num_dict=dict(zip(num_list, random.sample(range(0, 26), 26)))
         sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
         self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))

@@ -3,3 +3,4 @@ sys.path.append('C:\\Users\\Darkest White\\Desktop\\PROJECTTT\\PROGRAMMATICS\\Gi
 from ENIGMA_py.ENIGMA import *
 machine=ENIGMAmachine()
 machine.random_machine()
+machine.encrypt_decrypt()

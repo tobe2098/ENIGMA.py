@@ -31,7 +31,7 @@ class ENIGMAmachine:
     def __repr__(self):
         print("Machine's name is:", self.name)
         print("Random seed of the machine is:", self.seed)
-        return ("Machine name is %, and its random seed is %" % (self.name, self.seed))
+        return ("Machine name is {}, and its random seed is {}".format(self.name, self.seed))
     def change_name(self, new_name):
         self.name=new_name
         print("The machine's name is now:", self.name )
@@ -362,7 +362,7 @@ class ENIGMAmachine:
         random.seed(seed)
         #Now set the connections
         ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
-        num_list=[i for i in range(1,27)]
+        num_list=[i for i in range(0,26)]
         cable_num=random.randint(0,13)
         for i in range(cable_num):
             indexA=random.randint(0,len(num_list)-1)
@@ -399,13 +399,15 @@ class ENIGMAmachine:
         return ">>>Machine has been generated, saved and it is ready for use!"
 #Finally, the crypt function
     def encrypt_decrypt(self):
+        import copy as cp
         print(">>>Every time you write a message, the machine will return to the configuration it is now. \n>>>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input.")
         self.simple_show_config()
         input_var=1
         while input_var:
-            machine=self
+            machine=cp.deepcopy(self)
             input_var=input('>>>Write Text (no spaces): ').upper()
             output_message_list=[]
+            print(machine.rotor1.position)
             for char in input_var:
                 #First, position changes in rotors.
                 if machine.rotor1.position in machine.rotor1.notch:
@@ -445,9 +447,12 @@ class ENIGMAmachine:
                 b_output_r=machine.board_num_dict[shifted_r1_output_r]
                 letter_out=chr(b_output_r+65)
                 output_message_list.append(letter_out)
+                if letter_out=="[":
+                    raise Exception
             string1=""
             message=string1.join(output_message_list)
             print(message)
+            del machine
 
 
 def tune_existing_machine(machine):
