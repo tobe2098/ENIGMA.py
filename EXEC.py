@@ -9,7 +9,6 @@ print('''>>>RECOMMENDATIONS FOR USE:
 -No writing down the seed, no sending it over unsecured channels. Preferably agree on a modification of the seed-generated machine.
 -Read README.md
 -Always keep a security copy of the machine.
--If any doubts on the code write me at : astoritella@proton.me . I will eventually get back at you (in a couple of weeks).
 -Short messages are more secure. Changing the machine periodically, or its settings is recommended. Once you have an open comm channel that should not be a problem.
 -Passing the pickled machine on a USB is possibly the safest way to do it.
 -Save the module and the pickled objects in a separate folder if possible.
