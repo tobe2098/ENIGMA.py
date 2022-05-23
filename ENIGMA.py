@@ -29,8 +29,6 @@ class ENIGMAmachine:
     def name_seed(self):
         print(self.__repr__())
     def __repr__(self):
-        print("Machine's name is:", self.name)
-        print("Random seed of the machine is:", self.seed)
         return ("Machine name is {}, and its random seed is {}".format(self.name, self.seed))
     def change_name(self, new_name):
         self.name=new_name
@@ -75,7 +73,7 @@ class ENIGMAmachine:
             print("Board config:", simplify_board_dict(self.board_dict))
             print("Reflector:", self.reflector.name)
             print("Rotor config:", config)
-            print("Machine name and seed:", self.name_seed())
+            print("Machine name and seed:", self.__repr__())
         else:
             config["Rotor position"]=[1,2,3]
             config["Rotors"]=[self.rotor1.name,self.rotor2.name,self.rotor3.name]
@@ -86,7 +84,7 @@ class ENIGMAmachine:
             config["Notches"]=[notchlist1, notchlist2, notchlist3]
             print("Board config:", simplify_board_dict(self.board_dict))
             print("Reflector:", self.reflector.name)
-            print("Rotor config:", config)
+            print("Rotor config:\n", config)
             print("Machine name and seed:", self.name_seed())
         return config #Only names, positions, letter positions and notches, and board, reflector name
 #Manual configs
@@ -230,8 +228,9 @@ class ENIGMAmachine:
         print("Your available machines are:")
         for i in list_of_files:
             print(i)
-        machine=input("Input machine's position in the list:")
-        filehandler = open(r"{}/{}.rotor".format(path, list_of_files[machine-1]), 'rb') 
+        machine=int(input("Input machine's position in the list:"))
+        file=os.path.join(path, "{}.machine".format(list_of_files[machine-1]))
+        filehandler = open(file, 'rb') 
         self = pickle.load(filehandler)
         filehandler.close()
         return #End
@@ -411,8 +410,8 @@ class ENIGMAmachine:
             for char in input_var:
                 #First, position changes in rotors.
                 if machine.rotor1.position in machine.rotor1.notch:
-                    if machine.rotor2.position-1 in machine.rotor2.notch:
-                        if (machine.rotor3.position-1 in machine.rotor3.notch) and machine.rotor4:
+                    if machine.rotor2.position in machine.rotor2.notch:
+                        if (machine.rotor3.position in machine.rotor3.notch) and machine.rotor4:
                             machine.rotor4.position=(machine.rotor4.position+1)%26
                         machine.rotor3.position=(machine.rotor3.position+1)%26
                     machine.rotor2.position=(machine.rotor2.position+1)%26
@@ -426,8 +425,8 @@ class ENIGMAmachine:
                 r2_output_f=machine.rotor2.entry_num_dict[shifted_r1_output_f]
                 shifted_r2_output_f=(r2_output_f+machine.rotor3.position-machine.rotor2.position)%26
                 r3_output_f=machine.rotor3.entry_num_dict[shifted_r2_output_f]
-                shifted_r3_output_f=(r3_output_f-machine.rotor3.position)%26
                 if machine.rotor4:
+                    shifted_r3_output_f=(r3_output_f-machine.rotor3.position+machine.rotor4.position)%26
                     r4_output_f=machine.rotor4.entry_num_dict[shifted_r3_output_f]
                     shifted_r4_output_f=(r4_output_f-machine.rotor4.position)%26
                     reflector_output=machine.reflector.refl_num_dict[shifted_r4_output_f]
@@ -436,6 +435,7 @@ class ENIGMAmachine:
                     shifted_r4_output_r=(r4_output_r-machine.rotor4.position+machine.rotor3.position)%26
                     r3_output_r=machine.rotor3.exit_num_dict[shifted_r4_output_r]
                 else:
+                    shifted_r3_output_f=(r3_output_f-machine.rotor3.position)%26
                     reflector_output=machine.reflector.refl_num_dict[shifted_r3_output_f]
                     shifted_reflector_output=(reflector_output+machine.rotor3.position)%26
                     r3_output_r=machine.rotor3.exit_num_dict[shifted_reflector_output]

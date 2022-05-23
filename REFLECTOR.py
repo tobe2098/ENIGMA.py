@@ -74,7 +74,7 @@ class REFLECTOR:
         if not os.path.exists(path):
             os.mkdir(path)
             print(">Directory '% s' created" % path) 
-        save_file = open(r'{}/{}.reflector'.format(path,self.name), 'wb') 
+        save_file = open(r'{}\\{}.reflector'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
         print(">{} has been saved into {}.reflector in {}".format(self.name, self.name, path))
         return #End
@@ -91,7 +91,7 @@ class REFLECTOR:
             return
         print(">Your available reflectors are: {}".format(list_of_files))
         reflector=input(">>>Input reflector's position in the list:")
-        filehandler = open(r"{}/{}.reflector".format(path, list_of_files[reflector-1]), 'rb') 
+        filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[reflector-1]), 'rb') 
         self = pickle.load(filehandler)
         return #End
     def random_reflector_setup(self, seed=None, randomE=True):

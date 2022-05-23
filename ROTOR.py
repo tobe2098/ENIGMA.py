@@ -7,7 +7,7 @@ class ROTOR:
     def __init__(self):
         #Note: variables can be defined on the fly
         self.name="name" #randomly generating a name is going to happen I guess
-        self.notch=25 #self.notch can be a list. When does the next rotor move relative to the notch?
+        self.notch=[25] #self.notch can be a list. When does the next rotor move relative to the notch?
         self.position=1 #Can go from 1 to 26
         self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         #Jump implementation will be done last. It can get complicated.
@@ -132,7 +132,7 @@ class ROTOR:
         if not os.path.exists(path):
             os.mkdir(path)
             print(">Directory '% s' created" % new_folder) 
-        save_file = open(r'{}/{}.rotor'.format(path,self.name), 'wb') 
+        save_file = open(r'{}\\{}.rotor'.format(path,self.name), 'wb') 
         pickle.dump(self, save_file)
         print(">{} has been saved into {}.rotor in {}".format(self.name, self.name, path))
         save_file.close()
@@ -150,7 +150,7 @@ class ROTOR:
             return
         print("Your available rotors are: {}".format(list_of_files))
         rotor=input("Input rotor's position in the list:")
-        filehandler = open(r"{}/{}.rotor".format(path, list_of_files[rotor-1]), 'rb') 
+        filehandler = open(r"{}\\{}.rotor".format(path, list_of_files[rotor-1]), 'rb') 
         self = pickle.load(filehandler)
         filehandler.close()
         return #End
