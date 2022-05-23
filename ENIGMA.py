@@ -1,6 +1,11 @@
+from platform import machine
 import random
 import pickle
 import pandas as pd
+import sys
+import os
+path=os.path.dirname(os.path.dirname((__file__)))
+sys.path.append(path)
 from ENIGMA_py.ROTOR import *
 from ENIGMA_py.ENutils import *
 from ENIGMA_py.REFLECTOR import *
@@ -29,7 +34,7 @@ class ENIGMAmachine:
     def name_seed(self):
         print(self.__repr__())
     def __repr__(self):
-        return ("Machine name is {}, and its random seed is {}".format(self.name, self.seed))
+        return ("Machine name is {}, and its random seed is {}\n>>>REMEMBER! Communicating the random seed or further adjsutments for the machine is the weakest link for its usage. \nPlease do it with care, do not leave it written anywhere after the opposite party has a configured machine.".format(self.name, self.seed))
     def change_name(self, new_name):
         self.name=new_name
         print("The machine's name is now:", self.name )
@@ -72,8 +77,8 @@ class ENIGMAmachine:
             config["Notches"]=[notchlist1, notchlist2, notchlist3, notchlist4]
             print("Board config:", simplify_board_dict(self.board_dict))
             print("Reflector:", self.reflector.name)
-            print("Rotor config:", config)
-            print("Machine name and seed:", self.__repr__())
+            print("Rotor config:\n", config)
+            print("Machine name and seed:", self.name_seed())
         else:
             config["Rotor position"]=[1,2,3]
             config["Rotors"]=[self.rotor1.name,self.rotor2.name,self.rotor3.name]
@@ -214,7 +219,7 @@ class ENIGMAmachine:
         print("{} has been saved into {}.machine in {}".format(self.name, self.name, path))
         save_file.close()
         return #End
-    def load_machine(self): #NO LOAD FUNCTION HAS BEEN TESTED YET
+    def load_machine(self): #THIS LOAD FUNCTION IS DEPRECATED, IT DOES NOT WORK, USE THE ONE THAT IS NOT CLASS DEFINED
         current_path=os.path.dirname(__file__)
         new_folder = "SAVED_MACHINES"
         path = os.path.join(current_path, new_folder)       
@@ -233,7 +238,7 @@ class ENIGMAmachine:
         filehandler = open(file, 'rb') 
         self = pickle.load(filehandler)
         filehandler.close()
-        return #End
+        return self #End
 #Intern setup functions
     def change_rletter_position(self):
         pos1=input("Letter position for rotor 1:")
@@ -420,40 +425,56 @@ class ENIGMAmachine:
                 number_in=(ord(char) - 65) #Raw input converted to numerical.
                 b_output=machine.board_num_dict[number_in] #Board output 1 
                 shifted_b_output=(b_output+machine.rotor1.position)%26
-                r1_output_f=machine.rotor1.entry_num_dict[shifted_b_output]
+                r1_output_f=machine.rotor1.entry_num_dict[shifted_b_output] #Rotor1 output forward
                 shifted_r1_output_f=(r1_output_f+machine.rotor2.position-machine.rotor1.position)%26
-                r2_output_f=machine.rotor2.entry_num_dict[shifted_r1_output_f]
+                r2_output_f=machine.rotor2.entry_num_dict[shifted_r1_output_f] #Rotor2 output forward
                 shifted_r2_output_f=(r2_output_f+machine.rotor3.position-machine.rotor2.position)%26
-                r3_output_f=machine.rotor3.entry_num_dict[shifted_r2_output_f]
+                r3_output_f=machine.rotor3.entry_num_dict[shifted_r2_output_f] #Rotor3 output forward
                 if machine.rotor4:
                     shifted_r3_output_f=(r3_output_f-machine.rotor3.position+machine.rotor4.position)%26
-                    r4_output_f=machine.rotor4.entry_num_dict[shifted_r3_output_f]
+                    r4_output_f=machine.rotor4.entry_num_dict[shifted_r3_output_f] #Rotor4 output forward
                     shifted_r4_output_f=(r4_output_f-machine.rotor4.position)%26
-                    reflector_output=machine.reflector.refl_num_dict[shifted_r4_output_f]
+                    reflector_output=machine.reflector.refl_num_dict[shifted_r4_output_f] #Reflector output
                     shifted_reflector_output=(reflector_output+machine.rotor4.position)%26
-                    r4_output_r=machine.rotor4.entry_num_dict[shifted_reflector_output]
+                    r4_output_r=machine.rotor4.entry_num_dict[shifted_reflector_output] #Rotor4 output reverse
                     shifted_r4_output_r=(r4_output_r-machine.rotor4.position+machine.rotor3.position)%26
-                    r3_output_r=machine.rotor3.exit_num_dict[shifted_r4_output_r]
+                    r3_output_r=machine.rotor3.exit_num_dict[shifted_r4_output_r] #Rotor3 output reverse
                 else:
                     shifted_r3_output_f=(r3_output_f-machine.rotor3.position)%26
-                    reflector_output=machine.reflector.refl_num_dict[shifted_r3_output_f]
+                    reflector_output=machine.reflector.refl_num_dict[shifted_r3_output_f] #Reflector output
                     shifted_reflector_output=(reflector_output+machine.rotor3.position)%26
-                    r3_output_r=machine.rotor3.exit_num_dict[shifted_reflector_output]
+                    r3_output_r=machine.rotor3.exit_num_dict[shifted_reflector_output] #Rotor3 output reverse
                 shifted_r3_output_r=(r3_output_r-machine.rotor3.position+machine.rotor2.position)%26
-                r2_output_r=machine.rotor2.exit_num_dict[shifted_r3_output_r]
+                r2_output_r=machine.rotor2.exit_num_dict[shifted_r3_output_r] #Rotor2 output reverse
                 shifted_r2_output_r=(r2_output_r-machine.rotor2.position+machine.rotor1.position)%26
-                r1_output_r=machine.rotor1.exit_num_dict[shifted_r2_output_r]
+                r1_output_r=machine.rotor1.exit_num_dict[shifted_r2_output_r] #Rotor1 output reverse
                 shifted_r1_output_r=(r1_output_r-machine.rotor1.position)%26
-                b_output_r=machine.board_num_dict[shifted_r1_output_r]
+                b_output_r=machine.board_num_dict[shifted_r1_output_r] #Board output
                 letter_out=chr(b_output_r+65)
                 output_message_list.append(letter_out)
-                if letter_out=="[":
-                    raise Exception
             string1=""
             message=string1.join(output_message_list)
             print(message)
             del machine
 
 
-def tune_existing_machine(machine):
-    pass
+def load_existing_machine():
+    current_path=os.path.dirname(__file__)
+    new_folder = "SAVED_MACHINES"
+    path = os.path.join(current_path, new_folder)       
+    if not os.path.exists(path):
+        print("There is no {} folder".format(path))
+        return
+    list_of_files=[element.rsplit(('.', 1)[0])[0] for element in os.listdir(path)]
+    if len(list_of_files)==0:
+        print("There are no machines saved")
+        return
+    print("Your available machines are:")
+    for i in list_of_files:
+        print(i)
+    machine=int(input("Input machine's position in the list:"))
+    file=os.path.join(path, "{}.machine".format(list_of_files[machine-1]))
+    filehandler = open(file, 'rb') 
+    machine = pickle.load(filehandler)
+    filehandler.close()
+    return machine
