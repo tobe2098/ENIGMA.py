@@ -18,7 +18,7 @@ def seed_list_show():
         return #list_of_rotors
         #Not finished, for ENIGMA_py.pyç
 def encrypt_decrypt_txt_file(self, filepath):
-    pass #Basically loop every character and if .upper() is between 64 and 64+25, decrypt, otherwise input the same character (like spaces)
+    pass #Basically loop every character and if .upper() is between 65 and 65+25, decrypt, otherwise input the same character (like spaces)
 '''
 #on positions: Also, change 26 by the notches
 self.alpha.position+=self.alpha.jump
@@ -36,3 +36,10 @@ if self.alpha.position % 26==0:
 #    pickle.dump(some_obj, f)
 #ord(" ")=32
 #randomE is not implemented yet
+
+###
+#Include numbers: before incrypt you add 65 to the number, after you subsgtract, and you treat corresponding caracter as the number, transofrming all the time
+#Problems?
+
+
+#### Implement a random distribution with min 3 and max 100 for rotors.

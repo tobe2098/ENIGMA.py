@@ -98,14 +98,14 @@ class REFLECTOR:
         random.seed(seed)
         #Set name
         ### !!! Make sure letters do not connect to themselves!!!
-        name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 10)]
-        name_list[0:6]=[chr(num+64) for num in name_list[0:6]]
+        name_list=[random.sample(range(0, 26), 1)[0] for i in range(0, 10)]
+        name_list[0:6]=[chr(num+65) for num in name_list[0:6]]
         name_list[6:10]=[str(i%10) for i in name_list[6:10]]
         string1=""
         new_name=string1.join(name_list)
         self.change_name(new_name)
         #Now set the connections
-        num_list=[i for i in range(1,27)]
+        num_list=[i for i in range(0,26)]
         for i in range(13):
             indexA=random.randint(0,len(num_list)-1)
             letterA=num_list.pop(indexA)

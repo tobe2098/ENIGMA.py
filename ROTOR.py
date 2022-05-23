@@ -7,7 +7,7 @@ class ROTOR:
     def __init__(self):
         #Note: variables can be defined on the fly
         self.name="name" #randomly generating a name is going to happen I guess
-        self.notch=26 #self.notch can be a list. When does the next rotor move relative to the notch?
+        self.notch=25 #self.notch can be a list. When does the next rotor move relative to the notch?
         self.position=1 #Can go from 1 to 26
         self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         #Jump implementation will be done last. It can get complicated.
@@ -25,11 +25,11 @@ class ROTOR:
         print(">Now rotor jumps ", jump, " spaces for every input (not yet implemented in the machine)")
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
     def define_position(self, position):
-        self.position=(ord(position) - 64)
-        print(">Now rotor is in letter position {}".format(chr((self.position +64))))
+        self.position=(ord(position) - 65)
+        print(">Now rotor is in letter position {}".format(chr((self.position +65))))
     def define_notches(self, position):
         position=split_into_list(position)
-        notch_list=[ord(notch)-64 for notch in position]
+        notch_list=[ord(notch)-65 for notch in position]
         self.notch=notch_list
         print(">Now the rotor has {} notches in positions {}".format(len(notch_list), position))
     def configure_numeric_dicts(self):
@@ -38,8 +38,8 @@ class ROTOR:
         #Second, reverse dict
         self.exit_num_dict=transform_single_dict(self.exit_dict)
         #Original code:
-        #new_values=[ord(i)-64 for i in self.entry_dict.values()]
-        #new_keys=[ord(i)-64 for i in self.entry_dict.keys()]
+        #new_values=[ord(i)-65 for i in self.entry_dict.values()]
+        #new_keys=[ord(i)-65 for i in self.entry_dict.keys()]
         #self.entry_num_dict=dict(zip(new_keys, new_values))
         #sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
         #self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
@@ -155,9 +155,9 @@ class ROTOR:
         filehandler.close()
         return #End
     def show_rotor_setup(self): #Everything from the rotor, it will be launched from the machine though
-        print("Rotor letter position :", chr(self.position+64))
+        print("Rotor letter position :", chr(self.position+65))
         print("Rotor letter jumps:", self.jump)
-        notchlist=[chr(i+64) for i in self.notch]
+        notchlist=[chr(i+65) for i in self.notch]
         print("Rotor notches:", notchlist)
         print("Forward connections in the rotor:", self.entry_dict)
         print("Backward connections in the rotor:", self.exit_dict)
@@ -171,21 +171,21 @@ class ROTOR:
         #Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed) 
         #Name generation
-        name_list=[random.sample(range(1, 27), 1)[0] for i in range(0, 13)]
-        name_list[0:9]=[chr(num+64) for num in name_list[0:9]]
+        name_list=[random.sample(range(0, 26), 1)[0] for i in range(0, 13)]
+        name_list[0:9]=[chr(num+65) for num in name_list[0:9]]
         name_list[9:13]=[str(i%10) for i in name_list[9:13]]
         string1=""
         name=string1.join(name_list)
         self.change_name(name)
         #Position
-        self.define_position(chr(random.randint(1,26)+64))      #Check in the future whether this setups are correct
+        self.define_position(chr(random.randint(1,26)+65))      #Check in the future whether this setups are correct
         #Notches
-        notch_list = [chr(i+64) for i in set(random.sample(range(1, 27), random.randint(1,5)))]
+        notch_list = [chr(i+65) for i in set(random.sample(range(0, 26), random.randint(1,5)))]
         self.define_notches(notch_list)
         self.define_rotor_jump(random.randint(1,26))
         #Forward dictionary
         num_list=[i for i in range(1,27)]
-        self.entry_num_dict=dict(zip(num_list, random.sample(range(1, 27), 26)))
+        self.entry_num_dict=dict(zip(num_list, random.sample(range(0, 26), 26)))
         sorted_dict=dict(sorted(self.entry_num_dict.items(), key=lambda x:x[1]))
         self.exit_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
         print(">Rotor connections established")

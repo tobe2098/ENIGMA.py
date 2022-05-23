@@ -6,7 +6,7 @@ def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does e
     if not seed:
         print("Problem in gen_rnd_26list()'s call")
     random.seed(seed) 
-    poplist=[i+1 for i in range (26)]
+    poplist=[i+1 for i in range (0,26)]
     endlist=[]
     for i in range(len(poplist)):
         rm=random.randint(1, len(poplist))
@@ -33,12 +33,12 @@ def simplify_board_dict(board_dict):
 def transform_single_dict(dictio):
     #Code of this function replaces the original functions in ROTOR.py, if there are errors check them here
     if 1 in dictio.values(): 
-        new_values=[chr(i+64) for i in dictio.values()]
-        new_keys=[chr(i+64) for i in dictio.keys()]
+        new_values=[chr(i+65) for i in dictio.values()]
+        new_keys=[chr(i+65) for i in dictio.keys()]
         convdict=dict(zip(new_keys, new_values))
         return convdict
     elif "A" in dictio.values():
-        new_values=[ord(i)-64 for i in dictio.values()]
-        new_keys=[ord(i)-64 for i in dictio.keys()]
+        new_values=[ord(i)-65 for i in dictio.values()]
+        new_keys=[ord(i)-65 for i in dictio.keys()]
         convdict=dict(zip(new_keys, new_values))
         return convdict
