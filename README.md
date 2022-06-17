@@ -6,6 +6,16 @@ Completely developed, editing options are maximized, trying to improve user inte
 For now there are options for 3 and 4 rotors, more could come in the future.
 Version: 1.0.1
 
+## Dependency list
+-os
+-sys
+-pickle
+-random
+-pandas
+-platform
+-copy
+-tkinter
+
 ## Instructions for use:
 -Obtain a brand new ENIGMA machine with just some simple lines! Ready for use in one go!
 >Simply run EXEC.py and follow the recommendations.
