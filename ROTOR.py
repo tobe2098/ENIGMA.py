@@ -1,4 +1,3 @@
-#from turtle import position #???????????? wtf
 import random
 from ENIGMA_py.ENutils import *
 import pickle
