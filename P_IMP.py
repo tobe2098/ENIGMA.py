@@ -41,6 +41,9 @@ if self.alpha.position % 26==0:
 #Include numbers: before incrypt you add 65 to the number, after you subsgtract, and you treat corresponding caracter as the number, transofrming all the time
 #Problems?
 
+################################## IMPORTANT POSSIBILITY IS TO MAKE THE REFLECTOR HAVE TWO LETTERS (OR ONE, SEE BELOW) THAT CONNECT TO THEMSELVES TO ALLOW FOR 
+A SELF-LETTER ENCRYPTION, BYPASSING ENIGMA'S FIRST FLAW.' ALTERNATIVELY, YOU CAN ADD A SINGLE LETTER 'VOID' THAT BYPASSES THAT ROTOR OR REFLECTOR, 
+HAVING THE SAME EFFECT WITHOUT BREAKING THE MACHINE. THIS LAST OPTION DOES NOT WORK IN ELECTROMECHANICAL VERSION UNLESS EVERY ELECTRODE HAS TWO PATHWAYS, ONE FW ONE BW.
 
 # #### Implement a random distribution with min 3 and max 100 for rotors.
 # Creating a Python library involves organizing your code into a package or module that can be easily distributed and used by others. Here's a step-by-step guide to creating a Python library:
