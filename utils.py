@@ -59,7 +59,7 @@ def transform_single_dict(dictionary):
     dictionary (dict): dictionary to swap
     '''
 
-    return {EQUIVALENCE_DICT[key]: EQUIVALENCE_DICT[value] for key, value in dictionary}
+    return {EQUIVALENCE_DICT[key]: EQUIVALENCE_DICT[value] for key, value in dictionary.items()}
 
 
 def transform_single_dict_dash(dictionary):
@@ -68,4 +68,4 @@ def transform_single_dict_dash(dictionary):
 
     dictionary (dict): dictionary to swap
     '''
-    return {EQUIVALENCE_DICT_dash[key]: EQUIVALENCE_DICT_dash[value] for key, value in dictionary}
+    return {EQUIVALENCE_DICT_dash[key]: EQUIVALENCE_DICT_dash[value] for key, value in dictionary.items()}

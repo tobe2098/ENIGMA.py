@@ -6,12 +6,11 @@ import copy
 from .utils import CHARACTERS, CHARACTERS_dash, transform_single_dict, transform_single_dict_dash, simplify_board_dict
 
 
-class Reflector:
+class Reflector():
     def __init__(self):
         self._name = "name"
         self._characters_in_use = copy.copy(CHARACTERS)
-        self._reflector_dict = {
-            letter: letter for letter in self.characters_in_use}
+        self._reflector_dict = dict(zip(self._characters_in_use, self._characters_in_use))
         self._reflector_num_dict = {}
         self._update_dicts()
 
@@ -83,8 +82,8 @@ class Reflector:
         if len(remaining_letters)==1:
             reflector_dict[remaining_letters[0]]=remaining_letters[0]
         self.show_config()
-        self.reflector_dict = reflector_dict
-        self.update_dicts()
+        self.reflector_dict = copy.copy(reflector_dict)
+        self._update_dicts()
         self.export_reflector()
         print(">Finished")
 
@@ -136,16 +135,18 @@ class Reflector:
         self.change_name(new_name)
         # Now set the connections
         # num_list = [i for i in range(0, 26)]
-        letter_list1 = copy.copy(self.characters_in_use)
+        letter_list1 = copy.copy(self._characters_in_use)
         random.shuffle(letter_list1)
-        letter_list2 = copy.copy(self.characters_in_use)
-        random.shuffle(letter_list2)
-        while (len(letter_list1) > 0):
+        # letter_list2 = copy.copy(self.characters_in_use)
+        # random.shuffle(letter_list2)
+        while (len(letter_list1) > 1):
             letterA = letter_list1.pop()
-            letterB = letter_list2.pop()
-            self.reflector_num_dict[letterA] = letterB
-            self.reflector_num_dict[letterB] = letterA
-        self.update_dicts()
+            letterB = letter_list1.pop()
+            self.reflector_dict[letterA] = letterB
+            self.reflector_dict[letterB] = letterA
+        if len(letter_list1)==1:
+            self.reflector_dict[letter_list1[0]]=letter_list1[0]
+        self._update_dicts()
         # Show final configuration
         if showConfig:
             self.show_config()
@@ -157,6 +158,7 @@ class ReflectorDash(Reflector):
     def __init__(self):
         super().__init__()
         self.characters_in_use = CHARACTERS_dash
+        self._reflector_dict = dict(zip(self._characters_in_use, self._characters_in_use))
         # self.reflector_dict={letter:letter for letter in CHARACTERS_dash}
 
     def _update_dicts(self, letter_to_num=True):

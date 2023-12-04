@@ -9,16 +9,13 @@ import os
 from .rotors import *
 from .utils import *
 from .reflectors import *
-class ENIGMAmachine:
+from .plugboards import *
+class ENIGMAmachine():
     def __init__(self, name="name", seed=None):
         self.name=name
         #Include seed storages?
         #Write a default config
-        self.rotor1=Rotor()
-        self.rotor2=Rotor()
-        self.rotor3=Rotor()
-        self.rotor4=None
-        self.n_rotors=3
+        self.rotors=[Rotor() for _ in range(3)]
         self.reflector=Reflector()
         if not seed:
             #Number has to be big, but how
@@ -27,9 +24,9 @@ class ENIGMAmachine:
         else:
             self.seed=seed
         #For now, default is nothingness
-        self.board_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
-        self.board_num_dict=transform_single_dict(self.board_dict)
-        print(">>>WARNING:Machine was just created, it is not ready for use")
+        self.plugboard=PlugBoard()
+        # self.board_num_dict=transform_single_dict(self.board_dict)
+        print(">>>WARNING:Machine was just created, but it is NOT recommended for use until further configuration is done")
 #Basic functions
     def name_seed(self):
         print(self.__repr__())
@@ -45,21 +42,22 @@ class ENIGMAmachine:
 #Showing configs
     def show_rotor_config(self):
         print("Start of rotor config")
-        print("First rotor:", self.rotor1.name)
+        print("First rotor:", self.rotor1._name)
         self.rotor1.show_config()
-        print("Second rotor:", self.rotor2.name)
+        print("Second rotor:", self.rotor2._name)
         self.rotor2.show_config()
-        print("Third rotor:", self.rotor3.name)
+        print("Third rotor:", self.rotor3._name)
         self.rotor3.show_config()
         if self.rotor4:
-            print("Fourth rotor:", self.rotor4.name)
+            print("Fourth rotor:", self.rotor4._name)
             self.rotor4.show_config()
         return "End of rotor config"
     def show_refl_config(self):
         self.reflector.show_config()
-        return 
+
     def show_config(self):
-        print("Board config:\n", simplify_board_dict(self.board_dict))
+        print("Board config:")
+        self.plugboard.show_config()
         print("Rotor configs:")
         self.show_rotor_config()
         print("Reflector config:")
@@ -68,8 +66,8 @@ class ENIGMAmachine:
         config=pd.DataFrame()
         if self.rotor4:
             config["Rotor position"]=[1,2,3,4]
-            config["Rotors"]=[self.rotor1.name,self.rotor2.name,self.rotor3.name,self.rotor4.name]
-            config["Letter position"]=[self.rotor1.position,self.rotor2.position,self.rotor3.position,self.rotor4.position]
+            config["Rotors"]=[self.rotor1._name,self.rotor2._name,self.rotor3._name,self.rotor4._name]
+            config["Letter position"]=[self.rotor1._position,self.rotor2._position,self.rotor3._position,self.rotor4._position]
             notchlist1=[chr(i+65) for i in self.rotor1.notch]
             notchlist2=[chr(i+65) for i in self.rotor2.notch]
             notchlist3=[chr(i+65) for i in self.rotor3.notch]
@@ -81,8 +79,8 @@ class ENIGMAmachine:
             print("Machine name and seed:", self.name_seed())
         else:
             config["Rotor position"]=[1,2,3]
-            config["Rotors"]=[self.rotor1.name,self.rotor2.name,self.rotor3.name]
-            config["Letter position"]=[self.rotor1.position,self.rotor2.position,self.rotor3.position]
+            config["Rotors"]=[self.rotor1._name,self.rotor2._name,self.rotor3._name]
+            config["Letter position"]=[self.rotor1._position,self.rotor2._position,self.rotor3._position]
             notchlist1=[chr(i+65) for i in self.rotor1.notch]
             notchlist2=[chr(i+65) for i in self.rotor2.notch]
             notchlist3=[chr(i+65) for i in self.rotor3.notch]
@@ -105,7 +103,7 @@ class ENIGMAmachine:
             if choose=="y":
                 self.tune_loaded_rotors()
                 self.rotor_order_change()
-                self.change_rletter_position()
+                self.change_rotor_letter_position()
                 self.change_rotor_notches()
                 return
             elif choose=="n":
@@ -145,49 +143,6 @@ class ENIGMAmachine:
     def manual_refl_setup(self):
         self.reflector.configure()
         return #End
-    def manual_board_dict(self):
-        #Configuration of the cable board
-        #PENDING: Make it stop after 26 letters have been assigned
-        if self.board_dict:
-            print("Current board setup is:", simplify_board_dict(self.board_dict))
-            accbool=input("Input N if you do NOT want to change the board setup:")
-            if accbool=="N":
-                return
-        i=0
-        seen_letters=[]
-        board_dict={letter:letter for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"}
-        all_letters=split_into_list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        while i==0:
-            print("If you want to stop configurating the board, press Enter")
-            configpair=input("Enter pair of letters for board configuration:").upper()
-            if configpair.isalpha() or not configpair:
-                pass
-            else:
-                print("Error: Input 2 letters please")
-                continue
-            configpair=split_into_list(configpair)
-            if len(list(set(all_letters)-set(seen_letters)))==0:
-                break
-            if len(configpair)==2:
-                pass
-            elif len(configpair)==0:
-                break
-            else:
-                print("Error: Input 2 letters please")
-                continue
-            if any(map(lambda v: v in configpair, seen_letters)):
-                print("Already plugged")
-                continue
-            else:
-                seen_letters.append(configpair[0])
-                seen_letters.append(configpair[1])
-                board_dict[configpair[0]]=configpair[1]
-                board_dict[configpair[1]]=configpair[0]
-            print("Current config:\n", simplify_board_dict(board_dict))
-            print("Not connected letters:\n", list(set(all_letters)-set(seen_letters)))
-        self.board_dict=board_dict
-        self.board_num_dict=transform_single_dict(self.board_dict)
-        print("Finished")
     def manual_complete_config(self):
         #Board
         print(">>>Configurating the connection board:")
@@ -240,7 +195,7 @@ class ENIGMAmachine:
         filehandler.close()
         return self #End
 #Intern setup functions
-    def change_rletter_position(self):
+    def change_rotor_letter_position(self):
         pos1=input("Letter position for rotor 1:")
         pos2=input("Letter position for rotor 2:")
         pos3=input("Letter position for rotor 3:")
@@ -254,11 +209,11 @@ class ENIGMAmachine:
     def rotor_order_change(self):
         i=0
         while i==0:
-            print("Rotor 1:", self.rotor1.name)
-            print("Rotor 2:", self.rotor2.name)
-            print("Rotor 3:", self.rotor3.name)
+            print("Rotor 1:", self.rotor1._name)
+            print("Rotor 2:", self.rotor2._name)
+            print("Rotor 3:", self.rotor3._name)
             if self.rotor4:
-                print("Rotor 4:", self.rotor4.name)
+                print("Rotor 4:", self.rotor4._name)
             selec=input("Select rotor to put in a placeholder to get swapped (0 to exit):")
             selec2=input("Select rotor to put placeholder's order position and complete swap:")
             if selec==0:
@@ -362,26 +317,7 @@ class ENIGMAmachine:
             self.rotor4.random_setup(self.seed-(jump*2), randomE)
             self.n_rotors=4
         return ">>>Rotors and reflector set up and saved."
-    def randomize_board_dict(self, seed):
-        random.seed(seed)
-        #Now set the connections
-        ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
-        num_list=[i for i in range(0,26)]
-        cable_num=random.randint(0,13)
-        for i in range(cable_num):
-            indexA=random.randint(0,len(num_list)-1)
-            letterA=num_list.pop(indexA)
-            if len(num_list)==1:
-                indexB=0
-            else:
-                indexB=random.randint(0,len(num_list)-1)
-            letterB=num_list.pop(indexB)
-            self.board_num_dict[letterA]=letterB
-            self.board_num_dict[letterB]=letterA
-        self.board_dict=transform_single_dict(self.board_num_dict)
-        #Show final configuration
-        #print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-        return ">>>Board setup is generated"
+
     def random_machine(self):
         print(">>>Randomly generating your ENIGMA machine:")
         rotor4=input(">>>Do you want an extra rotor? [y/n]:")
@@ -411,44 +347,44 @@ class ENIGMAmachine:
             machine=cp.deepcopy(self)
             input_var=input('>>>Write Text (no spaces): ').upper()
             output_message_list=[]
-            print(machine.rotor1.position)
+            print(machine.rotor1._position)
             for char in input_var:
                 #First, position changes in rotors.
-                if machine.rotor1.position in machine.rotor1.notch:
-                    if machine.rotor2.position in machine.rotor2.notch:
-                        if (machine.rotor3.position in machine.rotor3.notch) and machine.rotor4:
-                            machine.rotor4.position=(machine.rotor4.position+1)%26
-                        machine.rotor3.position=(machine.rotor3.position+1)%26
-                    machine.rotor2.position=(machine.rotor2.position+1)%26
-                machine.rotor1.position=(machine.rotor1.position+1)%26
+                if machine.rotor1._position in machine.rotor1.notch:
+                    if machine.rotor2._position in machine.rotor2.notch:
+                        if (machine.rotor3._position in machine.rotor3.notch) and machine.rotor4:
+                            machine.rotor4._position=(machine.rotor4._position+1)%26
+                        machine.rotor3._position=(machine.rotor3._position+1)%26
+                    machine.rotor2._position=(machine.rotor2._position+1)%26
+                machine.rotor1._position=(machine.rotor1._position+1)%26
                 #Now we can perform the current circuit in the ENIGMA machine
                 number_in=(ord(char) - 65) #Raw input converted to numerical.
                 b_output=machine.board_num_dict[number_in] #Board output 1 
-                shifted_b_output=(b_output+machine.rotor1.position)%26
+                shifted_b_output=(b_output+machine.rotor1._position)%26
                 r1_output_f=machine.rotor1.entry_num_dict[shifted_b_output] #Rotor1 output forward
-                shifted_r1_output_f=(r1_output_f+machine.rotor2.position-machine.rotor1.position)%26
+                shifted_r1_output_f=(r1_output_f+machine.rotor2._position-machine.rotor1._position)%26
                 r2_output_f=machine.rotor2.entry_num_dict[shifted_r1_output_f] #Rotor2 output forward
-                shifted_r2_output_f=(r2_output_f+machine.rotor3.position-machine.rotor2.position)%26
+                shifted_r2_output_f=(r2_output_f+machine.rotor3._position-machine.rotor2._position)%26
                 r3_output_f=machine.rotor3.entry_num_dict[shifted_r2_output_f] #Rotor3 output forward
                 if machine.rotor4:
-                    shifted_r3_output_f=(r3_output_f-machine.rotor3.position+machine.rotor4.position)%26
+                    shifted_r3_output_f=(r3_output_f-machine.rotor3._position+machine.rotor4._position)%26
                     r4_output_f=machine.rotor4.entry_num_dict[shifted_r3_output_f] #Rotor4 output forward
-                    shifted_r4_output_f=(r4_output_f-machine.rotor4.position)%26
+                    shifted_r4_output_f=(r4_output_f-machine.rotor4._position)%26
                     reflector_output=machine.reflector.refl_num_dict[shifted_r4_output_f] #Reflector output
-                    shifted_reflector_output=(reflector_output+machine.rotor4.position)%26
+                    shifted_reflector_output=(reflector_output+machine.rotor4._position)%26
                     r4_output_r=machine.rotor4.entry_num_dict[shifted_reflector_output] #Rotor4 output reverse
-                    shifted_r4_output_r=(r4_output_r-machine.rotor4.position+machine.rotor3.position)%26
+                    shifted_r4_output_r=(r4_output_r-machine.rotor4._position+machine.rotor3._position)%26
                     r3_output_r=machine.rotor3.exit_num_dict[shifted_r4_output_r] #Rotor3 output reverse
                 else:
-                    shifted_r3_output_f=(r3_output_f-machine.rotor3.position)%26
+                    shifted_r3_output_f=(r3_output_f-machine.rotor3._position)%26
                     reflector_output=machine.reflector.refl_num_dict[shifted_r3_output_f] #Reflector output
-                    shifted_reflector_output=(reflector_output+machine.rotor3.position)%26
+                    shifted_reflector_output=(reflector_output+machine.rotor3._position)%26
                     r3_output_r=machine.rotor3.exit_num_dict[shifted_reflector_output] #Rotor3 output reverse
-                shifted_r3_output_r=(r3_output_r-machine.rotor3.position+machine.rotor2.position)%26
+                shifted_r3_output_r=(r3_output_r-machine.rotor3._position+machine.rotor2._position)%26
                 r2_output_r=machine.rotor2.exit_num_dict[shifted_r3_output_r] #Rotor2 output reverse
-                shifted_r2_output_r=(r2_output_r-machine.rotor2.position+machine.rotor1.position)%26
+                shifted_r2_output_r=(r2_output_r-machine.rotor2._position+machine.rotor1._position)%26
                 r1_output_r=machine.rotor1.exit_num_dict[shifted_r2_output_r] #Rotor1 output reverse
-                shifted_r1_output_r=(r1_output_r-machine.rotor1.position)%26
+                shifted_r1_output_r=(r1_output_r-machine.rotor1._position)%26
                 b_output_r=machine.board_num_dict[shifted_r1_output_r] #Board output
                 letter_out=chr(b_output_r+65)
                 output_message_list.append(letter_out)

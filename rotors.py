@@ -5,46 +5,53 @@ import copy
 from .utils import transform_single_dict, transform_single_dict_dash, CHARACTERS, CHARACTERS_dash, simplify_board_dict, EQUIVALENCE_DICT, EQUIVALENCE_DICT_dash
 
 
-class Rotor:
-    def __init__(self):
+class Rotor():
+    def __init__(self, characters=CHARACTERS, conversion=EQUIVALENCE_DICT):
         #Note: variables can be defined on the fly
 
-        self.name="name" #randomly generating a name is going to happen I guess
-        self.notches=[25] #self.notch can be a list. When does the next rotor move relative to the notch?
-        self.position=1 #Can go from 1 to 26
+        self._name="name" #randomly generating a name is going to happen I guess
+        self._notches=[25] #self.notch can be a list. When does the next rotor move relative to the notch?
+        self._position=1 #Can go from 1 to 26
         # self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
-        self.characters_in_use=CHARACTERS
-        self.conversion_in_use=EQUIVALENCE_DICT
-        #Attributes defined by functions:
-        ##self.entry_dict
-        ##self.exit_dict
-        ##self.entry_num_dict
-        ##self.exit_num_dict
+        self._characters_in_use=copy.copy(characters)
+        self._conversion_in_use=copy.copy(conversion)
+
+        self._forward_dict=dict(zip(self._characters_in_use, self._characters_in_use))
+
+        self._backward_dict=dict(zip(self._characters_in_use, self._characters_in_use))
+
+        self._update_dicts()
         print(">>>Rotor has been created")
 
+
     def notch_check_move_forward(self):
-        if self.position-1 in self.notches:
-          self.position+=1
-          self.position %=26
+        if self._position in self._notches:
+          self._position+=1
+          self._position %=26
           return True
         else:
-          self.position+=1
-          self.position %=26
+          self._position+=1
+          self._position %=26
           return False
         
+    def notch_check_move_backwards(self):
+        self._position-=1
+        self._position %=26
+        return self._position in self._notches
+        
     def forward_pass(self, input_letter_number, prev_rotor_shift=0):
-        input_letter_number+=self.position-prev_rotor_shift
-        input_letter_number%=len(self.characters_in_use)
-        return self.forward_num_dict[input_letter_number]
+        input_letter_number+=self._position-prev_rotor_shift
+        input_letter_number%=len(self._characters_in_use)
+        return self._forward_num_dict[input_letter_number]
 
     def backward_pass(self, input_letter_number, prev_rotor_shift=0):
-        input_letter_number+=self.position-prev_rotor_shift
-        input_letter_number%=len(self.characters_in_use)
-        return self.backward_num_dict[input_letter_number]
+        input_letter_number+=self._position-prev_rotor_shift
+        input_letter_number%=len(self._characters_in_use)
+        return self._backward_num_dict[input_letter_number]
     
     def _change_name(self, name):
-        self.name=name
+        self._name=name
         print(">Now name of the rotor is:", name)
 
     def _define_rotor_jump(self, jump):
@@ -53,37 +60,37 @@ class Rotor:
     #Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
 
     def _define_position(self, position):
-        self.position=self.conversion_in_use[position]
-        print(">Now rotor is in letter position {}".format(self.conversion_in_use[self.position]))
+        self._position=self._conversion_in_use[position]
+        print(">Now rotor is in letter position {}".format(self._conversion_in_use[self._position]))
 
     def _define_notches(self, position):
         position=[i for i in position]
-        notch_list=[self.conversion_in_use[notch] for notch in position]
-        self.notches=notch_list
+        notch_list=[self._conversion_in_use[notch] for notch in position]
+        self._notches=notch_list
         print(">Now the rotor has {} notches in positions {}".format(len(notch_list), position))
 
     def _update_dicts(self, letter_to_num=True):
         if letter_to_num:
-            self.forward_num_dict=transform_single_dict(self.entry_dict)
-            self.backward_num_dict=transform_single_dict(self.exit_dict)
+            self._forward_num_dict=transform_single_dict(self._forward_dict)
+            self._backward_num_dict=transform_single_dict(self._backward_dict)
         else:
-            self.entry_dict=transform_single_dict(self.forward_num_dict)
-            self.exit_dict=transform_single_dict(self.backward_num_dict)
+            self._forward_dict=transform_single_dict(self._forward_num_dict)
+            self._backward_dict=transform_single_dict(self._backward_num_dict)
 
     def customize_connections(self):
         entry_seen_letters=[]
         exit_seen_letters=[]
-        if self.entry_dict and self.exit_dict:
+        if self._forward_dict and self._backward_dict:
             print(">Current setup is:")
-            print(">Forward connections in the rotor:", self.entry_dict)
-            print(">Backward connections in the rotor:", self.exit_dict)
+            print(">Forward connections in the rotor:", self._forward_dict)
+            print(">Backward connections in the rotor:", self._backward_dict)
             accbool=input(">>>Input N if you do not want to change the configuration:")
             if accbool=="N":
                 return
-        entry_rotor_dict=dict(zip(self.characters_in_use, self.characters_in_use))
-        exit_rotor_dict=dict(zip(self.characters_in_use, self.characters_in_use))
-        entry_list=copy.copy(self.characters_in_use)
-        exit_list=copy.copy(self.characters_in_use)
+        entry_rotor_dict=dict(zip(self._characters_in_use, self._characters_in_use))
+        exit_rotor_dict=dict(zip(self._characters_in_use, self._characters_in_use))
+        entry_list=copy.copy(self._characters_in_use)
+        exit_list=copy.copy(self._characters_in_use)
         while True:
             print(">If you want to stop configurating the rotor, press Enter")
             configpair=input(">>>Enter pair of letters for board configuration:").upper()
@@ -117,8 +124,8 @@ class Rotor:
             print(">Current exit config:\n", simplify_board_dict(exit_rotor_dict))
             print(">Not connected entry letters:\n", list(set(entry_list)-set(entry_seen_letters)))
             print(">Not connected exit letters:\n", list(set(exit_list)-set(exit_seen_letters)))
-        self.entry_dict=entry_rotor_dict
-        self.exit_dict=exit_rotor_dict
+        self._forward_dict=entry_rotor_dict
+        self._backward_dict=exit_rotor_dict
         self._update_dicts()
         print(">Finished")
 
@@ -135,9 +142,9 @@ class Rotor:
             self._change_name(name)
         # if jump<26:
         #     self.define_rotor_jump(jump)
-        if position in self.characters_in_use:
+        if position in self._characters_in_use:
             self._define_position(position)
-        if set(notch).issubset(self.characters_in_use): #DO this every time you want to check if set a is a subset of set b
+        if set(notch).issubset(self._characters_in_use): #DO this every time you want to check if set a is a subset of set b
             self._define_notches(notch)
         if boolean=="y":
             self.customize_connections()
@@ -145,7 +152,7 @@ class Rotor:
         print("You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor() \n*Careful while defining notches")
 
     def export_rotor(self):
-        if self.name=="name":
+        if self._name=="name":
             print(">Please assign a new name to the rotor with the function self.configure() or self.change_name()")
         current_path=os.path.dirname(__file__)
         new_folder = "SAVED_ROTORS"
@@ -153,9 +160,9 @@ class Rotor:
         if not os.path.exists(path):
             os.mkdir(path)
             print(">Directory '% s' created" % new_folder) 
-        save_file = open(r'{}\\{}.rotor'.format(path,self.name), 'wb') 
+        save_file = open(r'{}\\{}.rotor'.format(path,self._name), 'wb') 
         pickle.dump(self, save_file)
-        print(">{} has been saved into {}.rotor in {}".format(self.name, self.name, path))
+        print(">{} has been saved into {}.rotor in {}".format(self._name, self._name, path))
         save_file.close()
 
     def import_rotor(self):
@@ -176,13 +183,13 @@ class Rotor:
         filehandler.close()
 
     def show_config(self): #Everything from the rotor, it will be launched from the machine though
-        print("Rotor letter position :", chr(self.position+65))
+        print("Rotor letter position :", chr(self._position+65))
         print("Rotor letter jumps:", self.jump)
-        notchlist=[self.conversion_in_use[i] for i in self.notches]
+        notchlist=[self._conversion_in_use[i] for i in self._notches]
         print("Rotor notches:", notchlist)
-        print("Forward connections in the rotor:", self.entry_dict)
-        print("Backward connections in the rotor:", self.exit_dict)
-        print("Rotor name:", self.name)
+        print("Forward connections in the rotor:", self._forward_dict)
+        print("Backward connections in the rotor:", self._backward_dict)
+        print("Rotor name:", self._name)
 
     def random_setup(self, seed=None, showConfig=True): 
         #Randomly generate a rotor and store it in a folder
@@ -192,23 +199,23 @@ class Rotor:
         #Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed) 
         #Name generation
-        name_list=[random.sample(range(0, len(self.characters_in_use)), 1)[0] for _ in range(0, 13)]
+        name_list=[random.sample(range(0, len(self._characters_in_use)), 1)[0] for _ in range(0, 13)]
         name_list[0:9]=[EQUIVALENCE_DICT[num] for num in name_list[0:9]]
         name_list[9:13]=[str(i%10) for i in name_list[9:13]]
         string1=""
         name=string1.join(name_list)
         self._change_name(name)
         #Position
-        self._define_position(self.conversion_in_use[random.randint(0,len(self.characters_in_use))])      #Check in the future whether this setups are correct
+        self._define_position(self._conversion_in_use[random.randint(0,len(self._characters_in_use))])      #Check in the future whether this setups are correct
         #Notches
-        notch_list = [self.conversion_in_use(i) for i in set(random.sample(range(0, len(self.characters_in_use)), random.randint(1,5)))]
+        notch_list = [self._conversion_in_use(i) for i in set(random.sample(range(0, len(self._characters_in_use)), random.randint(1,5)))]
         self._define_notches(notch_list)
         # self.define_rotor_jump(random.randint(1,25))
         #Forward dictionary
-        num_list=[i for i in range(0,len(self.characters_in_use))]
-        self.forward_num_dict=dict(zip(num_list, random.sample(range(0, len(self.characters_in_use)), len(self.characters_in_use))))
-        sorted_dict=dict(sorted(self.forward_num_dict.items(), key=lambda x:x[1]))
-        self.backward_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        num_list=list(range(0,len(self._characters_in_use)))
+        self._forward_num_dict=dict(zip(num_list, random.sample(range(0, len(self._characters_in_use)), len(self._characters_in_use))))
+        sorted_dict=dict(sorted(self._forward_num_dict.items(), key=lambda x:x[1]))
+        self._backward_num_dict=dict(zip(sorted_dict.values(), sorted_dict.keys()))
         print(">Rotor connections established")
         self._update_dicts(False)
         if showConfig:
@@ -220,10 +227,15 @@ class Rotor:
 
 class RotorDash(Rotor):
     def __init__(self):
-        super().__init__()
-        self.characters_in_use=CHARACTERS_dash
-        self.conversion_in_use=EQUIVALENCE_DICT_dash
+        super().__init__(CHARACTERS_dash,EQUIVALENCE_DICT_dash)
 
+    def _update_dicts(self, letter_to_num=True):
+        if letter_to_num:
+            self._forward_num_dict=transform_single_dict_dash(self._forward_dict)
+            self._backward_num_dict=transform_single_dict_dash(self._backward_dict)
+        else:
+            self._forward_dict=transform_single_dict_dash(self._forward_num_dict)
+            self._backward_dict=transform_single_dict_dash(self._backward_num_dict)
 
 def save_n_random_rotors(n, seed):
     for i in range(0,n):
