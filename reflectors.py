@@ -32,7 +32,7 @@ class Reflector:
             self.reflector_dict = transform_single_dict(
                 self.reflector_num_dict)
 
-    def _manual_reflector_config(self):
+    def configure(self):
         # Configuration of the cable reflector
         # PENDING: Make it stop after 26 letters have been assigned
         if self.reflector_dict:
@@ -82,17 +82,17 @@ class Reflector:
             print(">Not connected letters:\n", remaining_letters)
         if len(remaining_letters)==1:
             reflector_dict[remaining_letters[0]]=remaining_letters[0]
-        self._show_config()
+        self.show_config()
         self.reflector_dict = reflector_dict
         self.update_dicts()
         self.export_reflector()
         print(">Finished")
 
-    def _show_config(self):
+    def show_config(self):
         print(">Reflector name:", self.name)
         print(">Reflector config:\n", simplify_board_dict(self.reflector_dict))
 
-    def _export_reflector(self):
+    def export_reflector(self):
         if self.name == "name":
             print(">Please assign a new name to the reflector with the function self.configure() or self.change_name()")
         current_path = os.path.dirname(__file__)
@@ -106,7 +106,7 @@ class Reflector:
         print(">{} has been saved into {}.reflector in {}".format(
             self.name, self.name, path))
 
-    def import_reflector_config(self):
+    def import_reflector(self):
         current_path = os.path.dirname(__file__)
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)
@@ -124,7 +124,7 @@ class Reflector:
             path, list_of_files[reflector-1]), 'rb')
         self = pickle.load(filehandler)
 
-    def random_reflector_setup(self, seed=None, showConfig=True):
+    def random_setup(self, seed=None, showConfig=True):
         random.seed(seed)
         # Set name
         # !!! Make sure letters do not connect to themselves!!!
@@ -148,7 +148,7 @@ class Reflector:
         self.update_dicts()
         # Show final configuration
         if showConfig:
-            self._show_config()
+            self.show_config()
         # Export
         self.export_reflector()
 
@@ -159,7 +159,7 @@ class ReflectorDash(Reflector):
         self.characters_in_use = CHARACTERS_dash
         # self.reflector_dict={letter:letter for letter in CHARACTERS_dash}
 
-    def update_dicts(self, letter_to_num=True):
+    def _update_dicts(self, letter_to_num=True):
         if letter_to_num:
             self.reflector_num_dict = transform_single_dict_dash(
                 self.reflector_dict)
@@ -172,14 +172,14 @@ def save_n_random_reflectors(n, seed):
     # Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
     for i in range(0, n):
         rotor = Reflector()
-        rotor.random_reflector_setup(seed+i)
+        rotor.random_setup(seed+i)
     return ">Done"
 
 
 def tune_existing_reflector():
     reflector = Reflector()
-    reflector.import_reflector_config()
-    reflector._manual_reflector_config()
+    reflector.import_reflector()
+    reflector.configure()
     reflector.export_reflector()
     return ">Reflector was edited and saved"
     # Conda activation: conda info --envs, conda activate {}

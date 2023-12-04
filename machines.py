@@ -1,11 +1,11 @@
-from platform import machine
+# from platform import machine
 import random
 import pickle
 import pandas as pd
-import sys
+# import sys
 import os
-path=os.path.dirname(os.path.dirname((__file__)))
-sys.path.append(path)
+# path=os.path.dirname(os.path.dirname((__file__)))
+# sys.path.append(path)
 from .rotors import *
 from .utils import *
 from .reflectors import *
@@ -14,12 +14,12 @@ class ENIGMAmachine:
         self.name=name
         #Include seed storages?
         #Write a default config
-        self.rotor1=ROTOR()
-        self.rotor2=ROTOR()
-        self.rotor3=ROTOR()
+        self.rotor1=Rotor()
+        self.rotor2=Rotor()
+        self.rotor3=Rotor()
         self.rotor4=None
         self.n_rotors=3
-        self.reflector=REFLECTOR()
+        self.reflector=Reflector()
         if not seed:
             #Number has to be big, but how
             self.seed=random.randint(0, 9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999) 
@@ -39,21 +39,21 @@ class ENIGMAmachine:
         self.name=new_name
         print("The machine's name is now:", self.name )
     def add_fourth_rotor(self):
-        self.rotor4=ROTOR()
+        self.rotor4=Rotor()
         self.n_rotors=4
         print(">>>Fourth rotor added. Use self.rotor4.manual_rotor_setup() to modify or self.rotor4.random_rotor_setup()")
 #Showing configs
     def show_rotor_config(self):
         print("Start of rotor config")
         print("First rotor:", self.rotor1.name)
-        self.rotor1.show_rotor_setup()
+        self.rotor1.show_config()
         print("Second rotor:", self.rotor2.name)
-        self.rotor2.show_rotor_setup()
+        self.rotor2.show_config()
         print("Third rotor:", self.rotor3.name)
-        self.rotor3.show_rotor_setup()
+        self.rotor3.show_config()
         if self.rotor4:
             print("Fourth rotor:", self.rotor4.name)
-            self.rotor4.show_rotor_setup()
+            self.rotor4.show_config()
         return "End of rotor config"
     def show_refl_config(self):
         self.reflector.show_config()
@@ -112,14 +112,14 @@ class ENIGMAmachine:
                 choose2=input("Do you want to import pre-existing rotors that are not in the machine?[y/n]:")
                 if choose2=="y":
                     print("Choosing a rotor for first position:")
-                    self.rotor1.import_rotor_config()           
+                    self.rotor1.import_rotor()           
                     print("Choosing a rotor for second position:")
-                    self.rotor2.import_rotor_config()
+                    self.rotor2.import_rotor()
                     print("Choosing a rotor for third position:")
-                    self.rotor3.import_rotor_config()
+                    self.rotor3.import_rotor()
                     if self.rotor4:
                         print("Choosing a rotor for fourth position:")
-                        self.rotor4.import_rotor_config()
+                        self.rotor4.import_rotor()
                 elif choose2=="n":
                     print("Rotors will be generated and saved randomly, you can edit them later.")
                     self.generate_random_rotors()
@@ -143,7 +143,7 @@ class ENIGMAmachine:
                 self._all_rotor_setup()
         print(">>>Setup of rotors completed.")
     def manual_refl_setup(self):
-        self.reflector.manual_reflector_config()
+        self.reflector.configure()
         return #End
     def manual_board_dict(self):
         #Configuration of the cable board
@@ -246,10 +246,10 @@ class ENIGMAmachine:
         pos3=input("Letter position for rotor 3:")
         if self.rotor4:
             pos4=input("Letter position for rotor 4:")
-            self.rotor4.define_position(pos4)
-        self.rotor1.define_position(pos1)
-        self.rotor2.define_position(pos2)
-        self.rotor3.define_position(pos3)
+            self.rotor4._define_position(pos4)
+        self.rotor1._define_position(pos1)
+        self.rotor2._define_position(pos2)
+        self.rotor3._define_position(pos3)
         return "Rottor letter positions set"
     def rotor_order_change(self):
         i=0
@@ -322,23 +322,23 @@ class ENIGMAmachine:
         notchlist=[chr(i+65) for i in self.rotor1.notch]
         print("Rotor 1 notches:", notchlist)
         new_notches=input("Input new notches in a single string, e.g. ADF")
-        self.rotor1.define_notches(new_notches)
+        self.rotor1._define_notches(new_notches)
         #Second rotor
         notchlist=[chr(i+65) for i in self.rotor2.notch]
         print("Rotor 2 notches:", notchlist)
         new_notches=input("Input new notches in a single string, e.g. ADF")
-        self.rotor2.define_notches(new_notches)
+        self.rotor2._define_notches(new_notches)
         #Third rotor
         notchlist=[chr(i+65) for i in self.rotor3.notch]
         print("Rotor 3 notches:", notchlist)
         new_notches=input("Input new notches in a single string, e.g. ADF")
-        self.rotor3.define_notches(new_notches)
+        self.rotor3._define_notches(new_notches)
         #Fourth rotor
         if self.rotor4:
             notchlist=[chr(i+65) for i in self.rotor4.notch]
             print("Rotor 4 notches:", notchlist)
             new_notches=input("Input new notches in a single string, e.g. ADF")
-            self.rotor4.define_notches(new_notches)
+            self.rotor4._define_notches(new_notches)
     def tune_loaded_rotors(self):
         print("Configurating rotor 1 connections:")
         self.rotor1.customize_connections()
@@ -354,12 +354,12 @@ class ENIGMAmachine:
 #RNG functions
     def generate_random_rotors_and_reflector(self, jump):
         randomE=False
-        self.reflector.random_reflector_setup(self.seed*jump, randomE)
-        self.rotor1.random_rotor_setup(self.seed+jump, randomE)
-        self.rotor2.random_rotor_setup(self.seed-jump, randomE)
-        self.rotor3.random_rotor_setup(self.seed+(jump*2), randomE)
+        self.reflector.random_setup(self.seed*jump, randomE)
+        self.rotor1.random_setup(self.seed+jump, randomE)
+        self.rotor2.random_setup(self.seed-jump, randomE)
+        self.rotor3.random_setup(self.seed+(jump*2), randomE)
         if self.rotor4:
-            self.rotor4.random_rotor_setup(self.seed-(jump*2), randomE)
+            self.rotor4.random_setup(self.seed-(jump*2), randomE)
             self.n_rotors=4
         return ">>>Rotors and reflector set up and saved."
     def randomize_board_dict(self, seed):
