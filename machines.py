@@ -6,9 +6,9 @@ import sys
 import os
 path=os.path.dirname(os.path.dirname((__file__)))
 sys.path.append(path)
-from ENIGMA_py.ROTOR import *
-from ENIGMA_py.ENutils import *
-from ENIGMA_py.REFLECTOR import *
+from .rotors import *
+from .utils import *
+from .reflectors import *
 class ENIGMAmachine:
     def __init__(self, name="name", seed=None):
         self.name=name

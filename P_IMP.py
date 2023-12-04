@@ -14,9 +14,9 @@ def import_rotor(filename):
     object = pickle.load(filehandler)
 def seed_list_show():
     pass #.txt with a list of seeds and attached non-related names?
-    def import_rotor_list(self):
-        return #list_of_rotors
-        #Not finished, for ENIGMA_py.pyç
+def import_rotor_list(self):
+    return #list_of_rotors
+    #Not finished, for ENIGMA_py.pyç
 def encrypt_decrypt_txt_file(self, filepath):
     pass #Basically loop every character and if .upper() is between 65 and 65+25, decrypt, otherwise input the same character (like spaces)
 '''
