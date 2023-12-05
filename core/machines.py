@@ -303,19 +303,19 @@ class ENIGMAmachine:
         print(
             ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
         )
-        self.simple_show_config()
+        # self.simple_show_config()
         input_var = 1
         while input_var:
-            machine = cp.deepcopy(self)
+            message_length = 0
             input_var = input(
                 ">>>Write Text (only letters and - will be encrypted): "
             ).upper()
             output_message_list = []
-            print(machine.rotor1._position)
+            # print(self.rotor1._position)
             for char in input_var:
                 if char not in self._characters_in_use:
                     continue
-
+                message_length += 1
                 # First, position changes in rotors.
                 for i in range(len(self._rotors)):
                     if not self._rotors[i].notch_check_move_forward():
@@ -324,7 +324,7 @@ class ENIGMAmachine:
                 # Raw input converted to numerical.
                 forward_output = self._conversion_in_use[char]
                 # Board output 1
-                forward_output = machine._plugboard.input_output(forward_output)
+                forward_output = self._plugboard.input_output(forward_output)
                 # forward_output = self._rotors[0].forward_pass(forward_output)
                 for i in range(len(self._rotors)):
                     forward_output = self._rotors[i].forward_pass(forward_output)
@@ -338,7 +338,40 @@ class ENIGMAmachine:
             string1 = ""
             message = string1.join(output_message_list)
             print(message)
-            del machine
+            self.backspace(message_length)
+
+    def type_character(self, character):
+        if len(character) > 1:
+            raise Exception(
+                "Interfacing error, more than one character was not expected"
+            )
+        if character not in self._characters_in_use:
+            return ""
+        # First, position changes in rotors.
+        for i in range(len(self._rotors)):
+            if not self._rotors[i].notch_check_move_forward():
+                break
+        # Now we can perform the current circuit in the ENIGMA machine
+        # Raw input converted to numerical.
+        forward_output = self._conversion_in_use[character]
+        # Board output 1
+        forward_output = self._plugboard.input_output(forward_output)
+        # forward_output = self._rotors[0].forward_pass(forward_output)
+        for i in range(len(self._rotors)):
+            forward_output = self._rotors[i].forward_pass(forward_output)
+        backward_output = self._reflector.reflect(forward_output)
+        for i in range(len(self._rotors)):
+            backward_output = self._rotors[i].backward_pass(backward_output)
+        backward_output = self._plugboard.input_output(backward_output)
+
+        letter_out = self._conversion_in_use[backward_output]
+        return letter_out
+
+    def backspace(self, no_times=1):
+        for _ in range(no_times):
+            for i in range(len(self._rotors)):
+                if not self._rotors[i].backspace():
+                    break
 
 
 def load_existing_machine():
