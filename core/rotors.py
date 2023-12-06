@@ -75,9 +75,12 @@ class Rotor:
         output_number %= len(self._characters_in_use)
         return output_number
 
-    def _change_name(self, name):
-        self._name = name
-        print(">Now name of the rotor is:", name)
+    def _change_name(self, new_name):
+        import re
+
+        self._name = new_name.strip()
+        re.sub(r"\W+", "", self._name)
+        print(">Now name of the reflector is:", self._name)
 
     def _define_rotor_jump(self, jump):
         self.jump = jump
@@ -128,96 +131,6 @@ class Rotor:
             self._backward_dict = transform_single_dict(
                 self._backward_num_dict, self._conversion_in_use
             )
-
-    def customize_connections(self):
-        entry_seen_letters = []
-        exit_seen_letters = []
-        if self._forward_dict and self._backward_dict:
-            print(">Current setup is:")
-            print(">Forward connections in the rotor:", self._forward_dict)
-            print(">Backward connections in the rotor:", self._backward_dict)
-            accbool = input(
-                ">>>Input N if you do not want to change the configuration:"
-            )
-            if accbool == "N":
-                return
-        entry_rotor_dict = dict(zip(self._characters_in_use, self._characters_in_use))
-        exit_rotor_dict = dict(zip(self._characters_in_use, self._characters_in_use))
-        entry_list = copy.copy(self._characters_in_use)
-        exit_list = copy.copy(self._characters_in_use)
-        while True:
-            print(">If you want to stop configurating the rotor, press Enter")
-            configpair = input(
-                ">>>Enter pair of letters for board configuration:"
-            ).upper()
-            if configpair.isalpha() or not configpair:
-                pass
-            else:
-                print(">Error: Input 2 letters please")
-                continue
-            if len(list(set(entry_list) - set(entry_seen_letters))) == 0:
-                break
-            configpair = list(configpair)
-            if len(configpair) == 2:
-                pass
-            elif len(configpair) == 0:
-                break
-            else:
-                print(">Error: Input 2 letters please")
-                continue
-            if any(map(lambda v: v in configpair, entry_seen_letters)):
-                print(">Already plugged")
-                continue
-            if any(map(lambda v: v in configpair, exit_seen_letters)):
-                print(">Already plugged")
-                continue
-            else:
-                entry_seen_letters.append(configpair[0])
-                exit_seen_letters.append(configpair[1])
-                entry_rotor_dict[configpair[0]] = configpair[1]
-                exit_rotor_dict[configpair[1]] = configpair[0]
-            print(">Current entry config:\n", simplify_board_dict(entry_rotor_dict))
-            print(">Current exit config:\n", simplify_board_dict(exit_rotor_dict))
-            print(
-                ">Not connected entry letters:\n",
-                list(set(entry_list) - set(entry_seen_letters)),
-            )
-            print(
-                ">Not connected exit letters:\n",
-                list(set(exit_list) - set(exit_seen_letters)),
-            )
-        self._forward_dict = entry_rotor_dict
-        self._backward_dict = exit_rotor_dict
-        self._update_dicts()
-        print(">Finished")
-
-    def configure(self):
-        print("Press Enter with no input to skip configuration of the parameter.")
-        name = input("Write the rotor's name:").upper()
-        position = input("Write the rotor's position (in letters, only 1):").upper()
-        print("For your cryptosecurity, input between 1 and 5 notches, not more.")
-        notch = list(input("Write the rotor's notch position/s (in letters):").upper())
-        # jump=int(input("Write the position jump per letter (in a single number) * [0<x<26]:"))
-        while boolean not in list("y", "n"):
-            boolean = input(
-                "Do you want to configure the connections of the rotor?[y/n]"
-            )
-        if name:
-            self._change_name(name)
-        # if jump<26:
-        #     self.define_rotor_jump(jump)
-        if position in self._characters_in_use:
-            self._define_position(position)
-        if set(notch).issubset(
-            self._characters_in_use
-        ):  # DO this every time you want to check if set a is a subset of set b
-            self._define_notches(notch)
-        if boolean == "y":
-            self.customize_connections()
-        self.show_config()
-        print(
-            "You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor() \n*Careful while defining notches"
-        )
 
     def export_rotor(self):
         if self._name == "name":

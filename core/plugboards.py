@@ -33,7 +33,10 @@ class PlugBoard:
     def input_output(self, number_io):
         return self._board_num_dict[number_io]
 
-    def randomize_board_dict(self, seed):
+    def randomize_board_dict(self, seed=None):
+        if not seed:
+            print(">Please input a seed")
+            return
         random.seed(seed)
         # Now set the connections
         ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.

@@ -10,7 +10,7 @@ from ..core import *
 # sys.path.append(path)
 # from ENIGMA_py.ENIGMA import *
 
-machine = ENIGMAmachine()
+machine = Machine()
 print(
     """>RECOMMENDATIONS FOR USE:
 -No writing down the seed, no sending it over unsecured channels. Preferably agree on a modification of the seed-generated machine.
