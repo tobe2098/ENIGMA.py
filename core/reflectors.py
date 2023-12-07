@@ -31,7 +31,7 @@ class Reflector:
         re.sub(r"\W+", "", self._name)
         print(">Now name of the reflector is:", self._name)
 
-    def reflect(self, input_letter_number, prev_rotor_position):
+    def reflect(self, input_letter_number):
         # input_letter_number -= prev_rotor_position
         # input_letter_number %= len(self.characters_in_use)
         return self.reflector_num_dict[input_letter_number]
@@ -48,7 +48,9 @@ class Reflector:
 
     def show_config(self):
         print(">Reflector name:", self.name)
-        print(">Reflector config:\n", simplify_board_dict(self.reflector_dict))
+        paired_df, unpaired_list = simplify_board_dict(self.reflector_dict)
+        print(">Reflector pairs:\n", paired_df)
+        print(">Reflector unpaired:\n", unpaired_list)
 
     def export_reflector(self):
         if self.name == "name":

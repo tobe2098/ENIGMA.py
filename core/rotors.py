@@ -6,7 +6,6 @@ from .utils import (
     transform_single_dict,
     CHARACTERS,
     CHARACTERS_dash,
-    simplify_board_dict,
     EQUIVALENCE_DICT,
     EQUIVALENCE_DICT_dash,
 )
@@ -152,23 +151,6 @@ class Rotor:
         )
         save_file.close()
 
-    def import_rotor(self):
-        current_path = os.path.dirname(__file__)
-        new_folder = "SAVED_ROTORS"
-        path = os.path.join(current_path, new_folder)
-        if not os.path.exists(path):
-            print("There is no {} folder".format(path))
-            return
-        list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-        if len(list_of_files) == 0:
-            print("There are no rotors saved")
-            return
-        print("Your available rotors are: {}".format(list_of_files))
-        rotor = input("Input rotor's position in the list:")
-        filehandler = open(r"{}\\{}.rotor".format(path, list_of_files[rotor - 1]), "rb")
-        self = pickle.load(filehandler)
-        filehandler.close()
-
     def show_config(
         self,
     ):  # Everything from the rotor, it will be launched from the machine though
@@ -247,18 +229,3 @@ class RotorDash(Rotor):
     #     else:
     #         self._forward_dict = transform_single_dict_dash(self._forward_num_dict)
     #         self._backward_dict = transform_single_dict_dash(self._backward_num_dict)
-
-
-def save_n_random_rotors(n, seed):
-    for i in range(0, n):
-        rotor = Rotor()
-        rotor.random_setup(seed + i)
-    return ">Done"
-
-
-def tune_existing_rotor():
-    rotor = Rotor()
-    rotor.import_rotor()
-    rotor.configure()
-    rotor.export_rotor()
-    return ">Rotor was edited and saved"

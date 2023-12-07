@@ -39,19 +39,19 @@ def simplify_board_dict(board_dict):
     """
     seen_pairs = []
     pairs = []
+    unpaired_list = []
     # all_letters=[i for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
     for letter_a, letter_b in board_dict.items():
         if letter_a in seen_pairs or letter_b in seen_pairs:
             continue
         if letter_b == letter_a:
-            continue
+            unpaired_list.append(letter_a)
         pairs.append([letter_a, letter_b])
         seen_pairs.append(letter_a)
         seen_pairs.append(letter_b)
-    # unpaired=list(set(all_letters)-set(seen_pairs)) #Deprecated for conflict reasons
-    board_dict_simpl = pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
+    paired_df = pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
     # board_dict_simpl["Unpaired"]=unpaired
-    return board_dict_simpl
+    return paired_df, unpaired_list
 
 
 def transform_single_dict(dictionary, conversion: dict):

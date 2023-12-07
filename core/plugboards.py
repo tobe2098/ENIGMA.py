@@ -14,7 +14,9 @@ class PlugBoard:
     def __init__(self, characters=CHARACTERS, conversion=EQUIVALENCE_DICT) -> None:
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
-        self._board_dict = dict(zip(self._characters_in_use, self._characters_in_use))
+        self._board_dict = dict(
+            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+        )
         self._update_dicts()
 
     def _update_dicts(self, letter_to_num=True):
@@ -27,8 +29,16 @@ class PlugBoard:
                 self._board_num_dict, self._conversion_in_use
             )
 
+    def _reset_dictionaries(self):
+        self._board_dict = dict(
+            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+        )
+        self._update_dicts()
+
     def show_config(self):
-        print(simplify_board_dict(self.board_dict))
+        paired_df, unpaired_list = simplify_board_dict(self.board_dict)
+        print("Paired letters:", paired_df)
+        print("Unpaired letters:", unpaired_list)
 
     def input_output(self, number_io):
         return self._board_num_dict[number_io]
@@ -53,50 +63,6 @@ class PlugBoard:
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
         print(">Board setup is generated")
-
-    def manual_board_setup(self):
-        # Configuration of the cable board
-        # PENDING: Make it stop after 26 letters have been assigned
-        if len(self._board_dict) > 0:
-            print("Current board setup is:", simplify_board_dict(self.board_dict))
-            accbool = input("Input N if you do NOT want to change the board setup:")
-            if accbool == "N":
-                return
-        seen_letters = []
-        board_dict = dict(zip(self._characters_in_use, self._characters_in_use))
-        all_letters = copy.copy(self._characters_in_use)
-        while True:
-            print("If you want to stop configurating the board, press Enter")
-            configpair = input("Enter pair of letters for board configuration:").upper()
-            if configpair.isalpha() or not configpair:
-                pass
-            else:
-                print("Error: Input 2 letters please")
-                continue
-            configpair = list(configpair)
-            if (
-                len(list(set(all_letters) - set(seen_letters))) == 0
-                or len(configpair) == 0
-            ):
-                break
-            if len(configpair) != 2:
-                print("Error: Input 2 letters please")
-                continue
-            if any(map(lambda v: v in configpair, seen_letters)):
-                print("Already plugged")
-                continue
-            else:
-                seen_letters.append(configpair[0])
-                seen_letters.append(configpair[1])
-                board_dict[configpair[0]] = configpair[1]
-                board_dict[configpair[1]] = configpair[0]
-            print("Current config:\n", simplify_board_dict(board_dict))
-            print(
-                "Not connected letters:\n", list(set(all_letters) - set(seen_letters))
-            )
-        self._board_dict = board_dict
-        self._update_dicts()
-        print("Finished")
 
 
 class PlugBoardDash(PlugBoard):

@@ -28,7 +28,7 @@ class Machine:
         # Include seed storages?
         # Write a default config
         self._ref_rotor = Rotor()
-        self._change_no_rotors(3)
+        self._set_new_no_rotors(3)
         self._reflector = Reflector()
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
