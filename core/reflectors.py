@@ -19,7 +19,7 @@ class Reflector:
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
         self._reflector_dict = dict(
-            zip(self._characters_in_use, self._characters_in_use)
+            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
         )
         self._reflector_num_dict = {}
         self._update_dicts()
@@ -36,6 +36,12 @@ class Reflector:
         # input_letter_number %= len(self.characters_in_use)
         return self.reflector_num_dict[input_letter_number]
 
+    def _reset_dictionaries(self):
+        self._reflector_dict = dict(
+            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+        )
+        self._update_dicts()
+
     def _update_dicts(self, letter_to_num=True):
         if letter_to_num:
             self.reflector_num_dict = transform_single_dict(
@@ -46,7 +52,7 @@ class Reflector:
                 self.reflector_num_dict, self._conversion_in_use
             )
 
-    def show_config(self):
+    def _show_config(self):
         print(">Reflector name:", self.name)
         paired_df, unpaired_list = simplify_board_dict(self.reflector_dict)
         print(">Reflector pairs:\n", paired_df)
@@ -100,7 +106,7 @@ class Reflector:
         self._update_dicts()
         # Show final configuration
         if showConfig:
-            self.show_config()
+            self._show_config()
         # Export
         self.export_reflector()
 
