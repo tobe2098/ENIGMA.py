@@ -1,5 +1,6 @@
 # from tkinter import Menubutton
-from click import clear
+from numpy import isin
+from ...core import machines
 from ...core import plugboards
 from ...core import utils
 from .utils_m import *
@@ -12,7 +13,7 @@ def show_board_config(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref (plugboards.PlugBoard): _description_
     """
 
-    plugboard_ref.show_config()
+    plugboard_ref._show_config()
     returningToMenuNoMessage()
 
 
@@ -174,6 +175,22 @@ def reset_and_streamline_connections_by_pairs(plugboard_ref: plugboards.PlugBoar
 ## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
 
 
+def reset_and_randomize_connections(plugboard_ref: plugboards.PlugBoard):
+    """_summary_
+
+    Args:
+        plugboard_ref (plugboards.PlugBoard): _description_
+    """
+    seed = input(
+        askingInput(
+            "Introduce a positive integer as a seed to randomize the plugboard connections: "
+        )
+    )
+    if not isinstance(seed, int) and seed > 0:
+        returningToMenuMessage("Number is not a positive integer.")
+    plugboard_ref._reset_and_randomize_board_dict(seed)
+
+
 def reset_connections(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
@@ -193,20 +210,23 @@ _menu_plugboard = {
         reset_and_form_n_connections,
     ),
     "6": ("Reset and form max. connections", reset_and_streamline_connections_by_pairs),
-    "7": ("Reset connections", reset_connections),
+    "7": ("Reset and randomize connections", reset_and_randomize_connections),
+    "8": ("Reset connections", reset_connections),
     "0": ("Exit menu", exitMenu),
 }
 
 
-def main_plugboard_menu(plugboard_ref: plugboards.PlugBoard):
+def main_plugboard_menu(machine_ref: machines.Machine):
     while True:
         clearScreenSafety()
         try:
             for key in sorted(_menu_plugboard.keys()):
                 print(menuOption(key + ":" + _menu_plugboard[key][0]))
 
-            answer = str(input(askingInput("Make A Choice:")))
-            _menu_plugboard.get(answer, [None, invalidChoice])[1](plugboard_ref)
+            answer = str(input(askForMenuOption()))
+            _menu_plugboard.get(answer, [None, invalidChoice])[1](
+                machine_ref._plugboard
+            )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:

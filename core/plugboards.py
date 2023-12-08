@@ -35,19 +35,21 @@ class PlugBoard:
         )
         self._update_dicts()
 
-    def show_config(self):
+    def _show_config(self):
         paired_df, unpaired_list = simplify_board_dict(self.board_dict)
         print("Paired letters:", paired_df)
         print("Unpaired letters:", unpaired_list)
 
-    def input_output(self, number_io):
+    def _input_output(self, number_io):
         return self._board_num_dict[number_io]
 
-    def randomize_board_dict(self, seed=None):
+    def _reset_and_randomize_board_dict(self, seed=None):
         if not seed:
             print(">Please input a seed")
             return
         random.seed(seed)
+        self._reset_dictionaries()
+
         # Now set the connections
         ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
         num_list = list(range(0, len(self._characters_in_use)))
@@ -58,6 +60,7 @@ class PlugBoard:
             letterB = num_list.pop()
             self._board_num_dict[letterA] = letterB
             self._board_num_dict[letterB] = letterA
+            cable_num -= 1
 
         self._update_dicts(False)
         # Show final configuration
