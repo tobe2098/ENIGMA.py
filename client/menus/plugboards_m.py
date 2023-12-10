@@ -6,7 +6,7 @@ from ...core import utils
 from .utils_m import *
 
 
-def show_board_config(plugboard_ref: plugboards.PlugBoard):
+def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
@@ -17,13 +17,13 @@ def show_board_config(plugboard_ref: plugboards.PlugBoard):
     returningToMenuNoMessage()
 
 
-def choose_connection_to_delete(plugboard_ref: plugboards.PlugBoard):
+def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    paired_df, _ = utils.simplify_board_dict(plugboard_ref._board_dict)
+    paired_df, _ = utils.simplify_dictionary_paired_unpaired(plugboard_ref._board_dict)
 
     if paired_df.shape[0] == 0:
         returningToMenuMessage("There are no available connections.")
@@ -32,20 +32,20 @@ def choose_connection_to_delete(plugboard_ref: plugboards.PlugBoard):
     row = input(askingInput("Choose a connection to delete (by index): "))
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
-        delete_a_connection(plugboard_ref=plugboard_ref, connIndex=row)
+        _delete_a_connection_pb(plugboard_ref=plugboard_ref, connIndex=row)
         returningToMenuMessage("Connection was deleted.")
     else:
         returningToMenuMessage("Index invalid.")
 
 
-def delete_a_connection(plugboard_ref: plugboards.PlugBoard, connIndex):
+def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, connIndex):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
         connIndex (_type_): _description_
     """
-    paired_df, _ = utils.simplify_board_dict(plugboard_ref._board_dict)
+    paired_df, _ = utils.simplify_dictionary_paired_unpaired(plugboard_ref._board_dict)
     for entry in paired_df.iloc[connIndex]:
         # del plugboard_ref._board_dict[entry] #Requires testing
         plugboard_ref[entry] = entry
@@ -54,13 +54,15 @@ def delete_a_connection(plugboard_ref: plugboards.PlugBoard, connIndex):
     # del d['k2']
 
 
-def create_a_connection_single_choice(plugboard_ref: plugboards.PlugBoard):
+def _create_a_connection_single_choice_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    _, unpaired_list = utils.simplify_board_dict(plugboard_ref._board_dict)
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        plugboard_ref._board_dict
+    )
     if len(unpaired_list) < 2:
         returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
@@ -82,13 +84,15 @@ def create_a_connection_single_choice(plugboard_ref: plugboards.PlugBoard):
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
 
 
-def connect_two_letters(plugboard_ref: plugboards.PlugBoard):
+def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    _, unpaired_list = utils.simplify_board_dict(plugboard_ref._board_dict)
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        plugboard_ref._board_dict
+    )
     if len(unpaired_list) < 2:
         returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
@@ -114,14 +118,16 @@ def connect_two_letters(plugboard_ref: plugboards.PlugBoard):
     print(stringOutput("Connection formed."))
 
 
-def form_numbered_connections(plugboard_ref: plugboards.PlugBoard):
+def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    show_board_config(plugboard_ref)
-    _, unpaired_list = utils.simplify_board_dict(plugboard_ref._board_dict)
+    _show_config_pb(plugboard_ref)
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        plugboard_ref._board_dict
+    )
     connections = input(
         askingInput(
             f"How many connections do you want to create (Max. {len(unpaired_list)})? "
@@ -129,20 +135,20 @@ def form_numbered_connections(plugboard_ref: plugboards.PlugBoard):
     )
     if connections > len(unpaired_list):
         returningToMenuMessage("Number exceeds the maximum.")
-    form_n_extra_connections(plugboard_ref, connections)
+    _form_n_extra_connections_pb(plugboard_ref, connections)
 
 
-def reset_and_form_n_connections(plugboard_ref: plugboards.PlugBoard):
+def _reset_and_form_n_connections_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    reset_connections(plugboard_ref)
-    form_numbered_connections(plugboard_ref)
+    _reset_connections_pb(plugboard_ref)
+    _form_numbered_connections_pb(plugboard_ref)
 
 
-def form_n_extra_connections(plugboard_ref: plugboards.PlugBoard, connections: int):
+def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connections: int):
     """_summary_
 
     Args:
@@ -152,16 +158,16 @@ def form_n_extra_connections(plugboard_ref: plugboards.PlugBoard, connections: i
     for i in range(connections):
         clearScreenConvenience()
         print(stringOutput(f"Creating connection {i+1} of {connections}"))
-        connect_two_letters(plugboard_ref)
+        _connect_two_letters_pb(plugboard_ref)
 
 
-def reset_and_streamline_connections_by_pairs(plugboard_ref: plugboards.PlugBoard):
+def _reset_and_streamline_connections_by_pairs_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    reset_connections(plugboard_ref)
+    _reset_connections_pb(plugboard_ref)
     while True:
         accbool = input(askingInput("Do you still want to make changes?[y/n]")).lower()
         if accbool == "n":
@@ -169,13 +175,13 @@ def reset_and_streamline_connections_by_pairs(plugboard_ref: plugboards.PlugBoar
         elif accbool == "y":
             break
     while True:
-        connect_two_letters(plugboard_ref)
+        _connect_two_letters_pb(plugboard_ref)
 
 
 ## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
 
 
-def reset_and_randomize_connections(plugboard_ref: plugboards.PlugBoard):
+def _reset_and_randomize_connections_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
@@ -188,10 +194,11 @@ def reset_and_randomize_connections(plugboard_ref: plugboards.PlugBoard):
     )
     if not isinstance(seed, int) and seed > 0:
         returningToMenuMessage("Number is not a positive integer.")
-    plugboard_ref._reset_and_randomize_board_dict(seed)
+    plugboard_ref._reset_dictionaries()
+    plugboard_ref.random_setup(seed)
 
 
-def reset_connections(plugboard_ref: plugboards.PlugBoard):
+def _reset_connections_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
@@ -201,17 +208,20 @@ def reset_connections(plugboard_ref: plugboards.PlugBoard):
 
 
 _menu_plugboard = {
-    "1": ("Show current plugboard setup", show_board_config),
-    "2": ("Delete a single connection", choose_connection_to_delete),
-    "3": ("Create a single connection", create_a_connection_single_choice),
-    "4": ("Form n connections", form_numbered_connections),
+    "1": ("Show current plugboard setup", _show_config_pb),
+    "2": ("Delete a single connection", _choose_connection_to_delete_pb),
+    "3": ("Create a single connection", _create_a_connection_single_choice_pb),
+    "4": ("Form n connections", _form_numbered_connections_pb),
     "5": (
         "Reset current connections and form n connections",
-        reset_and_form_n_connections,
+        _reset_and_form_n_connections_pb,
     ),
-    "6": ("Reset and form max. connections", reset_and_streamline_connections_by_pairs),
-    "7": ("Reset and randomize connections", reset_and_randomize_connections),
-    "8": ("Reset connections", reset_connections),
+    "6": (
+        "Reset and form max. connections",
+        _reset_and_streamline_connections_by_pairs_pb,
+    ),
+    "7": ("Reset and randomize connections", _reset_and_randomize_connections_pb),
+    "8": ("Reset connections", _reset_connections_pb),
     "0": ("Exit menu", exitMenu),
 }
 

@@ -31,7 +31,7 @@ EQUIVALENCE_DICT_dash.update(dict([reversed(i) for i in EQUIVALENCE_DICT_dash.it
 #     return poplist
 
 
-def simplify_board_dict(board_dict):
+def simplify_dictionary_paired_unpaired(board_dict):
     """
     The function simplifies the board dictionary such that there is only one copy of each letter in the output
 

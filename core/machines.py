@@ -79,11 +79,11 @@ class Machine:
 
     def show_config(self):
         print(">Board config:")
-        self._plugboard.show_config()
+        self._plugboard._show_config()
         print(">Rotor configs:")
         self.show_rotor_config()
         print(">Reflector config:")
-        self._reflector.show_config()
+        self._reflector._show_config()
 
     def simple_show_config(self):
         config = pd.DataFrame()
@@ -92,7 +92,7 @@ class Machine:
         config["Letter position"] = [rotor._position for rotor in self._rotors]
         config["Notches"] = [rotor.get_notchlist() for rotor in self._rotors]
         print("Board config:")
-        self._plugboard.show_config()
+        self._plugboard._show_config()
         print("Reflector:", self._reflector.name)
         print("Reflector:", self._reflector.name)
         print("Rotor config:\n", config)
@@ -141,7 +141,7 @@ class Machine:
         jump = random.randint(1, 3000000)
         self._reflector.random_setup(self._seed * jump)
         self._random_conf_rotors(jump)
-        self._plugboard.randomize_board_dict(self._seed / jump)
+        self._plugboard.random_setup(self._seed / jump)
         # Generating the name
         name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 20)]
         name_list[0:14] = [self._conversion_in_use[num] for num in name_list[0:14]]
@@ -155,6 +155,7 @@ class Machine:
 
     # Finally, the crypt function
     def encrypt_decrypt(self):
+        CALL FOR CHECKS OF PROPER SETUP IN PLACE (AT LEAST ALL REFLECTOR CONNECTED, AT LEAST 1 ROTOR, AT LEAST ONE NOTCH PER ROTOR, SAVED MACHINE)
         # import copy as cp
         print(
             ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
@@ -180,14 +181,14 @@ class Machine:
                 # Raw input converted to numerical.
                 forward_output = self._conversion_in_use[char]
                 # Board output 1
-                forward_output = self._plugboard.input_output(forward_output)
+                forward_output = self._plugboard._input_output(forward_output)
                 # forward_output = self._rotors[0].forward_pass(forward_output)
                 for i in range(len(self._rotors)):
                     forward_output = self._rotors[i].forward_pass(forward_output)
                 backward_output = self._reflector.reflect(forward_output)
                 for i in range(len(self._rotors)):
                     backward_output = self._rotors[i].backward_pass(backward_output)
-                backward_output = self._plugboard.input_output(backward_output)
+                backward_output = self._plugboard._input_output(backward_output)
 
                 letter_out = self._conversion_in_use[backward_output]
                 output_message_list.append(letter_out)
@@ -212,14 +213,14 @@ class Machine:
         # Raw input converted to numerical.
         forward_output = self._conversion_in_use[character]
         # Board output 1
-        forward_output = self._plugboard.input_output(forward_output)
+        forward_output = self._plugboard._input_output(forward_output)
         # forward_output = self._rotors[0].forward_pass(forward_output)
         for i in range(len(self._rotors)):
             forward_output = self._rotors[i].forward_pass(forward_output)
         backward_output = self._reflector.reflect(forward_output)
         for i in range(len(self._rotors)):
             backward_output = self._rotors[i].backward_pass(backward_output)
-        backward_output = self._plugboard.input_output(backward_output)
+        backward_output = self._plugboard._input_output(backward_output)
 
         letter_out = self._conversion_in_use[backward_output]
         return letter_out

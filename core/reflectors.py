@@ -3,13 +3,15 @@ import random
 import pickle
 import os
 import copy
+
+from client.menus.utils_m import stringOutput
 from .utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
     EQUIVALENCE_DICT_dash,
     transform_single_dict,
-    simplify_board_dict,
+    simplify_dictionary_paired_unpaired,
 )
 
 
@@ -29,12 +31,11 @@ class Reflector:
 
         self._name = new_name.strip()
         re.sub(r"\W+", "", self._name)
-        print(">Now name of the reflector is:", self._name)
 
     def reflect(self, input_letter_number):
         # input_letter_number -= prev_rotor_position
         # input_letter_number %= len(self.characters_in_use)
-        return self.reflector_num_dict[input_letter_number]
+        return self._reflector_num_dict[input_letter_number]
 
     def _reset_dictionaries(self):
         self._reflector_dict = dict(
@@ -44,44 +45,32 @@ class Reflector:
 
     def _update_dicts(self, letter_to_num=True):
         if letter_to_num:
-            self.reflector_num_dict = transform_single_dict(
-                self.reflector_dict, self._conversion_in_use
+            self._reflector_num_dict = transform_single_dict(
+                self._reflector_dict, self._conversion_in_use
             )
         else:
-            self.reflector_dict = transform_single_dict(
-                self.reflector_num_dict, self._conversion_in_use
+            self._reflector_dict = transform_single_dict(
+                self._reflector_num_dict, self._conversion_in_use
             )
 
     def _show_config(self):
-        print(">Reflector name:", self.name)
-        paired_df, unpaired_list = simplify_board_dict(self.reflector_dict)
-        print(">Reflector pairs:\n", paired_df)
-        print(">Reflector unpaired:\n", unpaired_list)
-
-    def export_reflector(self):
-        if self.name == "name":
-            print(
-                ">Please assign a new name to the reflector with the function self.configure() or self.change_name()"
-            )
-        current_path = os.path.dirname(__file__)
-        new_folder = "SAVED_REFLECTORS"
-        path = os.path.join(current_path, new_folder)
-        if not os.path.exists(path):
-            os.mkdir(path)
-            print(">Directory '% s' created" % path)
-        save_file = open(r"{}\\{}.reflector".format(path, self.name), "wb")
-        pickle.dump(self, save_file)
-        print(
-            ">{} has been saved into {}.reflector in {}".format(
-                self.name, self.name, path
-            )
+        print(stringOutput("Reflector name: " + self.name))
+        paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
+            self._reflector_dict
         )
+        print(stringOutput("Reflector pairs:\n"), paired_df)
+        print(stringOutput("Reflector unpaired:\n"), unpaired_list)
 
-    def random_setup(self, seed=None, showConfig=False):
-        if not seed:
-            print(">Please, input a seed")
-            return
-        random.seed(seed)
+    # def export_reflector(self):
+    #     # if self.name == "name":
+    #     #     print(
+    #     #         ">Please assign a new name to the reflector with the function self.configure() or self.change_name()"
+    #     #     )
+    def random_name(self):
+        # if not seed:
+        #     print(stringOutput("Please input a seed."))
+        #     return
+        # random.seed(seed)
         # Set name
         # !!! Make sure letters do not connect to themselves!!!
         name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 10)]
@@ -90,8 +79,11 @@ class Reflector:
         string1 = ""  # Why is this here? I am not super sure
         new_name = string1.join(name_list)
         self.change_name(new_name)
+
+    def random_setup(self, seed=None, showConfig=False):
         # Now set the connections
         # num_list = [i for i in range(0, 26)]
+        random.seed(seed)
         letter_list1 = copy.copy(self._characters_in_use)
         random.shuffle(letter_list1)
         # letter_list2 = copy.copy(self.characters_in_use)
@@ -108,7 +100,7 @@ class Reflector:
         if showConfig:
             self._show_config()
         # Export
-        self.export_reflector()
+        # self.export_reflector()
 
 
 class ReflectorDash(Reflector):

@@ -5,6 +5,10 @@ SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True
 
 
+def askForMenuOption():
+    return askingInput("Choose a menu option: ")
+
+
 def stringOutput(message: str):
     return ">" + message
 

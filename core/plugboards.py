@@ -1,12 +1,14 @@
 import copy
 import random
+
+from client.menus.utils_m import stringOutput
 from .utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
     EQUIVALENCE_DICT_dash,
     transform_single_dict,
-    simplify_board_dict,
+    simplify_dictionary_paired_unpaired,
 )
 
 
@@ -36,19 +38,18 @@ class PlugBoard:
         self._update_dicts()
 
     def _show_config(self):
-        paired_df, unpaired_list = simplify_board_dict(self.board_dict)
-        print("Paired letters:", paired_df)
-        print("Unpaired letters:", unpaired_list)
+        paired_df, unpaired_list = simplify_dictionary_paired_unpaired(self.board_dict)
+        print(stringOutput("Paired letters: "), paired_df)
+        print(stringOutput("Unpaired letters: "), unpaired_list)
 
     def _input_output(self, number_io):
         return self._board_num_dict[number_io]
 
-    def _reset_and_randomize_board_dict(self, seed=None):
+    def random_setup(self, seed=None):
         if not seed:
-            print(">Please input a seed")
+            print(stringOutput("Please input a seed."))
             return
         random.seed(seed)
-        self._reset_dictionaries()
 
         # Now set the connections
         ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
@@ -65,7 +66,7 @@ class PlugBoard:
         self._update_dicts(False)
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-        print(">Board setup is generated")
+        print(stringOutput("Board setup is generated."))
 
 
 class PlugBoardDash(PlugBoard):
