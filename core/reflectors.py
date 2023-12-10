@@ -4,7 +4,7 @@ import pickle
 import os
 import copy
 
-from client.menus.utils_m import stringOutput
+from client.menus.utils_m import printOutput
 from .utils import (
     CHARACTERS,
     CHARACTERS_dash,
@@ -54,12 +54,14 @@ class Reflector:
             )
 
     def _show_config(self):
-        print(stringOutput("Reflector name: " + self.name))
+        printOutput("Reflector name: " + self.name)
         paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
             self._reflector_dict
         )
-        print(stringOutput("Reflector pairs:\n"), paired_df)
-        print(stringOutput("Reflector unpaired:\n"), unpaired_list)
+        printOutput("Reflector pairs:")
+        print(paired_df)
+        printOutput("Reflector unpaired:")
+        print(unpaired_list)
 
     # def export_reflector(self):
     #     # if self.name == "name":
@@ -68,7 +70,7 @@ class Reflector:
     #     #     )
     def random_name(self):
         # if not seed:
-        #     print(stringOutput("Please input a seed."))
+        #     stringOutput("Please input a seed."))
         #     return
         # random.seed(seed)
         # Set name

@@ -28,8 +28,9 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     if paired_df.shape[0] == 0:
         returningToMenuMessage("There are no available connections.")
 
-    print(stringOutput("Current connections are:"), paired_df)
-    row = input(askingInput("Choose a connection to delete (by index): "))
+    printOutput("Current connections are:")
+    print(paired_df)
+    row = askingInput("Choose a connection to delete (by index): ")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         _delete_a_connection_pb(plugboard_ref=plugboard_ref, connIndex=row)
@@ -68,11 +69,11 @@ def _create_a_connection_single_choice_pb(plugboard_ref: plugboards.PlugBoard):
             "There are no letters left to pair (one or fewer left unconnected)."
         )
     print(">Unpaired letters:", unpaired_list)
-    letter1 = input(askingInput("Choose a letter to pair:")).upper()
+    letter1 = askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
         returningToMenuMessage("Invalid input.")
-    print(stringOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1)))
-    letter2 = input(askingInput("Choose the second letter:")).upper()
+    printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
+    letter2 = askingInput("Choose the second letter:").upper()
     if letter2 not in list(set(unpaired_list) - set(letter1)):
         returningToMenuMessage("Invalid input.")
     plugboard_ref._board_dict[letter1] = letter2
@@ -98,24 +99,24 @@ def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
             "There are no letters left to pair (one or fewer left unconnected)."
         )
     while True:
-        print(stringOutput("Unpaired letters:"), unpaired_list)
-        print(stringOutput("If you want to stop configurating the board, press Enter."))
-        letters = input(askingInput("Input two letters to pair:")).strip().upper()
+        printOutput("Unpaired letters:"), unpaired_list
+        printOutput("If you want to stop configurating the board, press Enter.")
+        letters = askingInput("Input two letters to pair:").strip().upper()
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
             returningToMenuNoMessage("No input.")
         else:
-            print("Error: Input 2 letters please")
+            print("Error: Input 2 letters please.")
             continue
         letters = list(letters)
         if not all(map(lambda v: v in letters, unpaired_list)):
-            print(stringOutput("One of the letters is already connected."))
+            printOutput("One of the letters is already connected.")
             continue
         break
     plugboard_ref._board_dict[letters[0]] = letters[1]
     plugboard_ref._board_dict[letters[1]] = letters[0]
-    print(stringOutput("Connection formed."))
+    printOutput("Connection formed.")
 
 
 def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
@@ -130,7 +131,7 @@ def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
     )
     connections = input(
         askingInput(
-            f"How many connections do you want to create (Max. {len(unpaired_list)})? "
+            f"How many connections do you want to create (Max. {len(unpaired_list)})?"
         )
     )
     if connections > len(unpaired_list):
@@ -157,7 +158,7 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
     """
     for i in range(connections):
         clearScreenConvenience()
-        print(stringOutput(f"Creating connection {i+1} of {connections}"))
+        printOutput(f"Creating connection {i+1} of {connections}")
         _connect_two_letters_pb(plugboard_ref)
 
 
@@ -169,7 +170,7 @@ def _reset_and_streamline_connections_by_pairs_pb(plugboard_ref: plugboards.Plug
     """
     _reset_connections_pb(plugboard_ref)
     while True:
-        accbool = input(askingInput("Do you still want to make changes?[y/n]")).lower()
+        accbool = askingInput("Do you still want to make changes?[y/n]").lower()
         if accbool == "n":
             returningToMenuNoMessage()
         elif accbool == "y":
@@ -189,7 +190,7 @@ def _reset_and_randomize_connections_pb(plugboard_ref: plugboards.PlugBoard):
     """
     seed = input(
         askingInput(
-            "Introduce a positive integer as a seed to randomize the plugboard connections: "
+            "Introduce a positive integer as a seed to randomize the plugboard connections:"
         )
     )
     if not isinstance(seed, int) and seed > 0:
@@ -231,7 +232,7 @@ def main_plugboard_menu(machine_ref: machines.Machine):
         clearScreenSafety()
         try:
             for key in sorted(_menu_plugboard.keys()):
-                print(menuOption(key + ":" + _menu_plugboard[key][0]))
+                printMenuOption(key + ":" + _menu_plugboard[key][0])
 
             answer = str(input(askForMenuOption()))
             _menu_plugboard.get(answer, [None, invalidChoice])[1](

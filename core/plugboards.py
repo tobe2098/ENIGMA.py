@@ -1,7 +1,7 @@
 import copy
 import random
 
-from client.menus.utils_m import stringOutput
+from client.menus.utils_m import printOutput
 from .utils import (
     CHARACTERS,
     CHARACTERS_dash,
@@ -39,15 +39,15 @@ class PlugBoard:
 
     def _show_config(self):
         paired_df, unpaired_list = simplify_dictionary_paired_unpaired(self.board_dict)
-        print(stringOutput("Paired letters: "), paired_df)
-        print(stringOutput("Unpaired letters: "), unpaired_list)
+        printOutput("Paired letters: "), paired_df)
+        printOutput("Unpaired letters: "), unpaired_list)
 
     def _input_output(self, number_io):
         return self._board_num_dict[number_io]
 
     def random_setup(self, seed=None):
         if not seed:
-            print(stringOutput("Please input a seed."))
+            printOutput("Please input a seed."))
             return
         random.seed(seed)
 
@@ -66,7 +66,7 @@ class PlugBoard:
         self._update_dicts(False)
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-        print(stringOutput("Board setup is generated."))
+        printOutput("Board setup is generated."))
 
 
 class PlugBoardDash(PlugBoard):

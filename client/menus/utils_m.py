@@ -9,26 +9,26 @@ def askForMenuOption():
     return askingInput("Choose a menu option: ")
 
 
-def stringOutput(message: str):
-    return ">" + message
+def printOutput(message: str):
+    print(">" + message)
 
 
 def askingInput(message: str):
-    return ">>>" + message
+    return input(">>>" + message + " ")
 
 
-def menuOption(message: str):
-    return ">$ " + message
+def printMenuOption(message: str):
+    print(">$ " + message)
 
 
 class MenuExitException(Exception):
-    def __init__(self, message=stringOutput("Exiting menu...")):
+    def __init__(self, message=printOutput("Exiting menu...")):
         self.message = message
         super().__init__(self.message)
 
 
 class ReturnToMenuException(Exception):
-    def __init__(self, message=stringOutput("Returning to menu...")):
+    def __init__(self, message=printOutput("Returning to menu...")):
         self.message = message
         super().__init__(self.message)
 
@@ -38,7 +38,7 @@ def exitMenu(*args):
 
 
 def returningToMenuMessage(specific_message: str):
-    print(stringOutput(specific_message))
+    printOutput(specific_message)
     raise ReturnToMenuException()
 
 
@@ -47,13 +47,13 @@ def returningToMenuNoMessage():
 
 
 def invalidChoice(*args):
-    print(stringOutput("Choice was invalid"))
+    printOutput("Choice was invalid.")
 
 
 def getAnInputFromList(list_, message: str):
-    input = input(askingInput(message))
+    input = askingInput(message)
     if input not in list_:
-        print(stringOutput("Invalid input."))
+        printOutput("Invalid input.")
         getAnInputFromList(list_, message)
 
 
@@ -61,11 +61,15 @@ def clearScreenSafety():
     if not SCREEN_CLEAR_SAFETY:
         return
     _ = call("clear" if os.name == "posix" else "cls")
-    print(stringOutput("Screen cleared for safety purposes."))
+    printOutput("Screen cleared for safety purposes.")
 
 
 def clearScreenConvenience():
     if not SCREEN_CLEAR_CONVENIENCE:
         return
     _ = call("clear" if os.name == "posix" else "cls")
-    print(stringOutput("Screen cleared for convenience."))
+    printOutput("Screen cleared for convenience.")
+
+
+def checkIfFileExists(path, name, suffix):
+    return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))

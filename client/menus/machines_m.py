@@ -150,3 +150,12 @@ def save_machine():
             r"{}\\{}.reflector".format(path, list_of_files[reflector - 1]), "rb"
         )
         self = pickle.load(filehandler)
+
+
+def generate_n_random_reflectors(n, seed: int):
+    # Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
+    for index in range(0, n):
+        reflector = reflector.Reflector()
+        reflector.random_name(seed + index)
+        reflector.random_setup(seed + index)
+    printOutput(f"Created and saved {n} rotors.")
