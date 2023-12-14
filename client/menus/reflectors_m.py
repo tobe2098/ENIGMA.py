@@ -299,44 +299,28 @@ _menu_reflector_name_options = {
 }
 
 _menu_reflector_connections_options = {
-    "1": ("Show current reflector setup", _show_config_rf),
-    "1": ("Save rotor", _save_in_current_directory_rf),
-    "1": ("Change rotor name", _change_reflector_name_rf),
-    "2": ("Delete a single connection", _choose_connection_to_delete_rf),
-    "3": ("Create a single connection", _create_a_connection_single_choice_rf),
-    "4": ("Form all connections left", _form_all_connections_rf),
-    "6": (
-        "Reset and form max. connections",
-        _reset_and_streamline_connections_by_pairs_rf,
-    ),
-    "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
-    "8": ("Reset connections", _reset_connections_rf),
+    "1": ("Delete a single connection", _choose_connection_to_delete_rf),
+    "2": ("Create a single connection", _create_a_connection_single_choice_rf),
+    "3": ("Form all connections left", _form_all_connections_rf),
     "0": ("Exit menu", _exitMenu_rf),
 }
 
 _menu_reflector_reset_options = {
-    "1": ("Show current reflector setup", _show_config_rf),
-    "1": ("Save rotor", _save_in_current_directory_rf),
-    "1": ("Change rotor name", _change_reflector_name_rf),
-    "2": ("Delete a single connection", _choose_connection_to_delete_rf),
-    "3": ("Create a single connection", _create_a_connection_single_choice_rf),
-    "4": ("Form all connections left", _form_all_connections_rf),
-    "6": (
+    "1": (
         "Reset and form max. connections",
         _reset_and_streamline_connections_by_pairs_rf,
     ),
-    "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
-    "8": ("Reset connections", _reset_connections_rf),
+    "2": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
+    "3": ("Reset connections", _reset_connections_rf),
     "0": ("Exit menu", exitMenu),
 }
 
 _menu_reflector_saved_reflector = {
-    "1": ("Show current reflector setup", _show_config_rf),
     "1": ("Save rotor", _save_in_current_directory_rf),
-    "1": ("Change rotor name", _change_reflector_name_rf),
-    "2": ("Delete a single connection", _choose_connection_to_delete_rf),
-    "3": ("Create a single connection", _create_a_connection_single_choice_rf),
-    "4": ("Form all connections left", _form_all_connections_rf),
+    "2": ("Change rotor name", _change_reflector_name_rf),
+    "3": ("Delete a single connection", _choose_connection_to_delete_rf),
+    "4": ("Create a single connection", _create_a_connection_single_choice_rf),
+    "5": ("Form all connections left", _form_all_connections_rf),
     "6": (
         "Reset and form max. connections",
         _reset_and_streamline_connections_by_pairs_rf,
@@ -369,11 +353,14 @@ def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         clearScreenSafety()
         try:
-            for key in sorted(_menu_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector[key][0])
+            _show_config_rf(reflector_ref)
+            for key in sorted(_menu_reflector_connections_options.keys()):
+                printMenuOption(key + ":" + _menu_reflector_connections_options[key][0])
 
             answer = str(input(askForMenuOption()))
-            _menu_reflector.get(answer, [None, invalidChoice])[1](reflector_ref)
+            _menu_reflector_connections_options.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
@@ -384,11 +371,14 @@ def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         clearScreenSafety()
         try:
-            for key in sorted(_menu_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector[key][0])
+            _show_config_rf(reflector_ref)
+            for key in sorted(_menu_reflector_reset_options.keys()):
+                printMenuOption(key + ":" + _menu_reflector_reset_options[key][0])
 
             answer = str(input(askForMenuOption()))
-            _menu_reflector.get(answer, [None, invalidChoice])[1](reflector_ref)
+            _menu_reflector_reset_options.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
@@ -399,11 +389,14 @@ def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         clearScreenSafety()
         try:
-            for key in sorted(_menu_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector[key][0])
+            _show_config_rf(reflector_ref)
+            for key in sorted(_menu_reflector_saved_reflector.keys()):
+                printMenuOption(key + ":" + _menu_reflector_saved_reflector[key][0])
 
             answer = str(input(askForMenuOption()))
-            _menu_reflector.get(answer, [None, invalidChoice])[1](reflector_ref)
+            _menu_reflector_saved_reflector.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
