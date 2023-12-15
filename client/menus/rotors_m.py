@@ -6,6 +6,460 @@ from ...core import rotors
 ### EXCEPT FOR LOADING!!!!!! LOADING OF ITEMS HAS TO BE DONE DIRECTLY IN THE MACHINE MENU
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 # Intern setup functions
+from ...core import machines
+from ...core import reflectors
+from ...core import utils
+from .utils_m import *
+import pickle
+
+
+def _show_config_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+
+    reflector_ref._show_config()
+    returningToMenuNoMessage()
+
+
+def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    paired_df, _ = utils.simplify_dictionary_paired_unpaired(reflector_ref._board_dict)
+
+    if paired_df.shape[0] == 0:
+        returningToMenuMessage("There are no available connections.")
+
+    printOutput("Current connections are:")
+    print(paired_df)
+    row = askingInput("Choose a connection to delete (by index):")
+
+    if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
+        _delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
+        returningToMenuMessage("Connection was deleted.")
+    else:
+        returningToMenuMessage("Index invalid.")
+
+
+def _delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+        connIndex (_type_): _description_
+    """
+    paired_df, _ = utils.simplify_dictionary_paired_unpaired(reflector_ref._board_dict)
+    for entry in paired_df.iloc[connIndex]:
+        # del reflector_ref._board_dict[entry] #Requires testing
+        reflector_ref[entry] = entry
+
+    reflector_ref._update_dicts()
+    # del d['k2']
+
+
+def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        reflector_ref._board_dict
+    )
+    if len(unpaired_list) < 2:
+        returningToMenuMessage(
+            "There are no letters left to pair (one or fewer left unconnected)."
+        )
+    print(">Unpaired letters:", unpaired_list)
+    letter1 = askingInput("Choose a letter to pair:").upper()
+    if letter1 not in unpaired_list:
+        returningToMenuMessage("Invalid input.")
+    printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
+    letter2 = askingInput("Choose the second letter:").upper()
+    if letter2 not in list(set(unpaired_list) - set(letter1)):
+        returningToMenuMessage("Invalid input.")
+    reflector_ref._board_dict[letter1] = letter2
+    reflector_ref._board_dict[letter2] = letter1
+    reflector_ref._update_dicts()
+    returningToMenuMessage("The connection was formed.")
+
+
+# First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
+
+
+def _connect_two_letters_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        reflector_ref._board_dict
+    )
+    if len(unpaired_list) < 2:
+        returningToMenuMessage(
+            "There are no letters left to pair (one or fewer left unconnected)."
+        )
+    while True:
+        printOutput("Unpaired letters:"), unpaired_list
+        printOutput("If you want to stop configurating the board, press Enter.")
+        letters = askingInput("Input two letters to pair:").strip().upper()
+        if letters.isalpha() and len(letters) == 2:
+            pass
+        elif not letters:
+            returningToMenuNoMessage("No input.")
+        else:
+            print("Error: Input 2 letters please.")
+            continue
+        letters = list(letters)
+        if not all(map(lambda v: v in letters, unpaired_list)):
+            printOutput("One of the letters is already connected.")
+            continue
+        break
+    reflector_ref._board_dict[letters[0]] = letters[1]
+    reflector_ref._board_dict[letters[1]] = letters[0]
+    printOutput("Connection formed.")
+
+
+def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    _show_config_rf(reflector_ref)
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        reflector_ref._board_dict
+    )
+    _form_n_connections_rf(reflector_ref, int(len(unpaired_list) / 2))
+    returningToMenuMessage(
+        "There are no letters left to pair (one or fewer left unconnected)."
+    )
+
+
+# def reset_and_form_all_connections(reflector_ref: reflectors.Reflector):
+#     """_summary_
+
+#     Args:
+#         reflector_ref (reflectors.Reflector): _description_
+#     """
+#     reset_connections(reflector_ref)
+#     form_all_connections(reflector_ref)
+
+
+def _form_n_connections_rf(reflector_ref: reflectors.Reflector, connections: int):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+        connections (int): _description_
+    """
+    for i in range(connections):
+        clearScreenConvenience()
+        printOutput(f"Creating connection {i+1} of {connections}")
+        _connect_two_letters_rf(reflector_ref)
+
+
+def _reset_and_streamline_connections_by_pairs_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    _reset_connections_rf(reflector_ref)
+    while True:
+        accbool = askingInput("Do you still want to make changes?[y/n]").lower()
+        if accbool == "n":
+            returningToMenuNoMessage()
+        elif accbool == "y":
+            break
+    while True:
+        _connect_two_letters_rf(reflector_ref)
+
+
+## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
+
+
+def _reset_and_randomize_connections_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    seed = input(
+        askingInput(
+            "Introduce a positive integer as a seed to randomize the plugboard connections: "
+        )
+    )
+    if not isinstance(seed, int) and seed > 0:
+        returningToMenuMessage("Number is not a positive integer.")
+    reflector_ref._reset_dictionaries()
+    reflector_ref.random_setup(seed)
+
+
+def _reset_connections_rf(reflector_ref: reflectors.Reflector):
+    """_summary_
+
+    Args:
+        reflector_ref (reflectors.Reflector): _description_
+    """
+    reflector_ref._reset_dictionaries()
+
+
+def _print_name_rf(reflector_ref: reflectors.Reflector):
+    printOutput("REFLECTOR NAME: " + reflector_ref._name)
+
+
+def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
+    new_name = str(askingInput("Input a new name for the reflector:"))
+    while any(not c.isalnum() for c in new_name) or not new_name:
+        printOutput("Input only alphanumerical.")
+        new_name = str(askingInput("Input a new name for the reflector:"))
+    reflector_ref._change_name(new_name)
+    returningToMenuMessage("Reflector name changed to: " + reflector_ref._name)
+
+
+def _randomize_name_rf(reflector_ref: reflectors.Reflector):
+    reflector_ref.random_name()
+    returningToMenuMessage("NEW NAME: " + reflector_ref.name)
+
+
+def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
+    while (
+        reflector_ref.name == "name"
+        or reflector_ref.name == ""
+        or any(not c.isalnum() for c in reflector_ref.name)
+    ):
+        reflector_ref._change_name(
+            askingInput("Please assign a new name to the reflector:")
+        ).strip()
+    current_path = os.getcwd()
+    new_folder = "SAVED_REFLECTORS"
+    path = os.path.join(current_path, new_folder)
+    if not os.path.exists(path):
+        os.mkdir(path)
+        printOutput("Directory '% s' created" % path)
+    if checkIfFileExists(path, reflector_ref._name, "reflector"):
+        printOutput("A reflector with this name already exists.")
+        accbool = ""
+        while not accbool == "n" or not accbool == "y":
+            accbool = input(
+                askingInput("Do you want to overwrite the saved reflector? [y/n]")
+            ).lower()
+        if accbool == "n":
+            returningToMenuNoMessage()
+    save_file = open(r"{}\\{}.reflector".format(path, reflector_ref._name), "wb")
+    pickle.dump(reflector_ref, save_file)
+    returningToMenuMessage(
+        (
+            "{} has been saved into {}.reflector in {}".format(
+                reflector_ref.name, reflector_ref.name, path
+            )
+        )
+    )
+
+
+def load_saved_reflector():
+    current_path = os.path.dirname(__file__)
+    new_folder = "SAVED_REFLECTORS"
+    path = os.path.join(current_path, new_folder)
+    if not os.path.exists(path):
+        returningToMenuMessage("There is no {} folder.".format(path))
+    list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
+    if len(list_of_files) == 0:
+        returningToMenuMessage("There are no reflectors saved.")
+    printOutput("Your available reflectors are: {}".format(list_of_files))
+    reflector = askingInput("Input reflector's position in the list: ")
+    while (
+        not isinstance(reflector, int)
+        or reflector > len(list_of_files) - 1
+        or reflector < 0
+    ):
+        printOutput("Please input a valid index.")
+        reflector = askingInput("Input reflector's position in the list:")
+    filehandler = open(
+        r"{}\\{}.reflector".format(path, list_of_files[reflector - 1]), "rb"
+    )
+    return pickle.load(filehandler)
+
+
+def _exitMenu_rf(reflector_ref: reflectors.Reflector):
+    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+        reflector_ref._reflector_dict
+    )
+    if len(unpaired_list) > 1:
+        returningToMenuMessage(
+            "To avoid self-sabotage, a partially connected reflector is discouraged."
+        )
+    exitMenu()
+
+
+_menu_reflector_name_options = {
+    "1": ("Change name", _change_reflector_name_rf),
+    "2": ("Randomize name", _randomize_name_rf),
+    "0": ("Exit menu", exitMenu),
+}
+
+_menu_reflector_connections_options = {
+    "1": ("Delete a single connection", _choose_connection_to_delete_rf),
+    "2": ("Create a single connection", _create_a_connection_single_choice_rf),
+    "3": ("Form all connections left", _form_all_connections_rf),
+    "0": ("Exit menu", _exitMenu_rf),
+}
+
+_menu_reflector_reset_options = {
+    "1": (
+        "Reset and form max. connections",
+        _reset_and_streamline_connections_by_pairs_rf,
+    ),
+    "2": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
+    "3": ("Reset connections", _reset_connections_rf),
+    "0": ("Exit menu", exitMenu),
+}
+
+_menu_reflector_saved_reflector = {
+    "1": ("Save rotor", _save_in_current_directory_rf),
+    "2": ("Change rotor name", _change_reflector_name_rf),
+    "3": ("Delete a single connection", _choose_connection_to_delete_rf),
+    "4": ("Create a single connection", _create_a_connection_single_choice_rf),
+    "5": ("Form all connections left", _form_all_connections_rf),
+    "6": (
+        "Reset and form max. connections",
+        _reset_and_streamline_connections_by_pairs_rf,
+    ),
+    "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
+    "8": ("Reset connections", _reset_connections_rf),
+    "0": ("Exit menu", exitMenu),
+}
+
+
+def _name_reflector_menu(reflector_ref: reflectors.Reflector):
+    while True:
+        clearScreenSafety()
+        _print_name_rf(reflector_ref)
+        try:
+            for key in sorted(_menu_reflector_name_options.keys()):
+                printMenuOption(key + ":" + _menu_reflector_name_options[key][0])
+
+            answer = str(input(askForMenuOption()))
+            _menu_reflector_name_options.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
+        except ReturnToMenuException:
+            print(ReturnToMenuException.message)
+        except MenuExitException:
+            exitMenu()
+
+
+def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
+    while True:
+        clearScreenSafety()
+        try:
+            _show_config_rf(reflector_ref)
+            for key in sorted(_menu_reflector_connections_options.keys()):
+                printMenuOption(key + ":" + _menu_reflector_connections_options[key][0])
+
+            answer = str(input(askForMenuOption()))
+            _menu_reflector_connections_options.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
+        except ReturnToMenuException:
+            print(ReturnToMenuException.message)
+        except MenuExitException:
+            exitMenu()
+
+
+def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
+    while True:
+        clearScreenSafety()
+        try:
+            _show_config_rf(reflector_ref)
+            for key in sorted(_menu_reflector_reset_options.keys()):
+                printMenuOption(key + ":" + _menu_reflector_reset_options[key][0])
+
+            answer = str(input(askForMenuOption()))
+            _menu_reflector_reset_options.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
+        except ReturnToMenuException:
+            print(ReturnToMenuException.message)
+        except MenuExitException:
+            exitMenu()
+
+
+def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
+    while True:
+        clearScreenSafety()
+        try:
+            _show_config_rf(reflector_ref)
+            for key in sorted(_menu_reflector_saved_reflector.keys()):
+                printMenuOption(key + ":" + _menu_reflector_saved_reflector[key][0])
+
+            answer = str(input(askForMenuOption()))
+            _menu_reflector_saved_reflector.get(answer, [None, invalidChoice])[1](
+                reflector_ref
+            )
+        except ReturnToMenuException:
+            print(ReturnToMenuException.message)
+        except MenuExitException:
+            exitMenu()
+
+
+def _load_saved_reflector_for_editing(
+    reflector: reflectors.Reflector = None, recursive: bool = False
+):
+    if not recursive:
+        reflector = load_saved_reflector()
+    _saved_reflector_menu(reflector)
+    try:
+        _save_in_current_directory_rf(reflector)
+        returningToMenuNoMessage()
+    except MenuExitException:
+        current_path = os.getcwd()
+        new_folder = "SAVED_REFLECTORS"
+        path = os.path.join(current_path, new_folder)
+        if not checkIfFileExists(path, reflector._name, "reflector"):
+            printOutput("A file with the reflector's name was not detected.")
+            accbool = ""
+            while not accbool == "n" or not accbool == "y":
+                accbool = input(askingInput("Do you want to exit anyway?[y/n]")).lower()
+            if accbool == "n":
+                _load_saved_reflector_for_editing(reflector, True)
+            returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
+    # Conda activation: conda info --envs, conda activate {}
+
+
+_menu_reflector = {
+    "1": ("Show current reflector setup", _show_config_rf),
+    "2": ("Save rotor", _save_in_current_directory_rf),
+    "3": ("Naming menu", _name_reflector_menu),
+    "4": ("Connections options menu", _connections_reflector_menu),
+    "5": ("Resetting options menu", _reset_reflector_menu),
+    "6": ("Edit a previously saved rotor", _load_saved_reflector_for_editing),
+    "0": ("Exit menu", _exitMenu_rf),
+}
+
+
+def main_reflector_menu(machine_ref: machines.Machine):
+    while True:
+        clearScreenSafety()
+        try:
+            for key in sorted(_menu_reflector.keys()):
+                printMenuOption(key + ":" + _menu_reflector[key][0])
+
+            answer = str(input(askForMenuOption()))
+            _menu_reflector.get(answer, [None, invalidChoice])[1](machine_ref)
+        except ReturnToMenuException:
+            print(ReturnToMenuException.message)
+        except MenuExitException:
+            exitMenu()
+
+
 def _change_rotor_letter_position(self):
     # MENU
     pos1 = input(">>>Letter position for rotor 1:")
@@ -193,6 +647,61 @@ def _random_conf_rotors(self, jump):
         print(
             "You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor() \n*Careful while defining notches"
         )
+
+    def random_setup(self, seed=None, showConfig=True):
+        # Randomly generate a rotor and store it in a folder
+        # Seed has to be added from the machine calling the function, where the seed is stored/generated
+        if not seed:
+            print(
+                ">>Something went wrong. Make sure development has reached this stage!"
+            )
+        # Once the seed is set, as long as the same operations are performed the same numbers are generated:
+        random.seed(seed)
+        # Name generation
+        name_list = [
+            random.sample(range(0, len(self._characters_in_use)), 1)[0]
+            for _ in range(0, 13)
+        ]
+        name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
+        name_list[9:13] = [str(i % 10) for i in name_list[9:13]]
+        string1 = ""
+        name = string1.join(name_list)
+        self._change_name(name)
+        # Position
+        self._define_position(
+            self._conversion_in_use[random.randint(0, len(self._characters_in_use))]
+        )  # Check in the future whether this setups are correct
+        # Notches
+        notch_list = [
+            self._conversion_in_use[i]
+            for i in set(
+                random.sample(
+                    range(0, len(self._characters_in_use)), random.randint(1, 5)
+                )
+            )
+        ]
+        self._define_notches(notch_list)
+        # self.define_rotor_jump(random.randint(1,25))
+        # Forward dictionary
+        num_list = list(range(0, len(self._characters_in_use)))
+        self._forward_num_dict = dict(
+            zip(
+                num_list,
+                random.sample(
+                    range(0, len(self._characters_in_use)), len(self._characters_in_use)
+                ),
+            )
+        )
+        sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))
+        self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        print(">Rotor connections established")
+        self._update_dicts(False)
+        if showConfig:
+            self.show_config()
+        self.export_rotor()
+        return
+        # And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
+        # in the case of the connection board, an extra number should be used to determine nu
 
 
 def save_n_random_rotors(n, seed):

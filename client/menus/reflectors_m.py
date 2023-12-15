@@ -1,9 +1,9 @@
-from tabnanny import check
 from ...core import machines
 from ...core import reflectors
 from ...core import utils
 from .utils_m import *
 import pickle
+from ...core.utils import simplify_dictionary_paired_unpaired
 
 
 def _show_config_rf(reflector_ref: reflectors.Reflector):
@@ -13,7 +13,14 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
 
-    reflector_ref._show_config()
+    printOutput("Reflector name: " + reflector_ref._name)
+    paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
+        reflector_ref._reflector_dict
+    )
+    printOutput("Reflector pairs:")
+    print(paired_df)
+    printOutput("Reflector unpaired:")
+    print(unpaired_list)
     returningToMenuNoMessage()
 
 
