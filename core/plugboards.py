@@ -37,17 +37,12 @@ class PlugBoard:
         )
         self._update_dicts()
 
-    def _show_config(self):
-        paired_df, unpaired_list = simplify_dictionary_paired_unpaired(self.board_dict)
-        printOutput("Paired letters: "), paired_df)
-        printOutput("Unpaired letters: "), unpaired_list)
-
     def _input_output(self, number_io):
         return self._board_num_dict[number_io]
 
     def random_setup(self, seed=None):
         if not seed:
-            printOutput("Please input a seed."))
+            printOutput("Please input a seed.")
             return
         random.seed(seed)
 
@@ -66,7 +61,7 @@ class PlugBoard:
         self._update_dicts(False)
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-        printOutput("Board setup is generated."))
+        printOutput("Board setup is generated.")
 
 
 class PlugBoardDash(PlugBoard):

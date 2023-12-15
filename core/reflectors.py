@@ -53,16 +53,6 @@ class Reflector:
                 self._reflector_num_dict, self._conversion_in_use
             )
 
-    def _show_config(self):
-        printOutput("Reflector name: " + self.name)
-        paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
-            self._reflector_dict
-        )
-        printOutput("Reflector pairs:")
-        print(paired_df)
-        printOutput("Reflector unpaired:")
-        print(unpaired_list)
-
     # def export_reflector(self):
     #     # if self.name == "name":
     #     #     print(

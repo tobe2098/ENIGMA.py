@@ -4,6 +4,7 @@ from ...core import machines
 from ...core import plugboards
 from ...core import utils
 from .utils_m import *
+from ...core.utils import simplify_dictionary_paired_unpaired
 
 
 def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
@@ -13,7 +14,13 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref (plugboards.PlugBoard): _description_
     """
 
-    plugboard_ref._show_config()
+    paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
+        plugboard_ref.board_dict
+    )
+    printOutput("Paired letters: ")
+    print(paired_df)
+    printOutput("Unpaired letters: ")
+    print(unpaired_list)
     returningToMenuNoMessage()
 
 

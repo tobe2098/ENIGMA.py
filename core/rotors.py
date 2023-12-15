@@ -79,25 +79,25 @@ class Rotor:
 
         self._name = new_name.strip()
         re.sub(r"\W+", "", self._name)
-        print(">Now name of the reflector is:", self._name)
+        # print(">Now name of the reflector is:", self._name)
 
     def _define_rotor_jump(self, jump):
         self.jump = jump
-        print(
-            ">Now rotor jumps ",
-            jump,
-            " spaces for every input (not yet implemented in the machine)",
-        )
+        # print(
+        #     ">Now rotor jumps ",
+        #     jump,
+        #     " spaces for every input (not yet implemented in the machine)",
+        # )
 
     # Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
 
     def _define_position(self, position):
         self._position = self._conversion_in_use[position]
-        print(
-            ">Now rotor is in letter position {}".format(
-                self._conversion_in_use[self._position]
-            )
-        )
+        # print(
+        #     ">Now rotor is in letter position {}".format(
+        #         self._conversion_in_use[self._position]
+        #     )
+        # )
 
     def _define_notches(self, position):
         position = [i for i in position]
@@ -109,11 +109,11 @@ class Rotor:
         if not notch_list:
             return
         self._notches = notch_list
-        print(
-            ">Now the rotor has {} notches in positions {}".format(
-                len(notch_list), position
-            )
-        )
+        # print(
+        #     ">Now the rotor has {} notches in positions {}".format(
+        #         len(notch_list), position
+        #     )
+        # )
 
     def _update_dicts(self, letter_to_num=True):
         if letter_to_num:
