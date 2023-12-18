@@ -1,7 +1,7 @@
 import copy
 import random
 
-from client.menus.utils_m import printOutput
+from cli.menus.utils_m import printOutput
 from .utils import (
     CHARACTERS,
     CHARACTERS_dash,

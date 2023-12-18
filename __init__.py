@@ -1,5 +1,5 @@
 import core
-import client
+import cli
 import gui
 
 if __name__ == "__main__":

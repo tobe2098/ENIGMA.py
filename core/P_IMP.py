@@ -14,21 +14,15 @@ def import_rotor(filename):
     object = pickle.load(filehandler)
 def seed_list_show():
     pass #.txt with a list of seeds and attached non-related names?
-def import_rotor_list(self):
+def import_rotor_list(self): FOR ROTOR PREVIEW
     return #list_of_rotors
     #Not finished, for ENIGMA_py.pyç
 def encrypt_decrypt_txt_file(self, filepath):
     pass #Basically loop every character and if .upper() is between 65 and 65+25, decrypt, otherwise input the same character (like spaces)
-'''
-#on positions: Also, change 26 by the notches
-self.alpha.position+=self.alpha.jump
-if self.alpha.position % 26==0:
-    self.beta.position +=1
-    self.alpha.position=0
-    if self.beta.position % 26==0:
-        self.beta.position=0
-        self.gamma.position+=1
-        '''
+
+ON API INTERACTIONS WITH A CHATTING PROGRAM (CHOOSE). A WAY OF INPUTTING AND OUTPUTTING STRINGS OF TEXT FROM A PROGRAM AND SENDING THEM, 
+WHILE ONLY DISPLAYING THE TRANSLATED MESSAGE (WHICH HAS TO BE STORED LOCALLY). THE INIT OF SUCH A COMMS SYSTEM IS COMPLICATED. 
+TO DO SO, THERE IS PROBABLY A NEED TO FIND A SAFE WAY TO SEND CONFIGS (double key does not work)
 #Put better character prints so that it looks more aesthetic
 #Put print("\a") somewhere? Does not work
 #In case pickling does not work: "a" is for appending, "w" for writing, "b" for binary
