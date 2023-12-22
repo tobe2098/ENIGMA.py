@@ -1,7 +1,7 @@
 from numpy import format_float_positional
 from ...core import machines
 from ...core import reflectors
-from ..functions.utils_f import *
+from ...utils.utils_cli import *
 from ..functions.reflectors_f import (
     _change_reflector_name_rf,
     _randomize_name_rf,
@@ -130,7 +130,7 @@ def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
 
 
 def _load_saved_reflector_for_editing(
-    machine_ref=None, reflector: reflectors.Reflector = None, recursive: bool = False
+    reflector: reflectors.Reflector = None, recursive: bool = False
 ):
     if not recursive:
         reflector = _load_saved_reflector()
@@ -172,7 +172,9 @@ def main_reflector_menu(machine_ref: machines.Machine):
                 printMenuOption(key + ":" + _menu_reflector[key][0])
 
             answer = str(input(askForMenuOption()))
-            _menu_reflector.get(answer, [None, invalidChoice])[1](machine_ref)
+            _menu_reflector.get(answer, [None, invalidChoice])[1](
+                machine_ref._reflector
+            )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:

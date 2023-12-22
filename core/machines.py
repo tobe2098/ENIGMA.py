@@ -8,7 +8,7 @@ import copy
 import os
 
 from .rotors import Rotor, RotorDash
-from .utils import (
+from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,

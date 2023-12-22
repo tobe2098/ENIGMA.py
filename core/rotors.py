@@ -2,7 +2,7 @@ import random
 import pickle
 import os
 import copy
-from .utils import (
+from ..utils.utils import (
     transform_single_dict,
     CHARACTERS,
     CHARACTERS_dash,
@@ -151,16 +151,16 @@ class Rotor:
         )
         save_file.close()
 
-    def show_config(
-        self,
-    ):  # Everything from the rotor, it will be launched from the machine though
-        print("Rotor letter position :", self._conversion_in_use[self._position])
-        print("Rotor letter jumps:", self.jump)
-        notchlist = [self._conversion_in_use[i] for i in self._notches]
-        print("Rotor notches:", notchlist)
-        print("Forward connections in the rotor:", self._forward_dict)
-        print("Backward connections in the rotor:", self._backward_dict)
-        print("Rotor name:", self._name)
+    # def _show_config(
+    #     self,
+    # ):  # Everything from the rotor, it will be launched from the machine though
+    #     print("Rotor letter position :", self._conversion_in_use[self._position])
+    #     print("Rotor letter jumps:", self.jump)
+    #     notchlist = [self._conversion_in_use[i] for i in self._notches]
+    #     print("Rotor notches:", notchlist)
+    #     print("Forward connections in the rotor:", self._forward_dict)
+    #     print("Backward connections in the rotor:", self._backward_dict)
+    #     print("Rotor name:", self._name)
 
     def random_setup(self, seed=None, showConfig=True):
         # Randomly generate a rotor and store it in a folder
@@ -211,7 +211,7 @@ class Rotor:
         print(">Rotor connections established")
         self._update_dicts(False)
         if showConfig:
-            self.show_config()
+            self._show_config()
         self.export_rotor()
         return
         # And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names

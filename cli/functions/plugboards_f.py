@@ -1,8 +1,8 @@
 # from tkinter import Menubutton
 from ...core import plugboards
-from ...core import utils
-from .utils_f import *
-from ...core.utils import simplify_dictionary_paired_unpaired
+from ...utils import utils
+from ...utils.utils_cli import *
+from ...utils.utils import simplify_dictionary_paired_unpaired
 
 
 def _show_config_pb(plugboard_ref: plugboards.PlugBoard):

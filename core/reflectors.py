@@ -1,17 +1,13 @@
 """This module contains the rotor classes"""
 import random
-import pickle
-import os
 import copy
 
-from cli.menus.utils_m import printOutput
-from .utils import (
+from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
     EQUIVALENCE_DICT_dash,
     transform_single_dict,
-    simplify_dictionary_paired_unpaired,
 )
 
 

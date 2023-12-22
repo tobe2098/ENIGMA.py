@@ -1,5 +1,5 @@
 from ...core import machines
-from ..functions.utils_f import *
+from ...utils.utils_cli import *
 
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
 # ALL LOADING FUNCTIONS MUST BE HERE

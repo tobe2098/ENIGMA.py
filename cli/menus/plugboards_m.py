@@ -1,6 +1,6 @@
 # from tkinter import Menubutton
 from ...core import machines
-from ..functions.utils_f import *
+from ...utils.utils_cli import *
 from ..functions.plugboards_f import (
     _show_config_pb,
     _choose_connection_to_delete_pb,

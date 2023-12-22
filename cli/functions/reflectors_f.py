@@ -1,9 +1,9 @@
 from ...core import machines
 from ...core import reflectors
-from ...core import utils
-from .utils_f import *
+from ...utils import utils
+from ...utils.utils_cli import *
 import pickle
-from ...core.utils import simplify_dictionary_paired_unpaired
+from ...utils.utils import simplify_dictionary_paired_unpaired
 
 
 def _show_config_rf(reflector_ref: reflectors.Reflector):
