@@ -12,9 +12,11 @@ NUMBERS = list(range(0, len(CHARACTERS)))
 NUMBERS_dash = list(range(0, len(CHARACTERS_dash)))
 
 EQUIVALENCE_DICT = dict(zip(CHARACTERS, NUMBERS))
+EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
 EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
 
 EQUIVALENCE_DICT_dash = dict(zip(CHARACTERS_dash, NUMBERS_dash))
+EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
 EQUIVALENCE_DICT_dash.update(dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()]))
 
 # def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does exactly the same
@@ -31,7 +33,7 @@ EQUIVALENCE_DICT_dash.update(dict([reversed(i) for i in EQUIVALENCE_DICT_dash.it
 #     return poplist
 
 
-def simplify_dictionary_paired_unpaired(board_dict):
+def simplify_simple_dictionary_paired_unpaired(board_dict):
     """
     The function simplifies the board dictionary such that there is only one copy of each letter in the output
 
@@ -46,12 +48,53 @@ def simplify_dictionary_paired_unpaired(board_dict):
             continue
         if letter_b == letter_a:
             unpaired_list.append(letter_a)
+            continue
         pairs.append([letter_a, letter_b])
         seen_pairs.append(letter_a)
         seen_pairs.append(letter_b)
     paired_df = pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
     # board_dict_simpl["Unpaired"]=unpaired
     return paired_df, unpaired_list
+
+
+def simplify_rotor_dictionary_paired_unpaired(forward_dict, backward_dict):
+    """
+    The function simplifies the board dictionary such that there is only one copy of each letter in the output
+
+    board_dict (dict): board dictionary
+    """
+    seen = []
+    seenb = []
+    pairs = []
+    unpaired_list = []
+    unformed = []
+    back_unformed = []
+    # all_letters=[i for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+    for letter_a, letter_b in forward_dict.items():
+        if letter_a in seen:
+            continue
+        elif letter_b == letter_a:
+            unpaired_list.append(letter_a)
+
+        elif letter_a == "":
+            unformed.append(letter_a)
+
+        else:
+            pairs.append([letter_a, letter_b])
+        seen.append(letter_a)
+        seenb.append(letter_b)
+    for letter_a, letter_b in backward_dict.items():
+        if letter_a in seenb:
+            continue
+        elif letter_b == letter_a:
+            continue
+        elif letter_a == "":
+            back_unformed.append(letter_a)
+        seenb.append(letter_a)
+        # seen.append(letter_b)
+    paired_df = pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
+    # board_dict_simpl["Unpaired"]=unpaired
+    return paired_df, unpaired_list, unformed, back_unformed
 
 
 def transform_single_dict(dictionary, conversion: dict):

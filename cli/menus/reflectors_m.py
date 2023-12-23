@@ -9,7 +9,7 @@ from ..functions.reflectors_f import (
     _create_a_connection_single_choice_rf,
     _form_all_connections_rf,
     _exitMenu_rf,
-    _reset_and_streamline_connections_by_pairs_rf,
+    _reset_and_form_all_connections_by_pairs_rf,
     _reset_and_randomize_connections_rf,
     _reset_connections_rf,
     _save_in_current_directory_rf,
@@ -34,7 +34,7 @@ _menu_reflector_connections_options = {
 _menu_reflector_reset_options = {
     "1": (
         "Reset and form max. connections",
-        _reset_and_streamline_connections_by_pairs_rf,
+        _reset_and_form_all_connections_by_pairs_rf,
     ),
     "2": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
     "3": ("Reset connections", _reset_connections_rf),
@@ -49,7 +49,7 @@ _menu_reflector_saved_reflector = {
     "5": ("Form all connections left", _form_all_connections_rf),
     "6": (
         "Reset and form max. connections",
-        _reset_and_streamline_connections_by_pairs_rf,
+        _reset_and_form_all_connections_by_pairs_rf,
     ),
     "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
     "8": ("Reset connections", _reset_connections_rf),
@@ -59,13 +59,13 @@ _menu_reflector_saved_reflector = {
 
 def _name_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
-        clearScreenSafety()
         _print_name_rf(reflector_ref)
         try:
             for key in sorted(_menu_reflector_name_options.keys()):
                 printMenuOption(key + ":" + _menu_reflector_name_options[key][0])
 
             answer = str(input(askForMenuOption()))
+            clearScreenSafety()
             _menu_reflector_name_options.get(answer, [None, invalidChoice])[1](
                 reflector_ref
             )
@@ -77,13 +77,13 @@ def _name_reflector_menu(reflector_ref: reflectors.Reflector):
 
 def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
-        clearScreenSafety()
         try:
             _show_config_rf(reflector_ref)
             for key in sorted(_menu_reflector_connections_options.keys()):
                 printMenuOption(key + ":" + _menu_reflector_connections_options[key][0])
 
             answer = str(input(askForMenuOption()))
+            clearScreenSafety()
             _menu_reflector_connections_options.get(answer, [None, invalidChoice])[1](
                 reflector_ref
             )
@@ -95,13 +95,13 @@ def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
 
 def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
-        clearScreenSafety()
         try:
             _show_config_rf(reflector_ref)
             for key in sorted(_menu_reflector_reset_options.keys()):
                 printMenuOption(key + ":" + _menu_reflector_reset_options[key][0])
 
             answer = str(input(askForMenuOption()))
+            clearScreenSafety()
             _menu_reflector_reset_options.get(answer, [None, invalidChoice])[1](
                 reflector_ref
             )
@@ -113,13 +113,13 @@ def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
 
 def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
-        clearScreenSafety()
         try:
             _show_config_rf(reflector_ref)
             for key in sorted(_menu_reflector_saved_reflector.keys()):
                 printMenuOption(key + ":" + _menu_reflector_saved_reflector[key][0])
 
             answer = str(input(askForMenuOption()))
+            clearScreenSafety()
             _menu_reflector_saved_reflector.get(answer, [None, invalidChoice])[1](
                 reflector_ref
             )
@@ -166,12 +166,12 @@ _menu_reflector = {
 
 def main_reflector_menu(machine_ref: machines.Machine):
     while True:
-        clearScreenSafety()
         try:
             for key in sorted(_menu_reflector.keys()):
                 printMenuOption(key + ":" + _menu_reflector[key][0])
 
             answer = str(input(askForMenuOption()))
+            clearScreenSafety()
             _menu_reflector.get(answer, [None, invalidChoice])[1](
                 machine_ref._reflector
             )

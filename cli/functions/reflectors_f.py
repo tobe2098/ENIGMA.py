@@ -1,9 +1,10 @@
+from ast import unparse
 from ...core import machines
 from ...core import reflectors
 from ...utils import utils
 from ...utils.utils_cli import *
 import pickle
-from ...utils.utils import simplify_dictionary_paired_unpaired
+from ...utils.utils import simplify_simple_dictionary_paired_unpaired
 
 
 def _show_config_rf(reflector_ref: reflectors.Reflector):
@@ -14,7 +15,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     """
 
     printOutput("Reflector name: " + reflector_ref._name)
-    paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
+    paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
     printOutput("Reflector pairs:")
@@ -30,7 +31,9 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    paired_df, _ = utils.simplify_dictionary_paired_unpaired(reflector_ref._board_dict)
+    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
+        reflector_ref._reflector_dict
+    )
 
     if paired_df.shape[0] == 0:
         returningToMenuMessage("There are no available connections.")
@@ -53,10 +56,12 @@ def _delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
         reflector_ref (reflectors.Reflector): _description_
         connIndex (_type_): _description_
     """
-    paired_df, _ = utils.simplify_dictionary_paired_unpaired(reflector_ref._board_dict)
+    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
+        reflector_ref._reflector_dict
+    )
     for entry in paired_df.iloc[connIndex]:
-        # del reflector_ref._board_dict[entry] #Requires testing
-        reflector_ref[entry] = entry
+        # del reflector_ref._reflector_dict[entry] #Requires testing
+        reflector_ref._reflector_dict[entry] = entry
 
     reflector_ref._update_dicts()
     # del d['k2']
@@ -68,14 +73,14 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
-        reflector_ref._board_dict
+    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+        reflector_ref._reflector_dict
     )
     if len(unpaired_list) < 2:
         returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
         )
-    print(">Unpaired letters:", unpaired_list)
+    printOutput("Unpaired letters:" + str(unpaired_list))
     letter1 = askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
         returningToMenuMessage("Invalid input.")
@@ -83,8 +88,8 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     letter2 = askingInput("Choose the second letter:").upper()
     if letter2 not in list(set(unpaired_list) - set(letter1)):
         returningToMenuMessage("Invalid input.")
-    reflector_ref._board_dict[letter1] = letter2
-    reflector_ref._board_dict[letter2] = letter1
+    reflector_ref._reflector_dict[letter1] = letter2
+    reflector_ref._reflector_dict[letter2] = letter1
     reflector_ref._update_dicts()
     returningToMenuMessage("The connection was formed.")
 
@@ -92,27 +97,34 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
 
 
-def _connect_two_letters_rf(reflector_ref: reflectors.Reflector):
+def _connect_all_letters_rf(reflector_ref: reflectors.Reflector):
     """_summary_
 
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
-        reflector_ref._board_dict
-    )
-    if len(unpaired_list) < 2:
-        returningToMenuMessage(
-            "There are no letters left to pair (one or fewer left unconnected)."
-        )
+    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    #     reflector_ref._reflector_dict
+    # )
+    # if len(unpaired_list) < 2:
+    #     returningToMenuMessage(
+    #         "There are no letters left to pair (one or fewer left unconnected)."
+    #     )
     while True:
-        printOutput("Unpaired letters:"), unpaired_list
+        _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+            reflector_ref._reflector_dict
+        )
+        if len(unpaired_list) < 2:
+            returningToMenuMessage(
+                "There are no letters left to pair (one or fewer left unconnected)."
+            )
+        printOutput("Unpaired letters:" + str(unpaired_list))
         printOutput("If you want to stop configurating the board, press Enter.")
         letters = askingInput("Input two letters to pair:").strip().upper()
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
-            returningToMenuNoMessage("No input.")
+            return
         else:
             print("Error: Input 2 letters please.")
             continue
@@ -120,10 +132,10 @@ def _connect_two_letters_rf(reflector_ref: reflectors.Reflector):
         if not all(map(lambda v: v in letters, unpaired_list)):
             printOutput("One of the letters is already connected.")
             continue
-        break
-    reflector_ref._board_dict[letters[0]] = letters[1]
-    reflector_ref._board_dict[letters[1]] = letters[0]
-    printOutput("Connection formed.")
+        # break
+        reflector_ref._reflector_dict[letters[0]] = letters[1]
+        reflector_ref._reflector_dict[letters[1]] = letters[0]
+        printOutput("Connection formed.")
 
 
 def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
@@ -133,13 +145,11 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
     _show_config_rf(reflector_ref)
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
-        reflector_ref._board_dict
-    )
-    _form_n_connections_rf(reflector_ref, int(len(unpaired_list) / 2))
-    returningToMenuMessage(
-        "There are no letters left to pair (one or fewer left unconnected)."
-    )
+    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    #     reflector_ref._reflector_dict
+    # )
+    _connect_all_letters_rf(reflector_ref)
+    returningToMenuMessage("You exited without forming all connections!")
 
 
 # def reset_and_form_all_connections(reflector_ref: reflectors.Reflector):
@@ -162,10 +172,10 @@ def _form_n_connections_rf(reflector_ref: reflectors.Reflector, connections: int
     for i in range(connections):
         clearScreenConvenience()
         printOutput(f"Creating connection {i+1} of {connections}")
-        _connect_two_letters_rf(reflector_ref)
+        _create_a_connection_single_choice_rf(reflector_ref)
 
 
-def _reset_and_streamline_connections_by_pairs_rf(reflector_ref: reflectors.Reflector):
+def _reset_and_form_all_connections_by_pairs_rf(reflector_ref: reflectors.Reflector):
     """_summary_
 
     Args:
@@ -179,7 +189,7 @@ def _reset_and_streamline_connections_by_pairs_rf(reflector_ref: reflectors.Refl
         elif accbool == "y":
             break
     while True:
-        _connect_two_letters_rf(reflector_ref)
+        _connect_all_letters_rf(reflector_ref)
 
 
 ## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
@@ -289,7 +299,7 @@ def _load_saved_reflector():
 
 
 def _exitMenu_rf(reflector_ref: reflectors.Reflector):
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
     if len(unpaired_list) > 1:

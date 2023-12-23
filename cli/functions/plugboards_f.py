@@ -1,8 +1,9 @@
 # from tkinter import Menubutton
+from ast import unparse
 from ...core import plugboards
 from ...utils import utils
 from ...utils.utils_cli import *
-from ...utils.utils import simplify_dictionary_paired_unpaired
+from ...utils.utils import simplify_simple_dictionary_paired_unpaired
 
 
 def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
@@ -12,7 +13,7 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref (plugboards.PlugBoard): _description_
     """
 
-    paired_df, unpaired_list = simplify_dictionary_paired_unpaired(
+    paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref.board_dict
     )
     printOutput("Paired letters: ")
@@ -28,7 +29,9 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    paired_df, _ = utils.simplify_dictionary_paired_unpaired(plugboard_ref._board_dict)
+    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
+        plugboard_ref._board_dict
+    )
 
     if paired_df.shape[0] == 0:
         returningToMenuMessage("There are no available connections.")
@@ -51,10 +54,12 @@ def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, connIndex):
         plugboard_ref (plugboards.PlugBoard): _description_
         connIndex (_type_): _description_
     """
-    paired_df, _ = utils.simplify_dictionary_paired_unpaired(plugboard_ref._board_dict)
+    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
+        plugboard_ref._board_dict
+    )
     for entry in paired_df.iloc[connIndex]:
         # del plugboard_ref._board_dict[entry] #Requires testing
-        plugboard_ref[entry] = entry
+        plugboard_ref._board_dict[entry] = entry
 
     plugboard_ref._update_dicts()
     # del d['k2']
@@ -66,14 +71,14 @@ def _create_a_connection_single_choice_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     if len(unpaired_list) < 2:
         returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
         )
-    print(">Unpaired letters:", unpaired_list)
+    printOutput("Unpaired letters:" + str(unpaired_list))
     letter1 = askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
         returningToMenuMessage("Invalid input.")
@@ -96,7 +101,7 @@ def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     if len(unpaired_list) < 2:
@@ -104,13 +109,14 @@ def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
             "There are no letters left to pair (one or fewer left unconnected)."
         )
     while True:
-        printOutput("Unpaired letters:"), unpaired_list
+        printOutput("Unpaired letters:" + str(unpaired_list))
         printOutput("If you want to stop configurating the board, press Enter.")
         letters = askingInput("Input two letters to pair:").strip().upper()
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
-            returningToMenuNoMessage("No input.")
+            # returningToMenuNoMessage("No input.")
+            return
         else:
             print("Error: Input 2 letters please.")
             continue
@@ -131,7 +137,7 @@ def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref (plugboards.PlugBoard): _description_
     """
     _show_config_pb(plugboard_ref)
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     connections = input(
@@ -164,10 +170,10 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
     for i in range(connections):
         clearScreenConvenience()
         printOutput(f"Creating connection {i+1} of {connections}")
-        _connect_two_letters_pb(plugboard_ref)
+        _create_a_connection_single_choice_pb(plugboard_ref)
 
 
-def _reset_and_streamline_connections_by_pairs_pb(plugboard_ref: plugboards.PlugBoard):
+def _reset_and_form_all_connections_by_pairs_pb(plugboard_ref: plugboards.PlugBoard):
     """_summary_
 
     Args:
@@ -175,13 +181,11 @@ def _reset_and_streamline_connections_by_pairs_pb(plugboard_ref: plugboards.Plug
     """
     _reset_connections_pb(plugboard_ref)
     while True:
-        accbool = askingInput("Do you still want to make changes?[y/n]").lower()
+        accbool = askingInput("Do you want to keep making changes?[y/n]").lower()
         if accbool == "n":
             returningToMenuNoMessage()
         elif accbool == "y":
-            break
-    while True:
-        _connect_two_letters_pb(plugboard_ref)
+            _connect_two_letters_pb(plugboard_ref)
 
 
 ## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start

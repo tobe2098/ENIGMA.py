@@ -3,13 +3,14 @@
 ### EXCEPT FOR LOADING!!!!!! LOADING OF ITEMS HAS TO BE DONE DIRECTLY IN THE MACHINE MENU
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 # Intern setup functions
+from turtle import back
 from ...core import rotors
 from ...utils import utils
 from ...utils.utils_cli import *
 import pickle
 
 
-def _show_config_rf(rotor_ref: rotors.Rotor):
+def _show_config_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
@@ -28,13 +29,16 @@ def _show_config_rf(rotor_ref: rotors.Rotor):
     returningToMenuNoMessage()
 
 
-def _choose_connection_to_delete_rf(rotor_ref: rotors.Rotor):
+# For now, in text, there will be no connection deletion? Or will there?
+def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    paired_df, _ = utils.simplify_dictionary_paired_unpaired(rotor_ref._board_dict)
+    paired_df, _, _, _ = utils.simplify_rotor_dictionary_paired_unpaired(
+        rotor_ref._forward_dict
+    )
 
     if paired_df.shape[0] == 0:
         returningToMenuMessage("There are no available connections.")
@@ -57,73 +61,115 @@ def _delete_a_connection_rf(rotor_ref: rotors.Rotor, connIndex):
         rotor_ref (rotors.Rotor): _description_
         connIndex (_type_): _description_
     """
-    paired_df, _ = utils.simplify_dictionary_paired_unpaired(rotor_ref._board_dict)
-    for entry in paired_df.iloc[connIndex]:
-        # del rotor_ref._board_dict[entry] #Requires testing
-        rotor_ref[entry] = entry
-
+    paired_df, _, _, _ = utils.simplify_rotor_dictionary_paired_unpaired(
+        rotor_ref._forward_dict, rotor_ref._backward_dict
+    )
+    entry1, entry2 = paired_df.iloc[connIndex]
+    # del rotor_ref._board_dict[entry] #Requires testing
+    rotor_ref._forward_dict[entry1] = ""
+    rotor_ref._backward_dict[entry2] = ""
+    rotor_ref.lacks_conn = True
     rotor_ref._update_dicts()
     # del d['k2']
 
 
-def _create_a_connection_single_choice_rf(rotor_ref: rotors.Rotor):
+def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(rotor_ref._board_dict)
-    if len(unpaired_list) < 2:
+    (
+        _,
+        _,
+        front_unformed,
+        back_unformed,
+    ) = utils.simplify_rotor_dictionary_paired_unpaired(
+        rotor_ref._forward_dict, rotor_ref._backward_dict
+    )
+    if len(front_unformed) == 0 and len(back_unformed) == 0:
+        rotor_ref.lacks_conn = True
         returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
         )
-    print(">Unpaired letters:", unpaired_list)
-    letter1 = askingInput("Choose a letter to pair:").upper()
-    if letter1 not in unpaired_list:
+    printOutput("Unpaired letters in front side:" + str(front_unformed))
+
+    letter1 = askingInput("Choose a letter to pair from front side:").upper()
+    if letter1 not in front_unformed:
         returningToMenuMessage("Invalid input.")
-    printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
-    letter2 = askingInput("Choose the second letter:").upper()
-    if letter2 not in list(set(unpaired_list) - set(letter1)):
+    printOutput("Unpaired letters in back side:" + str(back_unformed))
+    letter2 = askingInput("Choose the second letter from the back side:").upper()
+    if letter2 not in back_unformed:
         returningToMenuMessage("Invalid input.")
-    rotor_ref._board_dict[letter1] = letter2
-    rotor_ref._board_dict[letter2] = letter1
+    rotor_ref._forward_dict[letter1] = letter2
+    rotor_ref._backward_dict[letter2] = letter1
     rotor_ref._update_dicts()
     returningToMenuMessage("The connection was formed.")
+    if len(front_unformed) - 1 == 0 and len(back_unformed) - 1 == 0:
+        rotor_ref.lacks_conn = False
 
 
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
 
 
-def _connect_two_letters_rf(rotor_ref: rotors.Rotor):
+def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(rotor_ref._board_dict)
-    if len(unpaired_list) < 2:
-        returningToMenuMessage(
-            "There are no letters left to pair (one or fewer left unconnected)."
-        )
+    # (
+    #     _,
+    #     _,
+    #     front_unformed,
+    #     back_unformed,
+    # ) = utils.simplify_rotor_dictionary_paired_unpaired(
+    #     rotor_ref._forward_dict, rotor_ref._backward_dict
+    # )
+    # if len(front_unformed) == 0 and len(back_unformed) == 0:
+    #     rotor_ref.lacks_conn = True
+    #     returningToMenuMessage(
+    #         "There are no letters left to pair (one or fewer left unconnected)."
+    #     )
     while True:
-        printOutput("Unpaired letters:"), unpaired_list
+        (
+            _,
+            _,
+            front_unformed,
+            back_unformed,
+        ) = utils.simplify_rotor_dictionary_paired_unpaired(
+            rotor_ref._forward_dict, rotor_ref._backward_dict
+        )
+        if len(front_unformed) == 0 and len(back_unformed) == 0:
+            rotor_ref.lacks_conn = True
+            returningToMenuMessage(
+                "There are no letters left to pair (one or fewer left unconnected)."
+            )
+        printOutput("Unpaired letters in front side:" + str(front_unformed))
+        printOutput("Unpaired letters in back side:" + str(back_unformed))
         printOutput("If you want to stop configurating the board, press Enter.")
-        letters = askingInput("Input two letters to pair:").strip().upper()
+        letters = (
+            askingInput(
+                "Input one letter from front side, one from back side (in order):"
+            )
+            .strip()
+            .upper()
+        )
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
-            returningToMenuNoMessage("No input.")
+            return
         else:
-            print("Error: Input 2 letters please.")
+            print("Error: Only 2 letters please.")
             continue
         letters = list(letters)
-        if not all(map(lambda v: v in letters, unpaired_list)):
-            printOutput("One of the letters is already connected.")
+        if letters[0] not in front_unformed or letters[1] not in back_unformed:
+            printOutput("One or more letters are already connected.")
             continue
-        break
-    rotor_ref._board_dict[letters[0]] = letters[1]
-    rotor_ref._board_dict[letters[1]] = letters[0]
-    printOutput("Connection formed.")
+        # break
+        rotor_ref._forward_dict[letters[0]] = letters[1]
+        rotor_ref._backward_dict[letters[1]] = letters[0]
+        printOutput("Connection formed.")
 
 
 def _form_all_connections_rf(rotor_ref: rotors.Rotor):
@@ -132,12 +178,16 @@ def _form_all_connections_rf(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    _show_config_rf(rotor_ref)
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(rotor_ref._board_dict)
-    _form_n_connections_rf(rotor_ref, int(len(unpaired_list) / 2))
-    returningToMenuMessage(
-        "There are no letters left to pair (one or fewer left unconnected)."
-    )
+    _show_config_rt(rotor_ref)
+    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    #     rotor_ref._board_dict
+    # )
+    _connect_all_letters_rt(rotor_ref)
+    returningToMenuMessage("You exited without forming all connections!")
+
+    # returningToMenuMessage(
+    #     "There are no letters left to pair (one or fewer left unconnected)."
+    # )
 
 
 # def reset_and_form_all_connections(rotor_ref: rotors.Rotor):
@@ -160,7 +210,7 @@ def _form_n_connections_rf(rotor_ref: rotors.Rotor, connections: int):
     for i in range(connections):
         clearScreenConvenience()
         printOutput(f"Creating connection {i+1} of {connections}")
-        _connect_two_letters_rf(rotor_ref)
+        _connect_all_letters_rt(rotor_ref)
 
 
 def _reset_and_streamline_connections_by_pairs_rf(rotor_ref: rotors.Rotor):
@@ -177,7 +227,7 @@ def _reset_and_streamline_connections_by_pairs_rf(rotor_ref: rotors.Rotor):
         elif accbool == "y":
             break
     while True:
-        _connect_two_letters_rf(rotor_ref)
+        _connect_all_letters_rt(rotor_ref)
 
 
 ## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
@@ -287,7 +337,7 @@ def load_saved_reflector():
 
 
 def _exitMenu_rf(rotor_ref: rotors.Rotor):
-    _, unpaired_list = utils.simplify_dictionary_paired_unpaired(
+    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         rotor_ref._reflector_dict
     )
     if len(unpaired_list) > 1:

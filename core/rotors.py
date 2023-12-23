@@ -30,7 +30,7 @@ class Rotor:
         self._backward_dict = dict(
             zip(self._characters_in_use, self._characters_in_use)
         )
-
+        self.lacks_conn = False
         self._update_dicts()
         print(">Rotor has been created")
 
