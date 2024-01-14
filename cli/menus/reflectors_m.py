@@ -1,3 +1,4 @@
+from platform import machine
 from numpy import format_float_positional
 from ...core import machines
 from ...core import reflectors
@@ -60,74 +61,24 @@ _menu_reflector_saved_reflector = {
 def _name_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        try:
-            for key in sorted(_menu_reflector_name_options.keys()):
-                printMenuOption(key + ":" + _menu_reflector_name_options[key][0])
-
-            answer = str(input(askForMenuOption()))
-            clearScreenSafety()
-            _menu_reflector_name_options.get(answer, [None, invalidChoice])[1](
-                reflector_ref
-            )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
-        except MenuExitException:
-            exitMenu()
+        regular_menu_call(reflector_ref, _menu_reflector_name_options)
 
 
 def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
-    while True:
-        try:
-            _show_config_rf(reflector_ref)
-            for key in sorted(_menu_reflector_connections_options.keys()):
-                printMenuOption(key + ":" + _menu_reflector_connections_options[key][0])
-
-            answer = str(input(askForMenuOption()))
-            clearScreenSafety()
-            _menu_reflector_connections_options.get(answer, [None, invalidChoice])[1](
-                reflector_ref
-            )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
-        except MenuExitException:
-            exitMenu()
-
+        while True:
+            _print_name_rf(reflector_ref)
+            regular_menu_call(reflector_ref, _menu_reflector_connections_options)
 
 def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
-    while True:
-        try:
-            _show_config_rf(reflector_ref)
-            for key in sorted(_menu_reflector_reset_options.keys()):
-                printMenuOption(key + ":" + _menu_reflector_reset_options[key][0])
-
-            answer = str(input(askForMenuOption()))
-            clearScreenSafety()
-            _menu_reflector_reset_options.get(answer, [None, invalidChoice])[1](
-                reflector_ref
-            )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
-        except MenuExitException:
-            exitMenu()
+        while True:
+            _print_name_rf(reflector_ref)
+            regular_menu_call(reflector_ref, _menu_reflector_reset_options)
 
 
 def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
-    while True:
-        try:
-            _show_config_rf(reflector_ref)
-            for key in sorted(_menu_reflector_saved_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector_saved_reflector[key][0])
-
-            answer = str(input(askForMenuOption()))
-            clearScreenSafety()
-            _menu_reflector_saved_reflector.get(answer, [None, invalidChoice])[1](
-                reflector_ref
-            )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
-        except MenuExitException:
-            exitMenu()
-
+        while True:
+            _print_name_rf(reflector_ref)
+            regular_menu_call(reflector_ref, _saved_reflector_menu)
 
 def _load_saved_reflector_for_editing(
     reflector: reflectors.Reflector = None, recursive: bool = False
@@ -166,16 +117,5 @@ _menu_reflector = {
 
 def main_reflector_menu(machine_ref: machines.Machine):
     while True:
-        try:
-            for key in sorted(_menu_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector[key][0])
-
-            answer = str(input(askForMenuOption()))
-            clearScreenSafety()
-            _menu_reflector.get(answer, [None, invalidChoice])[1](
-                machine_ref._reflector
-            )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
-        except MenuExitException:
-            exitMenu()
+      _print_name_rf(machine_ref._reflector)
+      regular_menu_call(machine_ref._reflector, _menu_reflector)

@@ -34,16 +34,4 @@ _menu_plugboard = {
 
 def main_plugboard_menu(machine_ref: machines.Machine):
     while True:
-        try:
-            for key in sorted(_menu_plugboard.keys()):
-                printMenuOption(key + ":" + _menu_plugboard[key][0])
-
-            answer = str(input(askForMenuOption()))
-            clearScreenSafety()
-            _menu_plugboard.get(answer, [None, invalidChoice])[1](
-                machine_ref._plugboard
-            )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
-        except MenuExitException:
-            raise MenuExitException()
+        regular_menu_call(machine_ref._plugboard, _menu_plugboard)

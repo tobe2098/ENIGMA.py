@@ -73,3 +73,18 @@ def clearScreenConvenience():
 
 def checkIfFileExists(path, name, suffix):
     return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
+
+def regular_menu_call(object_for_call, menu:dict):
+    try:
+        for key in sorted(menu.keys()):
+            printMenuOption(key + ":" + menu[key][0])
+
+        answer = str(input(askForMenuOption()))
+        menu.get(answer, [None, invalidChoice])[1](
+            object_for_call
+        )
+    except ReturnToMenuException:
+        print(ReturnToMenuException.message)
+    except MenuExitException:
+        clearScreenConvenience()
+        exitMenu()
