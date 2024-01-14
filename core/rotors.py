@@ -44,19 +44,19 @@ class Rotor:
         return [self._conversion_in_use[i] for i in self._notches]
 
     def notch_check_move_forward(self):
-        if self._position in self._notches:
-            self._position += 1
+        if any((notch-self._position)%26<self._jump for notch in self._notches):
+            self._position += self._jump
             self._position %= 26
             return True
         else:
-            self._position += 1
+            self._position += self._jump
             self._position %= 26
             return False
 
     def backspace(self):
-        self._position -= 1
+        self._position -= self._jump
         self._position %= 26
-        return self._position in self._notches
+        return any((self._position-notch)%26<self._jump for notch in self._notches)
 
     def forward_pass(self, input_letter_number):
         input_letter_number += self._position
@@ -82,7 +82,7 @@ class Rotor:
         # print(">Now name of the reflector is:", self._name)
 
     def _define_rotor_jump(self, jump):
-        self.jump = jump
+        self._jump = jump
         # print(
         #     ">Now rotor jumps ",
         #     jump,
