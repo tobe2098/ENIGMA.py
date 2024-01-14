@@ -20,7 +20,7 @@ class Rotor:
             25
         ]  # self.notch can be a list. When does the next rotor move relative to the notch?
         self._position = 1  # Can go from 1 to 26
-        # self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
+        self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
