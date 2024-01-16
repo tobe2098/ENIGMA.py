@@ -16,15 +16,16 @@ class Rotor:
         # Note: variables can be defined on the fly
 
         self._name = "name"  # randomly generating a name is going to happen I guess
-        self._notches = [
-            25
-        ]  # self.notch can be a list. When does the next rotor move relative to the notch?
+        
         self._position = 1  # Can go from 1 to 26
         self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
-
+        self._no_characters=len(characters)
+        self._notches = [
+            self._no_characters-1
+        ]  # self.notch can be a list. When does the next rotor move relative to the notch?
         self._forward_dict = dict(zip(self._characters_in_use, self._characters_in_use))
 
         self._backward_dict = dict(
@@ -44,19 +45,19 @@ class Rotor:
         return [self._conversion_in_use[i] for i in self._notches]
 
     def notch_check_move_forward(self):
-        if any((notch-self._position)%26<self._jump for notch in self._notches):
+        if any((notch-self._position)%self._no_characters<self._jump for notch in self._notches):
             self._position += self._jump
-            self._position %= 26
+            self._position %= self._no_characters
             return True
         else:
             self._position += self._jump
-            self._position %= 26
+            self._position %= self._no_characters
             return False
 
     def backspace(self):
         self._position -= self._jump
-        self._position %= 26
-        return any((self._position-notch)%26<self._jump for notch in self._notches)
+        self._position %= self._no_characters
+        return any((self._position-notch)%self._no_characters<self._jump for notch in self._notches)
 
     def forward_pass(self, input_letter_number):
         input_letter_number += self._position
