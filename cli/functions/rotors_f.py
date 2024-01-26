@@ -2,6 +2,7 @@
 ### EACH OBJECT SET OF MENUS TAKES THE REFERENCE FROM THE MACHINE, AND THEN OPERATES ON IT, EFFECTIVELY NOT TOUCHING THE MACHINE ITSELF BUT ITS OBJECTS
 ### EXCEPT FOR LOADING!!!!!! LOADING OF ITEMS HAS TO BE DONE DIRECTLY IN THE MACHINE MENU
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
+### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or 2 nor EVEN!, write explanation of interplay between notches and jump
 # Intern setup functions
 from turtle import back
 from ...core import rotors
@@ -20,12 +21,22 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
         "Rotor letter position :"
         + str(rotor_ref._conversion_in_use[rotor_ref._position])
     )
-    printOutput("Rotor letter jumps:" + str(rotor_ref.jump))
+    printOutput("Rotor letter jumps:" + str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
     printOutput("Rotor notches:" + str(notchlist))
     printOutput("Forward connections in the rotor:" + str(rotor_ref._forward_dict))
     printOutput("Backward connections in the rotor:" + str(rotor_ref._backward_dict))
     printOutput("Rotor name:" + str(rotor_ref._name))
+    (
+        _,
+        unpaired,
+        _,
+        _,
+    ) = utils.simplify_rotor_dictionary_paired_unpaired(
+        rotor_ref._forward_dict, rotor_ref._backward_dict
+    )
+    if len(unpaired)>0:
+        printOutput("One or more connections are self-connections. This may go against proper practice.")
     returningToMenuNoMessage()
 
 
@@ -37,7 +48,7 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     paired_df, _, _, _ = utils.simplify_rotor_dictionary_paired_unpaired(
-        rotor_ref._forward_dict
+        rotor_ref._forward_dict, rotor_ref._backward_dict
     )
 
     if paired_df.shape[0] == 0:
@@ -48,13 +59,13 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     row = askingInput("Choose a connection to delete (by index):")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
-        _delete_a_connection_rf(rotor_ref=rotor_ref, connIndex=row)
+        _delete_a_connection_rt(rotor_ref=rotor_ref, connIndex=row)
         returningToMenuMessage("Connection was deleted.")
     else:
         returningToMenuMessage("Index invalid.")
 
 
-def _delete_a_connection_rf(rotor_ref: rotors.Rotor, connIndex):
+def _delete_a_connection_rt(rotor_ref: rotors.Rotor, connIndex):
     """_summary_
 
     Args:
@@ -88,7 +99,7 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
         rotor_ref._forward_dict, rotor_ref._backward_dict
     )
     if len(front_unformed) == 0 and len(back_unformed) == 0:
-        rotor_ref.lacks_conn = True
+        rotor_ref.lacks_conn = False
         returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
         )
@@ -141,7 +152,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
             rotor_ref._forward_dict, rotor_ref._backward_dict
         )
         if len(front_unformed) == 0 and len(back_unformed) == 0:
-            rotor_ref.lacks_conn = True
+            rotor_ref.lacks_conn = False
             returningToMenuMessage(
                 "There are no letters left to pair (one or fewer left unconnected)."
             )
@@ -171,8 +182,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         rotor_ref._backward_dict[letters[1]] = letters[0]
         printOutput("Connection formed.")
 
-
-def _form_all_connections_rf(rotor_ref: rotors.Rotor):
+def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
@@ -200,17 +210,43 @@ def _form_all_connections_rf(rotor_ref: rotors.Rotor):
 #     form_all_connections(rotor_ref)
 
 
-def _form_n_connections_rf(rotor_ref: rotors.Rotor, connections: int):
+def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
         rotor_ref (rotors.Rotor): _description_
         connections (int): _description_
     """
-    for i in range(connections):
-        clearScreenConvenience()
-        printOutput(f"Creating connection {i+1} of {connections}")
-        _connect_all_letters_rt(rotor_ref)
+    _show_config_rt(rotor_ref)
+    letter1 = askingInput("Choose a frontside connection by the frontside letter to swap:").upper()
+    if letter1 not in rotor_ref._characters_in_use:
+        printOutput("Invalid input.")
+        return
+    letter2 = askingInput("Choose a second frontside connection by the frontside letter to swap:").upper()
+    if letter2 not in rotor_ref._characters_in_use:
+        printOutput("Invalid input.")
+        return
+    rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]], rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]]=rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]], rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]]
+    rotor_ref.rotor_ref._forward_dict[letter1], rotor_ref.rotor_ref._forward_dict[letter2]=rotor_ref.rotor_ref._forward_dict[letter2], rotor_ref.rotor_ref._forward_dict[letter1]
+    rotor_ref._update_dicts()
+    printOutput("The connection was swapped.")
+
+
+def _swap_connections_rt(rotor_ref: rotors.Rotor):
+    """_summary_
+
+    Args:
+        rotor_ref (rotors.Rotor): _description_
+    """
+    while True:
+      boolean=askingInput("If you do not want to continue swapping, enter N:").upper()
+      if (boolean=='N'):
+          returningToMenuMessage("Returning to menu...")
+      _swap_two_connections_rt(rotor_ref=rotor_ref)
+
+    # returningToMenuMessage(
+    #     "There are no letters left to pair (one or fewer left unconnected)."
+    # )
 
 
 def _reset_and_streamline_connections_by_pairs_rf(rotor_ref: rotors.Rotor):
