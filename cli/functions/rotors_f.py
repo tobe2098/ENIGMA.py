@@ -2,13 +2,15 @@
 ### EACH OBJECT SET OF MENUS TAKES THE REFERENCE FROM THE MACHINE, AND THEN OPERATES ON IT, EFFECTIVELY NOT TOUCHING THE MACHINE ITSELF BUT ITS OBJECTS
 ### EXCEPT FOR LOADING!!!!!! LOADING OF ITEMS HAS TO BE DONE DIRECTLY IN THE MACHINE MENU
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
-### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or 2 nor EVEN!, write explanation of interplay between notches and jump
+### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
-from turtle import back
 from ...core import rotors
 from ...utils import utils
-from ...utils.utils_cli import *
+from ...utils import utils_cli
+import random
+import os
 import pickle
+from copy import copy
 
 
 def _show_config_rt(rotor_ref: rotors.Rotor):
@@ -17,16 +19,16 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    printOutput(
+    utils_cli.printOutput(
         "Rotor letter position :"
         + str(rotor_ref._conversion_in_use[rotor_ref._position])
     )
-    printOutput("Rotor letter jumps:" + str(rotor_ref._jump))
+    utils_cli.printOutput("Rotor letter jumps:" + str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
-    printOutput("Rotor notches:" + str(notchlist))
-    printOutput("Forward connections in the rotor:" + str(rotor_ref._forward_dict))
-    printOutput("Backward connections in the rotor:" + str(rotor_ref._backward_dict))
-    printOutput("Rotor name:" + str(rotor_ref._name))
+    utils_cli.printOutput("Rotor notches:" + str(notchlist))
+    utils_cli.printOutput("Forward connections in the rotor:" + str(rotor_ref._forward_dict))
+    utils_cli.printOutput("Backward connections in the rotor:" + str(rotor_ref._backward_dict))
+    utils_cli.printOutput("Rotor name:" + str(rotor_ref._name))
     (
         _,
         unpaired,
@@ -36,8 +38,8 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
         rotor_ref._forward_dict, rotor_ref._backward_dict
     )
     if len(unpaired)>0:
-        printOutput("One or more connections are self-connections. This may go against proper practice.")
-    returningToMenuNoMessage()
+        utils_cli.printOutput("One or more connections are self-connections. This may go against proper practice.")
+    utils_cli.returningToMenuNoMessage()
 
 
 # For now, in text, there will be no connection deletion? Or will there?
@@ -52,17 +54,17 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     )
 
     if paired_df.shape[0] == 0:
-        returningToMenuMessage("There are no available connections.")
+        utils_cli.returningToMenuMessage("There are no available connections.")
 
-    printOutput("Current connections are:")
+    utils_cli.printOutput("Current connections are:")
     print(paired_df)
-    row = askingInput("Choose a connection to delete (by index):")
+    row = utils_cli.askingInput("Choose a connection to delete (by index):")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         _delete_a_connection_rt(rotor_ref=rotor_ref, connIndex=row)
-        returningToMenuMessage("Connection was deleted.")
+        utils_cli.returningToMenuMessage("Connection was deleted.")
     else:
-        returningToMenuMessage("Index invalid.")
+        utils_cli.returningToMenuMessage("Index invalid.")
 
 
 def _delete_a_connection_rt(rotor_ref: rotors.Rotor, connIndex):
@@ -100,22 +102,22 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     )
     if len(front_unformed) == 0 and len(back_unformed) == 0:
         rotor_ref.lacks_conn = False
-        returningToMenuMessage(
+        utils_cli.returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)."
         )
-    printOutput("Unpaired letters in front side:" + str(front_unformed))
+    utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
 
-    letter1 = askingInput("Choose a letter to pair from front side:").upper()
+    letter1 = utils_cli.askingInput("Choose a letter to pair from front side:").upper()
     if letter1 not in front_unformed:
-        returningToMenuMessage("Invalid input.")
-    printOutput("Unpaired letters in back side:" + str(back_unformed))
-    letter2 = askingInput("Choose the second letter from the back side:").upper()
+        utils_cli.returningToMenuMessage("Invalid input.")
+    utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
+    letter2 = utils_cli.askingInput("Choose the second letter from the back side:").upper()
     if letter2 not in back_unformed:
-        returningToMenuMessage("Invalid input.")
+        utils_cli.returningToMenuMessage("Invalid input.")
     rotor_ref._forward_dict[letter1] = letter2
     rotor_ref._backward_dict[letter2] = letter1
     rotor_ref._update_dicts()
-    returningToMenuMessage("The connection was formed.")
+    utils_cli.returningToMenuMessage("The connection was formed.")
     if len(front_unformed) - 1 == 0 and len(back_unformed) - 1 == 0:
         rotor_ref.lacks_conn = False
 
@@ -139,7 +141,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
     # )
     # if len(front_unformed) == 0 and len(back_unformed) == 0:
     #     rotor_ref.lacks_conn = True
-    #     returningToMenuMessage(
+    #     utils_cli.returningToMenuMessage(
     #         "There are no letters left to pair (one or fewer left unconnected)."
     #     )
     while True:
@@ -153,14 +155,14 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         )
         if len(front_unformed) == 0 and len(back_unformed) == 0:
             rotor_ref.lacks_conn = False
-            returningToMenuMessage(
+            utils_cli.returningToMenuMessage(
                 "There are no letters left to pair (one or fewer left unconnected)."
             )
-        printOutput("Unpaired letters in front side:" + str(front_unformed))
-        printOutput("Unpaired letters in back side:" + str(back_unformed))
-        printOutput("If you want to stop configurating the board, press Enter.")
+        utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
+        utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
+        utils_cli.printOutput("If you want to stop configurating the board, press Enter.")
         letters = (
-            askingInput(
+            utils_cli.askingInput(
                 "Input one letter from front side, one from back side (in order):"
             )
             .strip()
@@ -175,12 +177,12 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
             continue
         letters = list(letters)
         if letters[0] not in front_unformed or letters[1] not in back_unformed:
-            printOutput("One or more letters are already connected.")
+            utils_cli.printOutput("One or more letters are already connected.")
             continue
         # break
         rotor_ref._forward_dict[letters[0]] = letters[1]
         rotor_ref._backward_dict[letters[1]] = letters[0]
-        printOutput("Connection formed.")
+        utils_cli.printOutput("Connection formed.")
 
 def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     """_summary_
@@ -193,9 +195,9 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     #     rotor_ref._board_dict
     # )
     _connect_all_letters_rt(rotor_ref)
-    returningToMenuMessage("You exited without forming all connections!")
+    utils_cli.returningToMenuMessage("You exited without forming all connections!")
 
-    # returningToMenuMessage(
+    # utils_cli.returningToMenuMessage(
     #     "There are no letters left to pair (one or fewer left unconnected)."
     # )
 
@@ -218,18 +220,18 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         connections (int): _description_
     """
     _show_config_rt(rotor_ref)
-    letter1 = askingInput("Choose a frontside connection by the frontside letter to swap:").upper()
+    letter1 = utils_cli.askingInput("Choose a frontside connection by the frontside letter to swap:").upper()
     if letter1 not in rotor_ref._characters_in_use:
-        printOutput("Invalid input.")
+        utils_cli.printOutput("Invalid input.")
         return
-    letter2 = askingInput("Choose a second frontside connection by the frontside letter to swap:").upper()
+    letter2 = utils_cli.askingInput("Choose a second frontside connection by the frontside letter to swap:").upper()
     if letter2 not in rotor_ref._characters_in_use:
-        printOutput("Invalid input.")
+        utils_cli.printOutput("Invalid input.")
         return
     rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]], rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]]=rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]], rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]]
     rotor_ref.rotor_ref._forward_dict[letter1], rotor_ref.rotor_ref._forward_dict[letter2]=rotor_ref.rotor_ref._forward_dict[letter2], rotor_ref.rotor_ref._forward_dict[letter1]
     rotor_ref._update_dicts()
-    printOutput("The connection was swapped.")
+    utils_cli.printOutput("The connection was swapped.")
 
 
 def _swap_connections_rt(rotor_ref: rotors.Rotor):
@@ -239,12 +241,12 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     while True:
-      boolean=askingInput("If you do not want to continue swapping, enter N:").upper()
+      boolean=utils_cli.askingInput("If you do not want to continue swapping, enter N:").upper()
       if (boolean=='N'):
-          returningToMenuMessage("Returning to menu...")
+          utils_cli.returningToMenuMessage("Returning to menu...")
       _swap_two_connections_rt(rotor_ref=rotor_ref)
 
-    # returningToMenuMessage(
+    # utils_cli.returningToMenuMessage(
     #     "There are no letters left to pair (one or fewer left unconnected)."
     # )
 
@@ -257,9 +259,9 @@ def _reset_and_streamline_connections_by_pairs_rf(rotor_ref: rotors.Rotor):
     """
     _reset_connections_rf(rotor_ref)
     while True:
-        accbool = askingInput("Do you still want to make changes?[y/n]").lower()
+        accbool = utils_cli.askingInput("Do you still want to make changes?[y/n]").lower()
         if accbool == "n":
-            returningToMenuNoMessage()
+            utils_cli.returningToMenuNoMessage()
         elif accbool == "y":
             break
     while True:
@@ -276,12 +278,12 @@ def _reset_and_randomize_connections_rf(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     seed = input(
-        askingInput(
+        utils_cli.askingInput(
             "Introduce a positive integer as a seed to randomize the plugboard connections: "
         )
     )
     if not isinstance(seed, int) and seed > 0:
-        returningToMenuMessage("Number is not a positive integer.")
+        utils_cli.returningToMenuMessage("Number is not a positive integer.")
     rotor_ref._reset_dictionaries()
     rotor_ref.random_setup(seed)
 
@@ -296,21 +298,21 @@ def _reset_connections_rf(rotor_ref: rotors.Rotor):
 
 
 def _print_name_rf(rotor_ref: rotors.Rotor):
-    printOutput("REFLECTOR NAME: " + rotor_ref._name)
+    utils_cli.printOutput("REFLECTOR NAME: " + rotor_ref._name)
 
 
 def _change_reflector_name_rf(rotor_ref: rotors.Rotor):
-    new_name = str(askingInput("Input a new name for the reflector:"))
+    new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
     while any(not c.isalnum() for c in new_name) or not new_name:
-        printOutput("Input only alphanumerical.")
-        new_name = str(askingInput("Input a new name for the reflector:"))
+        utils_cli.printOutput("Input only alphanumerical.")
+        new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
     rotor_ref._change_name(new_name)
-    returningToMenuMessage("Reflector name changed to: " + rotor_ref._name)
+    utils_cli.returningToMenuMessage("Reflector name changed to: " + rotor_ref._name)
 
 
 def _randomize_name_rf(rotor_ref: rotors.Rotor):
     rotor_ref.random_name()
-    returningToMenuMessage("NEW NAME: " + rotor_ref.name)
+    utils_cli.returningToMenuMessage("NEW NAME: " + rotor_ref.name)
 
 
 def _save_in_current_directory_rf(rotor_ref: rotors.Rotor):
@@ -320,67 +322,32 @@ def _save_in_current_directory_rf(rotor_ref: rotors.Rotor):
         or any(not c.isalnum() for c in rotor_ref.name)
     ):
         rotor_ref._change_name(
-            askingInput("Please assign a new name to the reflector:")
+            utils_cli.askingInput("Please assign a new name to the reflector:")
         ).strip()
     current_path = os.getcwd()
     new_folder = "SAVED_REFLECTORS"
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
-        printOutput("Directory '% s' created" % path)
-    if checkIfFileExists(path, rotor_ref._name, "reflector"):
-        printOutput("A reflector with this name already exists.")
+        utils_cli.printOutput("Directory '% s' created" % path)
+    if utils_cli.checkIfFileExists(path, rotor_ref._name, "reflector"):
+        utils_cli.printOutput("A reflector with this name already exists.")
         accbool = ""
         while not accbool == "n" or not accbool == "y":
             accbool = input(
-                askingInput("Do you want to overwrite the saved reflector? [y/n]")
+                utils_cli.askingInput("Do you want to overwrite the saved reflector? [y/n]")
             ).lower()
         if accbool == "n":
-            returningToMenuNoMessage()
+            utils_cli.returningToMenuNoMessage()
     save_file = open(r"{}\\{}.reflector".format(path, rotor_ref._name), "wb")
     pickle.dump(rotor_ref, save_file)
-    returningToMenuMessage(
+    utils_cli.returningToMenuMessage(
         (
             "{} has been saved into {}.reflector in {}".format(
                 rotor_ref.name, rotor_ref.name, path
             )
         )
     )
-
-
-def load_saved_reflector():
-    current_path = os.path.dirname(__file__)
-    new_folder = "SAVED_REFLECTORS"
-    path = os.path.join(current_path, new_folder)
-    if not os.path.exists(path):
-        returningToMenuMessage("There is no {} folder.".format(path))
-    list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-    if len(list_of_files) == 0:
-        returningToMenuMessage("There are no reflectors saved.")
-    printOutput("Your available reflectors are: {}".format(list_of_files))
-    reflector = askingInput("Input reflector's position in the list: ")
-    while (
-        not isinstance(reflector, int)
-        or reflector > len(list_of_files) - 1
-        or reflector < 0
-    ):
-        printOutput("Please input a valid index.")
-        reflector = askingInput("Input reflector's position in the list:")
-    filehandler = open(
-        r"{}\\{}.reflector".format(path, list_of_files[reflector - 1]), "rb"
-    )
-    return pickle.load(filehandler)
-
-
-def _exitMenu_rf(rotor_ref: rotors.Rotor):
-    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
-        rotor_ref._reflector_dict
-    )
-    if len(unpaired_list) > 1:
-        returningToMenuMessage(
-            "To avoid self-sabotage, a partially connected reflector is discouraged."
-        )
-    exitMenu()
 
 
 def _change_rotor_letter_position(self):
@@ -629,13 +596,13 @@ def _random_conf_rotors(self, jump):
 
 def save_n_random_rotors(n, seed):
     for i in range(0, n):
-        rotor = Rotor()
+        rotor = rotors.Rotor()
         rotor.random_setup(seed + i)
     return ">Done"
 
 
 def tune_existing_rotor():
-    rotor = Rotor()
+    rotor = rotors.Rotor()
     rotor.import_rotor()
     rotor.configure()
     rotor.export_rotor()
