@@ -158,4 +158,4 @@ def generate_n_random_reflectors(n, seed: int):
         reflector = reflector.Reflector()
         reflector.random_name(seed + index)
         reflector.random_setup(seed + index)
-    printOutput(f"Created and saved {n} rotors.")
+    utils_cli.printOutput(f"Created and saved {n} rotors.")

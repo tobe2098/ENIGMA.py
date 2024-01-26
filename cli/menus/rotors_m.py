@@ -7,7 +7,7 @@ from ..menus.rotors_m import
 _menu_reflector_name_options = {
     "1": ("Change name", _change_reflector_name_rf),
     "2": ("Randomize name", _randomize_name_rf),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 
@@ -15,7 +15,7 @@ _menu_reflector_connections_options = {
     "1": ("Delete a single connection", _choose_connection_to_delete_rf),
     "2": ("Create a single connection", _create_a_connection_single_choice_rf),
     "3": ("Form all connections left", _form_all_connections_rf),
-    "0": ("Exit menu", _exitMenu_rf),
+    "0": ("Exit menu", _utils_cli.exitMenu_rf),
 }
 
 _menu_reflector_reset_options = {
@@ -25,7 +25,7 @@ _menu_reflector_reset_options = {
     ),
     "2": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
     "3": ("Reset connections", _reset_connections_rf),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 _menu_reflector_saved_reflector = {
@@ -40,7 +40,7 @@ _menu_reflector_saved_reflector = {
     ),
     "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
     "8": ("Reset connections", _reset_connections_rf),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 
@@ -58,9 +58,9 @@ def _name_reflector_menu(rotor_ref: rotors.Rotor):
             )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
-        except MenuExitException:
+        except utils_cli.MenuExitException:
             clearScreenSafety()
-            exitMenu()
+            utils_cli.exitMenu()
 
 
 def _connections_reflector_menu(rotor_ref: rotors.Rotor):
@@ -76,9 +76,9 @@ def _connections_reflector_menu(rotor_ref: rotors.Rotor):
             )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
-        except MenuExitException:
+        except utils_cli.MenuExitException:
             clearScreenSafety()
-            exitMenu()
+            utils_cli.exitMenu()
 
 
 def _reset_reflector_menu(rotor_ref: rotors.Rotor):
@@ -94,9 +94,9 @@ def _reset_reflector_menu(rotor_ref: rotors.Rotor):
             )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
-        except MenuExitException:
+        except utils_cli.MenuExitException:
             clearScreenSafety()
-            exitMenu()
+            utils_cli.exitMenu()
 
 
 def _saved_reflector_menu(rotor_ref: rotors.Rotor):
@@ -112,9 +112,9 @@ def _saved_reflector_menu(rotor_ref: rotors.Rotor):
             )
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
-        except MenuExitException:
+        except utils_cli.MenuExitException:
             clearScreenSafety()
-            exitMenu()
+            utils_cli.exitMenu()
 
 
 def _load_saved_reflector_for_editing(
@@ -125,19 +125,19 @@ def _load_saved_reflector_for_editing(
     _saved_reflector_menu(reflector)
     try:
         _save_in_current_directory_rf(reflector)
-        returningToMenuNoMessage()
-    except MenuExitException:
+        utils_cli.returningToMenuNoMessage()
+    except utils_cli.MenuExitException:
         current_path = os.getcwd()
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)
-        if not checkIfFileExists(path, reflector._name, "reflector"):
-            printOutput("A file with the reflector's name was not detected.")
+        if not utils_cli.checkIfFileExists(path, reflector._name, "reflector"):
+            utils_cli.printOutput("A file with the reflector's name was not detected.")
             accbool = ""
             while not accbool == "n" or not accbool == "y":
-                accbool = input(askingInput("Do you want to exit anyway?[y/n]")).lower()
+                accbool = input(utils_cli.askingInput("Do you want to exit anyway?[y/n]")).lower()
             if accbool == "n":
                 _load_saved_reflector_for_editing(reflector, True)
-            returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
+            utils_cli.returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
     # Conda activation: conda info --envs, conda activate {}
 
 
@@ -148,7 +148,7 @@ _menu_reflector = {
     "4": ("Connections options menu", _connections_reflector_menu),
     "5": ("Resetting options menu", _reset_reflector_menu),
     "6": ("Edit a previously saved rotor", _load_saved_reflector_for_editing),
-    "0": ("Exit menu", _exitMenu_rf),
+    "0": ("Exit menu", _utils_cli.exitMenu_rf),
 }
 
 
@@ -162,9 +162,9 @@ def main_reflector_menu(machine_ref: machines.Machine):
             _menu_reflector.get(answer, [None, invalidChoice])[1](machine_ref)
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
-        except MenuExitException:
+        except utils_cli.MenuExitException:
             clearScreenSafety()
-            exitMenu()
+            utils_cli.exitMenu()
 
 
 def _change_rotor_letter_position(self):

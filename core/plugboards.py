@@ -1,7 +1,7 @@
 import copy
 import random
 
-from ..utils.utils_cli import printOutput
+from ..utils.utils_cli import utils_cli.printOutput
 from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
@@ -41,7 +41,7 @@ class PlugBoard:
 
     def random_setup(self, seed=None):
         if not seed:
-            printOutput("Please input a seed.")
+            utils_cli.printOutput("Please input a seed.")
             return
         random.seed(seed)
 
@@ -60,7 +60,7 @@ class PlugBoard:
         self._update_dicts(False)
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-        printOutput("Board setup is generated.")
+        utils_cli.printOutput("Board setup is generated.")
 
 
 class PlugBoardDash(PlugBoard):

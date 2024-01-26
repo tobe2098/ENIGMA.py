@@ -1,6 +1,6 @@
 # from tkinter import Menubutton
 from ...core import machines
-from ...utils.utils_cli import *
+from ...utils import utils_cli
 from ..functions.plugboards_f import (
     _show_config_pb,
     _choose_connection_to_delete_pb,
@@ -28,10 +28,10 @@ _menu_plugboard = {
     ),
     "7": ("Reset and randomize connections", _reset_and_randomize_connections_pb),
     "8": ("Reset connections", _reset_connections_pb),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 
 def main_plugboard_menu(machine_ref: machines.Machine):
     while True:
-        regular_menu_call(machine_ref._plugboard, _menu_plugboard)
+        utils_cli.regular_menu_call(machine_ref._plugboard, _menu_plugboard)

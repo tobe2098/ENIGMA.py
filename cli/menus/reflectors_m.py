@@ -1,8 +1,9 @@
-from platform import machine
-from numpy import format_float_positional
+# from platform import machine
+# from numpy import format_float_positional
+import os
 from ...core import machines
 from ...core import reflectors
-from ...utils.utils_cli import *
+from ...utils import utils_cli
 from ..functions.reflectors_f import (
     _change_reflector_name_rf,
     _randomize_name_rf,
@@ -22,7 +23,7 @@ from ..functions.reflectors_f import (
 _menu_reflector_name_options = {
     "1": ("Change name", _change_reflector_name_rf),
     "2": ("Randomize name", _randomize_name_rf),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 _menu_reflector_connections_options = {
@@ -39,7 +40,7 @@ _menu_reflector_reset_options = {
     ),
     "2": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
     "3": ("Reset connections", _reset_connections_rf),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 _menu_reflector_saved_reflector = {
@@ -54,31 +55,31 @@ _menu_reflector_saved_reflector = {
     ),
     "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
     "8": ("Reset connections", _reset_connections_rf),
-    "0": ("Exit menu", exitMenu),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 
 def _name_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        regular_menu_call(reflector_ref, _menu_reflector_name_options)
+        utils_cli.regular_menu_call(reflector_ref, _menu_reflector_name_options)
 
 
 def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
         while True:
             _print_name_rf(reflector_ref)
-            regular_menu_call(reflector_ref, _menu_reflector_connections_options)
+            utils_cli.regular_menu_call(reflector_ref, _menu_reflector_connections_options)
 
 def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
         while True:
             _print_name_rf(reflector_ref)
-            regular_menu_call(reflector_ref, _menu_reflector_reset_options)
+            utils_cli.regular_menu_call(reflector_ref, _menu_reflector_reset_options)
 
 
 def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
         while True:
             _print_name_rf(reflector_ref)
-            regular_menu_call(reflector_ref, _saved_reflector_menu)
+            utils_cli.regular_menu_call(reflector_ref, _saved_reflector_menu)
 
 def _load_saved_reflector_for_editing(
     reflector: reflectors.Reflector = None, recursive: bool = False
@@ -88,19 +89,19 @@ def _load_saved_reflector_for_editing(
     _saved_reflector_menu(reflector)
     try:
         _save_in_current_directory_rf(reflector)
-        returningToMenuNoMessage()
-    except MenuExitException:
+        utils_cli.returningToMenuNoMessage()
+    except utils_cli.MenuExitException:
         current_path = os.getcwd()
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)
-        if not checkIfFileExists(path, reflector._name, "reflector"):
-            printOutput("A file with the reflector's name was not detected.")
+        if not utils_cli.checkIfFileExists(path, reflector._name, "reflector"):
+            utils_cli.printOutput("A file with the reflector's name was not detected.")
             accbool = ""
             while not accbool == "n" or not accbool == "y":
-                accbool = input(askingInput("Do you want to exit anyway?[y/n]")).lower()
+                accbool = input(utils_cli.askingInput("Do you want to exit anyway?[y/n]")).lower()
             if accbool == "n":
                 _load_saved_reflector_for_editing(reflector=reflector, recursive=True)
-            returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
+            utils_cli.returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
     # Conda activation: conda info --envs, conda activate {}
 
 
@@ -118,4 +119,4 @@ _menu_reflector = {
 def main_reflector_menu(machine_ref: machines.Machine):
     while True:
       _print_name_rf(machine_ref._reflector)
-      regular_menu_call(machine_ref._reflector, _menu_reflector)
+      utils_cli.regular_menu_call(machine_ref._reflector, _menu_reflector)
