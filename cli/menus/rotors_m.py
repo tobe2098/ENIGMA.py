@@ -10,6 +10,7 @@ _menu_reflector_name_options = {
     "0": ("Exit menu", exitMenu),
 }
 
+
 _menu_reflector_connections_options = {
     "1": ("Delete a single connection", _choose_connection_to_delete_rf),
     "2": ("Create a single connection", _create_a_connection_single_choice_rf),
@@ -45,7 +46,7 @@ _menu_reflector_saved_reflector = {
 
 def _name_reflector_menu(rotor_ref: rotors.Rotor):
     while True:
-        clearScreenSafety()
+        
         _print_name_rf(rotor_ref)
         try:
             for key in sorted(_menu_reflector_name_options.keys()):
@@ -58,12 +59,12 @@ def _name_reflector_menu(rotor_ref: rotors.Rotor):
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
+            clearScreenSafety()
             exitMenu()
 
 
 def _connections_reflector_menu(rotor_ref: rotors.Rotor):
     while True:
-        clearScreenSafety()
         try:
             _show_config_rf(rotor_ref)
             for key in sorted(_menu_reflector_connections_options.keys()):
@@ -76,12 +77,12 @@ def _connections_reflector_menu(rotor_ref: rotors.Rotor):
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
+            clearScreenSafety()
             exitMenu()
 
 
 def _reset_reflector_menu(rotor_ref: rotors.Rotor):
     while True:
-        clearScreenSafety()
         try:
             _show_config_rf(rotor_ref)
             for key in sorted(_menu_reflector_reset_options.keys()):
@@ -94,12 +95,12 @@ def _reset_reflector_menu(rotor_ref: rotors.Rotor):
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
+            clearScreenSafety()
             exitMenu()
 
 
 def _saved_reflector_menu(rotor_ref: rotors.Rotor):
     while True:
-        clearScreenSafety()
         try:
             _show_config_rf(rotor_ref)
             for key in sorted(_menu_reflector_saved_reflector.keys()):
@@ -112,6 +113,7 @@ def _saved_reflector_menu(rotor_ref: rotors.Rotor):
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
+            clearScreenSafety()
             exitMenu()
 
 
@@ -152,7 +154,6 @@ _menu_reflector = {
 
 def main_reflector_menu(machine_ref: machines.Machine):
     while True:
-        clearScreenSafety()
         try:
             for key in sorted(_menu_reflector.keys()):
                 printMenuOption(key + ":" + _menu_reflector[key][0])
@@ -162,6 +163,7 @@ def main_reflector_menu(machine_ref: machines.Machine):
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except MenuExitException:
+            clearScreenSafety()
             exitMenu()
 
 
