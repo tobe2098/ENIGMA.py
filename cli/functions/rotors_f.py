@@ -58,7 +58,7 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
 
     utils_cli.printOutput("Current connections are:")
     print(paired_df)
-    row = utils_cli.utils_cli.askingInput("Choose a connection to delete (by index):")
+    row = utils_cli.askingInput("Choose a connection to delete (by index):")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         _delete_a_connection_rt(rotor_ref=rotor_ref, connIndex=row)
@@ -107,11 +107,11 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
         )
     utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
 
-    letter1 = utils_cli.utils_cli.askingInput("Choose a letter to pair from front side:").upper()
+    letter1 = utils_cli.askingInput("Choose a letter to pair from front side:").upper()
     if letter1 not in front_unformed:
         utils_cli.returningToMenuMessage("Invalid input.")
     utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
-    letter2 = utils_cli.utils_cli.askingInput("Choose the second letter from the back side:").upper()
+    letter2 = utils_cli.askingInput("Choose the second letter from the back side:").upper()
     if letter2 not in back_unformed:
         utils_cli.returningToMenuMessage("Invalid input.")
     rotor_ref._forward_dict[letter1] = letter2
@@ -162,7 +162,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
         utils_cli.printOutput("If you want to stop configurating the board, press Enter.")
         letters = (
-            utils_cli.utils_cli.askingInput(
+            utils_cli.askingInput(
                 "Input one letter from front side, one from back side (in order):"
             )
             .strip()
@@ -221,11 +221,11 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         connections (int): _description_
     """
     _show_config_rt(rotor_ref)
-    letter1 = utils_cli.utils_cli.askingInput("Choose a frontside connection by the frontside letter to swap:").upper()
+    letter1 = utils_cli.askingInput("Choose a frontside connection by the frontside letter to swap:").upper()
     if letter1 not in rotor_ref._characters_in_use:
         utils_cli.printOutput("Invalid input.")
         return
-    letter2 = utils_cli.utils_cli.askingInput("Choose a second frontside connection by the frontside letter to swap:").upper()
+    letter2 = utils_cli.askingInput("Choose a second frontside connection by the frontside letter to swap:").upper()
     if letter2 not in rotor_ref._characters_in_use:
         utils_cli.printOutput("Invalid input.")
         return
@@ -242,7 +242,7 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     while True:
-      boolean=utils_cli.utils_cli.askingInput("If you do not want to continue swapping, enter N:").upper()
+      boolean=utils_cli.askingInput("If you do not want to continue swapping, enter N:").upper()
       if (boolean=='N'):
           utils_cli.returningToMenuMessage("Returning to menu...")
       _swap_two_connections_rt(rotor_ref=rotor_ref)
@@ -303,10 +303,10 @@ def _print_name_rt(rotor_ref: rotors.Rotor):
 
 
 def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
-    new_name = str(utils_cli.utils_cli.askingInput("Input a new name for the rotor:"))
+    new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     while any(not c.isalnum() for c in new_name) or not new_name:
         utils_cli.printOutput("Input only alphanumerical.")
-        new_name = str(utils_cli.utils_cli.askingInput("Input a new name for the rotor:"))
+        new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     rotor_ref._change_name(new_name)
     utils_cli.returningToMenuMessage("Rotor name changed to: " + rotor_ref._name)
 
