@@ -41,7 +41,7 @@ class Rotor:
     def get_position(self):
         return self._position
 
-    def get_notchlist(self):
+    def get_notchlist_letters(self):
         return [self._conversion_in_use[i] for i in self._notches]
 
     def notch_check_move_forward(self):
@@ -61,18 +61,18 @@ class Rotor:
 
     def forward_pass(self, input_letter_number):
         input_letter_number += self._position
-        input_letter_number %= len(self._characters_in_use)
+        input_letter_number %= self._no_characters
         output_number = self._forward_num_dict[input_letter_number]
         output_number -= self._position
-        output_number %= len(self._characters_in_use)
+        output_number %= self._no_characters
         return output_number
 
     def backward_pass(self, input_letter_number):
         input_letter_number += self._position
-        input_letter_number %= len(self._characters_in_use)
+        input_letter_number %= self._no_characters
         output_number = self._backward_num_dict[input_letter_number]
         output_number -= self._position
-        output_number %= len(self._characters_in_use)
+        output_number %= self._no_characters
         return output_number
 
     def _change_name(self, new_name):
@@ -132,25 +132,25 @@ class Rotor:
                 self._backward_num_dict, self._conversion_in_use
             )
 
-    def export_rotor(self):
-        if self._name == "name":
-            print(
-                ">Please assign a new name to the rotor with the function self.configure() or self.change_name()"
-            )
-        current_path = os.path.dirname(__file__)
-        new_folder = "SAVED_ROTORS"
-        path = os.path.join(current_path, new_folder)
-        if not os.path.exists(path):
-            os.mkdir(path)
-            print(">Directory '% s' created" % new_folder)
-        save_file = open(r"{}\\{}.rotor".format(path, self._name), "wb")
-        pickle.dump(self, save_file)
-        print(
-            ">{} has been saved into {}.rotor in {}".format(
-                self._name, self._name, path
-            )
-        )
-        save_file.close()
+    # def export_rotor(self):
+    #     if self._name == "name":
+    #         print(
+    #             ">Please assign a new name to the rotor with the function self.configure() or self.change_name()"
+    #         )
+    #     current_path = os.path.dirname(__file__)
+    #     new_folder = "SAVED_ROTORS"
+    #     path = os.path.join(current_path, new_folder)
+    #     if not os.path.exists(path):
+    #         os.mkdir(path)
+    #         print(">Directory '% s' created" % new_folder)
+    #     save_file = open(r"{}\\{}.rotor".format(path, self._name), "wb")
+    #     pickle.dump(self, save_file)
+    #     print(
+    #         ">{} has been saved into {}.rotor in {}".format(
+    #             self._name, self._name, path
+    #         )
+    #     )
+    #     save_file.close()
 
     # def _show_config(
     #     self,
@@ -170,11 +170,10 @@ class Rotor:
             print(
                 ">>Something went wrong. Make sure development has reached this stage!"
             )
-        # Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed)
         # Name generation
         name_list = [
-            random.sample(range(0, len(self._characters_in_use)), 1)[0]
+            random.sample(range(0, self._no_characters), 1)[0]
             for _ in range(0, 13)
         ]
         name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
@@ -184,26 +183,26 @@ class Rotor:
         self._change_name(name)
         # Position
         self._define_position(
-            self._conversion_in_use[random.randint(0, len(self._characters_in_use))]
+            self._conversion_in_use[random.randint(0, self._no_characters)]
         )  # Check in the future whether this setups are correct
         # Notches
         notch_list = [
             self._conversion_in_use[i]
             for i in set(
                 random.sample(
-                    range(0, len(self._characters_in_use)), random.randint(1, 5)
+                    range(0, self._no_characters), random.randint(1, 5)
                 )
             )
         ]
         self._define_notches(notch_list)
         # self.define_rotor_jump(random.randint(1,25))
         # Forward dictionary
-        num_list = list(range(0, len(self._characters_in_use)))
+        num_list = list(range(0, self._no_characters))
         self._forward_num_dict = dict(
             zip(
                 num_list,
                 random.sample(
-                    range(0, len(self._characters_in_use)), len(self._characters_in_use)
+                    range(0, self._no_characters), self._no_characters
                 ),
             )
         )
@@ -211,10 +210,9 @@ class Rotor:
         self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
         print(">Rotor connections established")
         self._update_dicts(False)
-        if showConfig:
-            self._show_config()
-        self.export_rotor()
-        return
+        # if showConfig:
+        #     self._show_config()
+        # self.export_rotor()
         # And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
         # in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
 
