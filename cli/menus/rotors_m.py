@@ -1,165 +1,166 @@
 from ...core import machines
 from ...core import rotors
-from ...utils.utils_cli import *
-from ..menus.rotors_m import 
+from ...utils import utils_cli
+from ..functions import rotors_f
+import os
 
 
-_menu_reflector_name_options = {
-    "1": ("Change name", _change_reflector_name_rf),
-    "2": ("Randomize name", _randomize_name_rf),
+_menu_rotor_name_options = {
+    "1": ("Change name", rotors_f._change_rotor_name_rt),
+    "2": ("Randomize name", rotors_f._randomize_name_rt),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 
-_menu_reflector_connections_options = {
-    "1": ("Delete a single connection", _choose_connection_to_delete_rf),
-    "2": ("Create a single connection", _create_a_connection_single_choice_rf),
-    "3": ("Form all connections left", _form_all_connections_rf),
-    "0": ("Exit menu", _utils_cli.exitMenu_rf),
+_menu_rotor_connections_options = {
+    "1": ("Delete a single connection", rotors_f._choose_connection_to_delete_rt),
+    "2": ("Create a single connection", rotors_f._create_a_connection_single_choice_rt),
+    "3": ("Form all connections left", rotors_f._form_all_connections_rt),
+    "0": ("Exit menu", utils_cli.exitMenu),
 }
 
-_menu_reflector_reset_options = {
+_menu_rotor_reset_options = {
     "1": (
         "Reset and form max. connections",
-        _reset_and_streamline_connections_by_pairs_rf,
+        rotors_f._reset_and_streamline_connections_by_pairs_rt,
     ),
-    "2": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
-    "3": ("Reset connections", _reset_connections_rf),
+    "2": ("Reset and randomize connections", rotors_f._reset_and_randomize_connections_rt),
+    "3": ("Reset connections", rotors_f._reset_connections_rt),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
 
-_menu_reflector_saved_reflector = {
-    "1": ("Save rotor", _save_in_current_directory_rf),
-    "2": ("Change rotor name", _change_reflector_name_rf),
-    "3": ("Delete a single connection", _choose_connection_to_delete_rf),
-    "4": ("Create a single connection", _create_a_connection_single_choice_rf),
-    "5": ("Form all connections left", _form_all_connections_rf),
+_menu_rotor_saved_rotor = {
+    "1": ("Save rotor", rotors_f._save_in_current_directory_rt),
+    "2": ("Change rotor name", rotors_f._change_rotor_name_rt),
+    "3": ("Delete a single connection", rotors_f._choose_connection_to_delete_rt),
+    "4": ("Create a single connection", rotors_f._create_a_connection_single_choice_rt),
+    "5": ("Form all connections left",rotors_f._form_all_connections_rt),
     "6": (
         "Reset and form max. connections",
-        _reset_and_streamline_connections_by_pairs_rf,
+        rotors_f._reset_and_streamline_connections_by_pairs_rt,
     ),
-    "7": ("Reset and randomize connections", _reset_and_randomize_connections_rf),
-    "8": ("Reset connections", _reset_connections_rf),
+    "7": ("Reset and randomize connections", rotors_f._reset_and_randomize_connections_rt),
+    "8": ("Reset connections", rotors_f._reset_connections_rt),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 
-def _name_reflector_menu(rotor_ref: rotors.Rotor):
+def _name_rotor_menu(rotor_ref: rotors.Rotor):
     while True:
         
-        _print_name_rf(rotor_ref)
+        rotors_f._print_name_rt(rotor_ref)
         try:
-            for key in sorted(_menu_reflector_name_options.keys()):
-                printMenuOption(key + ":" + _menu_reflector_name_options[key][0])
+            for key in sorted(_menu_rotor_name_options.keys()):
+                utils_cli.printMenuOption(key + ":" + _menu_rotor_name_options[key][0])
 
-            answer = str(input(askForMenuOption()))
-            _menu_reflector_name_options.get(answer, [None, invalidChoice])[1](
+            answer = str(input(utils_cli.askForMenuOption()))
+            _menu_rotor_name_options.get(answer, [None, utils_cli.invalidChoice])[1](
                 rotor_ref
             )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
+        except utils_cli.ReturnToMenuException:
+            print(utils_cli.ReturnToMenuException.message)
         except utils_cli.MenuExitException:
-            clearScreenSafety()
+            utils_cli.clearScreenSafety()
             utils_cli.exitMenu()
 
 
-def _connections_reflector_menu(rotor_ref: rotors.Rotor):
+def _connections_rotor_menu(rotor_ref: rotors.Rotor):
     while True:
         try:
-            _show_config_rf(rotor_ref)
-            for key in sorted(_menu_reflector_connections_options.keys()):
-                printMenuOption(key + ":" + _menu_reflector_connections_options[key][0])
+            rotors_f._show_config_rt(rotor_ref)
+            for key in sorted(_menu_rotor_connections_options.keys()):
+                utils_cli.printMenuOption(key + ":" + _menu_rotor_connections_options[key][0])
 
-            answer = str(input(askForMenuOption()))
-            _menu_reflector_connections_options.get(answer, [None, invalidChoice])[1](
+            answer = str(input(utils_cli.askForMenuOption()))
+            _menu_rotor_connections_options.get(answer, [None, utils_cli.invalidChoice])[1](
                 rotor_ref
             )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
+        except utils_cli.ReturnToMenuException:
+            print(utils_cli.ReturnToMenuException.message)
         except utils_cli.MenuExitException:
-            clearScreenSafety()
+            utils_cli.clearScreenSafety()
             utils_cli.exitMenu()
 
 
-def _reset_reflector_menu(rotor_ref: rotors.Rotor):
+def _reset_rotor_menu(rotor_ref: rotors.Rotor):
     while True:
         try:
-            _show_config_rf(rotor_ref)
-            for key in sorted(_menu_reflector_reset_options.keys()):
-                printMenuOption(key + ":" + _menu_reflector_reset_options[key][0])
+            rotors_f._show_config_rt(rotor_ref)
+            for key in sorted(_menu_rotor_reset_options.keys()):
+                utils_cli.printMenuOption(key + ":" + _menu_rotor_reset_options[key][0])
 
-            answer = str(input(askForMenuOption()))
-            _menu_reflector_reset_options.get(answer, [None, invalidChoice])[1](
+            answer = str(input(utils_cli.askForMenuOption()))
+            _menu_rotor_reset_options.get(answer, [None, utils_cli.invalidChoice])[1](
                 rotor_ref
             )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
+        except utils_cli.ReturnToMenuException:
+            print(utils_cli.ReturnToMenuException.message)
         except utils_cli.MenuExitException:
-            clearScreenSafety()
+            utils_cli.clearScreenSafety()
             utils_cli.exitMenu()
 
 
-def _saved_reflector_menu(rotor_ref: rotors.Rotor):
+def _saved_rotor_menu(rotor_ref: rotors.Rotor):
     while True:
         try:
-            _show_config_rf(rotor_ref)
-            for key in sorted(_menu_reflector_saved_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector_saved_reflector[key][0])
+            rotors_f._show_config_rt(rotor_ref)
+            for key in sorted(_menu_rotor_saved_rotor.keys()):
+                utils_cli.printMenuOption(key + ":" + _menu_rotor_saved_rotor[key][0])
 
-            answer = str(input(askForMenuOption()))
-            _menu_reflector_saved_reflector.get(answer, [None, invalidChoice])[1](
+            answer = str(input(utils_cli.askForMenuOption()))
+            _menu_rotor_saved_rotor.get(answer, [None, utils_cli.invalidChoice])[1](
                 rotor_ref
             )
-        except ReturnToMenuException:
-            print(ReturnToMenuException.message)
+        except utils_cli.ReturnToMenuException:
+            print(utils_cli.ReturnToMenuException.message)
         except utils_cli.MenuExitException:
-            clearScreenSafety()
+            utils_cli.clearScreenSafety()
             utils_cli.exitMenu()
 
 
-def _load_saved_reflector_for_editing(
-    reflector: rotors.Rotor = None, recursive: bool = False
+def _load_saved_rotor_for_editing(
+    rotor: rotors.Rotor = None, recursive: bool = False
 ):
     if not recursive:
-        reflector = load_saved_reflector()
-    _saved_reflector_menu(reflector)
+        rotor = load_saved_rotor()
+    _saved_rotor_menu(rotor)
     try:
-        _save_in_current_directory_rf(reflector)
+        rotors_f._save_in_current_directory_rt(rotor)
         utils_cli.returningToMenuNoMessage()
     except utils_cli.MenuExitException:
         current_path = os.getcwd()
-        new_folder = "SAVED_REFLECTORS"
+        new_folder = "SAVED_rotorS"
         path = os.path.join(current_path, new_folder)
-        if not utils_cli.checkIfFileExists(path, reflector._name, "reflector"):
-            utils_cli.printOutput("A file with the reflector's name was not detected.")
+        if not utils_cli.checkIfFileExists(path, rotor._name, "rotor"):
+            utils_cli.printOutput("A file with the rotor's name was not detected.")
             accbool = ""
             while not accbool == "n" or not accbool == "y":
                 accbool = input(utils_cli.askingInput("Do you want to exit anyway?[y/n]")).lower()
             if accbool == "n":
-                _load_saved_reflector_for_editing(reflector, True)
-            utils_cli.returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
+                _load_saved_rotor_for_editing(rotor, True)
+            utils_cli.returningToMenuMessage((f"rotor {rotor.name} was discarded."))
     # Conda activation: conda info --envs, conda activate {}
 
 
-_menu_reflector = {
-    "1": ("Show current reflector setup", _show_config_rf),
-    "2": ("Save rotor", _save_in_current_directory_rf),
-    "3": ("Naming menu", _name_reflector_menu),
-    "4": ("Connections options menu", _connections_reflector_menu),
-    "5": ("Resetting options menu", _reset_reflector_menu),
-    "6": ("Edit a previously saved rotor", _load_saved_reflector_for_editing),
-    "0": ("Exit menu", _utils_cli.exitMenu_rf),
+_menu_rotor = {
+    "1": ("Show current rotor setup", rotors_f._show_config_rt),
+    "2": ("Save rotor", rotors_f._save_in_current_directory_rt),
+    "3": ("Naming menu", _name_rotor_menu),
+    "4": ("Connections options menu", _connections_rotor_menu),
+    "5": ("Resetting options menu", _reset_rotor_menu),
+    "6": ("Edit a previously saved rotor", _load_saved_rotor_for_editing),
+    "0": ("Exit menu", rotors_f._exitMenu_rt),
 }
 
 
-def main_reflector_menu(machine_ref: machines.Machine):
+def main_rotor_menu(machine_ref: machines.Machine):
     while True:
         try:
-            for key in sorted(_menu_reflector.keys()):
-                printMenuOption(key + ":" + _menu_reflector[key][0])
+            for key in sorted(_menu_rotor.keys()):
+                printMenuOption(key + ":" + _menu_rotor[key][0])
 
             answer = str(input(askForMenuOption()))
-            _menu_reflector.get(answer, [None, invalidChoice])[1](machine_ref)
+            _menu_rotor.get(answer, [None, invalidChoice])[1](machine_ref)
         except ReturnToMenuException:
             print(ReturnToMenuException.message)
         except utils_cli.MenuExitException:
@@ -221,7 +222,7 @@ def _random_conf_rotors(self, jump):
     for i in range(len(self._rotors)):
         self._rotors[i].random_setup(self._seed + jump, showConfig=False)
         jump += 1
-    return ">Rotors and reflector set up and saved."
+    return ">Rotors and rotor set up and saved."
 
     def _set_new_no_rotors(self, noRotors):
         self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
@@ -366,7 +367,7 @@ def _random_conf_rotors(self, jump):
         random.seed(seed)
         # Name generation
         name_list = [
-            random.sample(range(0, len(self._characters_in_use)), 1)[0]
+            random.sample(range(0, self._no_characters), 1)[0]
             for _ in range(0, 13)
         ]
         name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
@@ -376,26 +377,26 @@ def _random_conf_rotors(self, jump):
         self._change_name(name)
         # Position
         self._define_position(
-            self._conversion_in_use[random.randint(0, len(self._characters_in_use))]
+            self._conversion_in_use[random.randint(0, self._no_characters)]
         )  # Check in the future whether this setups are correct
         # Notches
         notch_list = [
             self._conversion_in_use[i]
             for i in set(
                 random.sample(
-                    range(0, len(self._characters_in_use)), random.randint(1, 5)
+                    range(0, self._no_characters), random.randint(1, 5)
                 )
             )
         ]
         self._define_notches(notch_list)
         # self.define_rotor_jump(random.randint(1,25))
         # Forward dictionary
-        num_list = list(range(0, len(self._characters_in_use)))
+        num_list = list(range(0, self._no_characters))
         self._forward_num_dict = dict(
             zip(
                 num_list,
                 random.sample(
-                    range(0, len(self._characters_in_use)), len(self._characters_in_use)
+                    range(0, self._no_characters), self._no_characters
                 ),
             )
         )

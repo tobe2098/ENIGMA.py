@@ -272,25 +272,24 @@ def _reset_and_streamline_connections_by_pairs_rt(rotor_ref: rotors.Rotor):
 
 
 
-def _reset_and_randomize_connections_rf(rotor_ref: rotors.Rotor):
-    REDO
+def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
     seed = input(
-        utils_cli.utils_cli.askingInput(
-            "Introduce a positive integer as a seed to randomize the plugboard connections: "
+        utils_cli.askingInput(
+            "Introduce a positive integer as a seed to randomize the rotor connections: "
         )
     )
     if not isinstance(seed, int) and seed > 0:
         utils_cli.returningToMenuMessage("Number is not a positive integer.")
     rotor_ref._reset_dictionaries()
-    rotor_ref.random_setup(seed)
+    rotor_ref._randomize_dictionaries(seed)
 
 
-def _reset_connections_rf(rotor_ref: rotors.Rotor):
+def _reset_connections_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
     Args:
@@ -299,58 +298,72 @@ def _reset_connections_rf(rotor_ref: rotors.Rotor):
     rotor_ref._reset_dictionaries()
 
 
-def _print_name_rf(rotor_ref: rotors.Rotor):
-    utils_cli.printOutput("REFLECTOR NAME: " + rotor_ref._name)
+def _print_name_rt(rotor_ref: rotors.Rotor):
+    utils_cli.printOutput("ROTOR NAME: " + rotor_ref._name)
 
 
-def _change_reflector_name_rf(rotor_ref: rotors.Rotor):
-    new_name = str(utils_cli.utils_cli.askingInput("Input a new name for the reflector:"))
+def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
+    new_name = str(utils_cli.utils_cli.askingInput("Input a new name for the rotor:"))
     while any(not c.isalnum() for c in new_name) or not new_name:
         utils_cli.printOutput("Input only alphanumerical.")
-        new_name = str(utils_cli.utils_cli.askingInput("Input a new name for the reflector:"))
+        new_name = str(utils_cli.utils_cli.askingInput("Input a new name for the rotor:"))
     rotor_ref._change_name(new_name)
-    utils_cli.returningToMenuMessage("Reflector name changed to: " + rotor_ref._name)
+    utils_cli.returningToMenuMessage("Rotor name changed to: " + rotor_ref._name)
 
 
-def _randomize_name_rf(rotor_ref: rotors.Rotor):
-    rotor_ref.random_name()
+def _randomize_name_rt(rotor_ref: rotors.Rotor):
+    rotor_ref._random_name()
     utils_cli.returningToMenuMessage("NEW NAME: " + rotor_ref.name)
 
 
-def _save_in_current_directory_rf(rotor_ref: rotors.Rotor):
+def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
     while (
-        rotor_ref.name == "name"
-        or rotor_ref.name == ""
-        or any(not c.isalnum() for c in rotor_ref.name)
+        rotor_ref._name == "name"
+        or rotor_ref._name == ""
+        or any(not c.isalnum() for c in rotor_ref._name)
     ):
         rotor_ref._change_name(
-            utils_cli.utils_cli.askingInput("Please assign a new name to the reflector:")
+            utils_cli.askingInput("Please assign a new name to the rotor:")
         ).strip()
     current_path = os.getcwd()
-    new_folder = "SAVED_REFLECTORS"
+    new_folder = "SAVED_ROTOR"
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
         utils_cli.printOutput("Directory '% s' created" % path)
-    if utils_cli.checkIfFileExists(path, rotor_ref._name, "reflector"):
-        utils_cli.printOutput("A reflector with this name already exists.")
+    if utils_cli.checkIfFileExists(path, rotor_ref._name, "rotor"):
+        utils_cli.printOutput("A rotor with this name already exists.")
         accbool = ""
         while not accbool == "n" or not accbool == "y":
             accbool = input(
-                utils_cli.utils_cli.askingInput("Do you want to overwrite the saved reflector? [y/n]")
+                utils_cli.askingInput("Do you want to overwrite the saved rotor? [y/n]")
             ).lower()
         if accbool == "n":
             utils_cli.returningToMenuNoMessage()
-    save_file = open(r"{}\\{}.reflector".format(path, rotor_ref._name), "wb")
+    save_file = open(r"{}\\{}.rotor".format(path, rotor_ref._name), "wb")
     pickle.dump(rotor_ref, save_file)
     utils_cli.returningToMenuMessage(
         (
-            "{} has been saved into {}.reflector in {}".format(
-                rotor_ref.name, rotor_ref.name, path
+            "{} has been saved into {}.rotor in {}".format(
+                rotor_ref._name, rotor_ref._name, path
             )
         )
     )
 
+def _exitMenu_rt(rotor_ref: rotors.Rotor):
+    (
+    _,
+    _,
+    front_unformed,
+    _,
+) = utils.simplify_rotor_dictionary_paired_unpaired(
+    rotor_ref._forward_dict, rotor_ref._backward_dict
+)
+    if len(front_unformed) > 0:
+        utils_cli.returningToMenuMessage(
+            "Due to implementation reasons, a partially connected rotor is not allowed."
+        )
+    utils_cli.exitMenu()
 
 def _change_rotor_letter_position(self):
     # MENU
@@ -551,7 +564,7 @@ def _random_conf_rotors(self, jump):
         random.seed(seed)
         # Name generation
         name_list = [
-            random.sample(range(0, len(self._characters_in_use)), 1)[0]
+            random.sample(range(0, self._no_characters), 1)[0]
             for _ in range(0, 13)
         ]
         name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
@@ -561,26 +574,26 @@ def _random_conf_rotors(self, jump):
         self._change_name(name)
         # Position
         self._define_position(
-            self._conversion_in_use[random.randint(0, len(self._characters_in_use))]
+            self._conversion_in_use[random.randint(0, self._no_characters)]
         )  # Check in the future whether this setups are correct
         # Notches
         notch_list = [
             self._conversion_in_use[i]
             for i in set(
                 random.sample(
-                    range(0, len(self._characters_in_use)), random.randint(1, 5)
+                    range(0, self._no_characters), random.randint(1, 5)
                 )
             )
         ]
         self._define_notches(notch_list)
         # self.define_rotor_jump(random.randint(1,25))
         # Forward dictionary
-        num_list = list(range(0, len(self._characters_in_use)))
+        num_list = list(range(0, self._no_characters))
         self._forward_num_dict = dict(
             zip(
                 num_list,
                 random.sample(
-                    range(0, len(self._characters_in_use)), len(self._characters_in_use)
+                    range(0, self._no_characters), self._no_characters
                 ),
             )
         )
@@ -599,7 +612,7 @@ def _random_conf_rotors(self, jump):
 def save_n_random_rotors(n, seed):
     for i in range(0, n):
         rotor = rotors.Rotor()
-        rotor.random_setup(seed + i)
+        rotor._random_setup(seed + i)
     return ">Done"
 
 
