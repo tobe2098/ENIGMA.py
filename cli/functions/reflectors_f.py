@@ -204,13 +204,13 @@ def _reset_and_randomize_connections_rf(reflector_ref: reflectors.Reflector):
     """
     seed = input(
         utils_cli.askingInput(
-            "Introduce a positive integer as a seed to randomize the plugboard connections: "
+            "Introduce a positive integer as a seed to randomize the reflector connections: "
         )
     )
     if not isinstance(seed, int) and seed > 0:
         utils_cli.returningToMenuMessage("Number is not a positive integer.")
     reflector_ref._reset_dictionaries()
-    reflector_ref.random_setup(seed)
+    reflector_ref._random_setup(seed)
 
 
 def _reset_connections_rf(reflector_ref: reflectors.Reflector):
@@ -236,7 +236,7 @@ def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
 
 
 def _randomize_name_rf(reflector_ref: reflectors.Reflector):
-    reflector_ref.random_name()
+    reflector_ref._random_name()
     utils_cli.returningToMenuMessage("NEW NAME: " + reflector_ref.name)
 
 

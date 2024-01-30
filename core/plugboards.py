@@ -1,7 +1,7 @@
 import copy
 import random
 
-from ..utils.utils_cli import utils_cli.printOutput
+from ..utils import utils_cli
 from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,

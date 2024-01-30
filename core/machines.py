@@ -90,7 +90,7 @@ class Machine:
         config["Rotor position"] = list(range(1, len(self._rotors)))
         config["Rotors"] = [rotor.get_name() for rotor in self._rotors]
         config["Letter position"] = [rotor._position for rotor in self._rotors]
-        config["Notches"] = [rotor.get_notchlist() for rotor in self._rotors]
+        config["Notches"] = [rotor.get_notchlist_letters() for rotor in self._rotors]
         print("Board config:")
         self._plugboard._show_config()
         print("Reflector:", self._reflector.name)
@@ -139,7 +139,7 @@ class Machine:
         self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
         random.seed(self._seed)
         jump = random.randint(1, 3000000)
-        self._reflector.random_setup(self._seed * jump)
+        self._reflector._random_setup(self._seed * jump)
         self._random_conf_rotors(jump)
         self._plugboard.random_setup(self._seed / jump)
         # Generating the name
