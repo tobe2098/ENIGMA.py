@@ -131,6 +131,12 @@ class Rotor:
             self._backward_dict = transform_single_dict(
                 self._backward_num_dict, self._conversion_in_use
             )
+    
+    def _reset_dictionaries(self):
+        empty_list=["" for _ in range(self._no_characters)]
+        self._forward_dict=zip(self._characters_in_use, empty_list)
+        self._backward_dict=zip(self._characters_in_use, empty_list)
+        self._update_dicts()
 
     # def export_rotor(self):
     #     if self._name == "name":
@@ -163,9 +169,7 @@ class Rotor:
     #     print("Backward connections in the rotor:", self._backward_dict)
     #     print("Rotor name:", self._name)
 
-    def random_setup(self, seed=None, showConfig=True):
-        # Randomly generate a rotor and store it in a folder
-        # Seed has to be added from the machine calling the function, where the seed is stored/generated
+    def _random_name(self, seed=None):
         if not seed:
             print(
                 ">>Something went wrong. Make sure development has reached this stage!"
@@ -181,6 +185,38 @@ class Rotor:
         string1 = ""
         name = string1.join(name_list)
         self._change_name(name)
+
+    def _randomize_dictionaries(self, seed=None):
+        if not seed:
+            print(
+                ">>Something went wrong. Make sure development has reached this stage!"
+            )
+        # Once the seed is set, as long as the same operations are performed the same numbers are generated:
+        random.seed(seed)
+        num_list = list(range(0, self._no_characters))
+        self._forward_num_dict = dict(
+            zip(
+                num_list,
+                random.sample(
+                    range(0, self._no_characters), self._no_characters
+                ),
+            )
+        )
+        sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))
+        self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
+        print(">Rotor connections established")
+        self._update_dicts(False)
+
+    def _random_setup(self, seed=None):
+        # Randomly generate a rotor and store it in a folder
+        # Seed has to be added from the machine calling the function, where the seed is stored/generated
+        if not seed:
+            print(
+                ">>Something went wrong. Make sure development has reached this stage!"
+            )
+        # Once the seed is set, as long as the same operations are performed the same numbers are generated:
+        random.seed(seed)
+        # Name generation
         # Position
         self._define_position(
             self._conversion_in_use[random.randint(0, self._no_characters)]
