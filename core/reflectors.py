@@ -54,7 +54,7 @@ class Reflector:
     #     #     print(
     #     #         ">Please assign a new name to the reflector with the function self.configure() or self.change_name()"
     #     #     )
-    def random_name(self):
+    def _random_name(self):
         # if not seed:
         #     stringOutput("Please input a seed."))
         #     return
@@ -66,27 +66,28 @@ class Reflector:
         name_list[6:10] = [str(i % 10) for i in name_list[6:10]]
         string1 = ""  # Why is this here? I am not super sure
         new_name = string1.join(name_list)
-        self.change_name(new_name)
+        self._change_name(new_name)
 
-    def random_setup(self, seed=None, showConfig=False):
+    def _random_setup(self, seed=None):
         # Now set the connections
         # num_list = [i for i in range(0, 26)]
         random.seed(seed)
-        letter_list1 = copy.copy(self._characters_in_use)
+        # letter_list1 = [key for key, _ in self._characters_in_use]
+        letter_list1=copy.copy(self._characters_in_use)
         random.shuffle(letter_list1)
         # letter_list2 = copy.copy(self.characters_in_use)
         # random.shuffle(letter_list2)
         while len(letter_list1) > 1:
             letterA = letter_list1.pop()
             letterB = letter_list1.pop()
-            self.reflector_dict[letterA] = letterB
-            self.reflector_dict[letterB] = letterA
+            self._reflector_dict[letterA] = letterB
+            self._reflector_dict[letterB] = letterA
         if len(letter_list1) == 1:
-            self.reflector_dict[letter_list1[0]] = letter_list1[0]
+            self._reflector_dict[letter_list1[0]] = letter_list1[0]
         self._update_dicts()
         # Show final configuration
-        if showConfig:
-            self._show_config()
+        # if showConfig:
+        #     self._show_config()
         # Export
         # self.export_reflector()
 
