@@ -313,7 +313,7 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
     rotor_ref._random_name()
-    utils_cli.returningToMenuMessage("NEW NAME: " + rotor_ref.name)
+    utils_cli.returningToMenuMessage("NEW NAME: " + rotor_ref._name)
 
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
@@ -326,7 +326,7 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
             utils_cli.askingInput("Please assign a new name to the rotor:")
         ).strip()
     current_path = os.getcwd()
-    new_folder = "SAVED_ROTOR"
+    new_folder = "SAVED_ROTORS"
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
