@@ -16,10 +16,8 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
-    utils_cli.printOutput("Paired letters: ")
-    print(paired_df)
-    utils_cli.printOutput("Unpaired letters: ")
-    print(unpaired_list)
+    utils_cli.printOutput("Paired letters:", paired_df)
+    utils_cli.printOutput("Unpaired letters:", unpaired_list)
     utils_cli.returningToMenuNoMessage()
 
 
@@ -36,8 +34,7 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     if paired_df.shape[0] == 0:
         utils_cli.returningToMenuMessage("There are no available connections")
 
-    utils_cli.printOutput("Current connections are:")
-    print(paired_df)
+    utils_cli.printOutput("Current connections are:", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index): ")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
@@ -78,7 +75,7 @@ def _create_a_connection_single_choice_pb(plugboard_ref: plugboards.PlugBoard):
         utils_cli.returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired letters:" + str(unpaired_list))
+    utils_cli.printOutput("Unpaired letters:", (unpaired_list))
     letter1 = utils_cli.askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
         utils_cli.returningToMenuMessage("Invalid input")
@@ -109,7 +106,7 @@ def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
             "There are no letters left to pair (one or fewer left unconnected)"
         )
     while True:
-        utils_cli.printOutput("Unpaired letters:" + str(unpaired_list))
+        utils_cli.printOutput("Unpaired letters:", (unpaired_list))
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )

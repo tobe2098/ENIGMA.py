@@ -15,7 +15,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
 
-    utils_cli.printOutput("Reflector name: " + reflector_ref._name)
+    utils_cli.printOutput("Reflector name: ", reflector_ref._name)
     paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
@@ -81,7 +81,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
         utils_cli.returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired letters:" + str(unpaired_list))
+    utils_cli.printOutput("Unpaired letters:", (unpaired_list))
     letter1 = utils_cli.askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
         utils_cli.returningToMenuMessage("Invalid input")
@@ -119,7 +119,7 @@ def _connect_all_letters_rf(reflector_ref: reflectors.Reflector):
             utils_cli.returningToMenuMessage(
                 "There are no letters left to pair (one or fewer left unconnected)"
             )
-        utils_cli.printOutput("Unpaired letters:" + str(unpaired_list))
+        utils_cli.printOutput("Unpaired letters:", (unpaired_list))
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
@@ -227,7 +227,7 @@ def _reset_connections_rf(reflector_ref: reflectors.Reflector):
 
 
 def _print_name_rf(reflector_ref: reflectors.Reflector):
-    utils_cli.printOutput("REFLECTOR NAME: " + reflector_ref._name)
+    utils_cli.printOutput("REFLECTOR NAME: ", reflector_ref._name)
 
 
 def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
@@ -236,14 +236,12 @@ def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
         utils_cli.printOutput("Input only alphanumerical")
         new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
     reflector_ref._change_name(new_name)
-    utils_cli.returningToMenuMessage(
-        "Reflector name changed to: " + reflector_ref._name
-    )
+    utils_cli.returningToMenuMessage("Reflector name changed to: ", reflector_ref._name)
 
 
 def _randomize_name_rf(reflector_ref: reflectors.Reflector):
     reflector_ref._random_name()
-    utils_cli.returningToMenuMessage("NEW NAME: " + reflector_ref.name)
+    utils_cli.returningToMenuMessage("NEW NAME: ", reflector_ref.name)
 
 
 def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
