@@ -25,6 +25,10 @@ REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
 MACHINES_FILE_HANDLE = "SAVED_MACHINES"
 
 
+def my_quit_fn():  # This function should be in utils.py
+    raise SystemExit
+
+
 class Parent:
     pass
 
