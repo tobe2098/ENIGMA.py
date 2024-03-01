@@ -8,8 +8,6 @@
 ## Add option to translate entire files (skipping non-standard characters)
 ## Here we have the menuing functions outside the machine menus
 # Think about how to store functions
-def my_quit_fn():  # This function should be in utils.py
-    raise SystemExit
 
 
 ## TO EXIT PROGRAM
