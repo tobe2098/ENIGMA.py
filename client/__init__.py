@@ -1,6 +1,7 @@
 from ..core import *
 
-
+## Put here all imports
+## This is mainly oriented to imports and that is it.
 # import sys
 
 # # from tkinter import Y
