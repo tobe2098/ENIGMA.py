@@ -141,37 +141,6 @@ class Rotor:
         self._backward_dict = zip(self._characters_in_use, empty_list)
         self._update_dicts()
 
-    # def export_rotor(self):
-    #     if self._name == "name":
-    #         print(
-    #             ">Please assign a new name to the rotor with the function self.configure() or self.change_name()"
-    #         )
-    #     current_path = os.path.dirname(__file__)
-    #     new_folder = "SAVED_ROTORS"
-    #     path = os.path.join(current_path, new_folder)
-    #     if not os.path.exists(path):
-    #         os.mkdir(path)
-    #         print(">Directory '% s' created" % new_folder)
-    #     save_file = open(r"{}\\{}.rotor".format(path, self._name), "wb")
-    #     pickle.dump(self, save_file)
-    #     print(
-    #         ">{} has been saved into {}.rotor in {}".format(
-    #             self._name, self._name, path
-    #         )
-    #     )
-    #     save_file.close()
-
-    # def _show_config(
-    #     self,
-    # ):  # Everything from the rotor, it will be launched from the machine though
-    #     print("Rotor letter position :", self._conversion_in_use[self._position])
-    #     print("Rotor letter jumps:", self.jump)
-    #     notchlist = [self._conversion_in_use[i] for i in self._notches]
-    #     print("Rotor notches:", notchlist)
-    #     print("Forward connections in the rotor:", self._forward_dict)
-    #     print("Backward connections in the rotor:", self._backward_dict)
-    #     print("Rotor name:", self._name)
-
     def _random_name(self, seed=None):
         if not seed:
             print(
@@ -203,56 +172,7 @@ class Rotor:
         self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
         self._update_dicts(False)
 
-    # def _random_setup(self, seed=None):
-    #     # Randomly generate a rotor and store it in a folder
-    #     # Seed has to be added from the machine calling the function, where the seed is stored/generated
-    #     if not seed:
-    #         print(
-    #             ">>Something went wrong. Make sure development has reached this stage!"
-    #         )
-    #     # Once the seed is set, as long as the same operations are performed the same numbers are generated:
-    #     random.seed(seed)
-    #     # Name generation
-    #     # Position
-    #     self._define_position(
-    #         self._conversion_in_use[random.randint(0, self._no_characters)]
-    #     )  # Check in the future whether this setups are correct
-    #     # Notches
-    #     notch_list = [
-    #         self._conversion_in_use[i]
-    #         for i in set(
-    #             random.sample(range(0, self._no_characters), random.randint(1, 5))
-    #         )
-    #     ]
-    #     self._define_notches(notch_list)
-    #     # self.define_rotor_jump(random.randint(1,25))
-    #     # Forward dictionary
-    #     num_list = list(range(0, self._no_characters))
-    #     self._forward_num_dict = dict(
-    #         zip(
-    #             num_list,
-    #             random.sample(range(0, self._no_characters), self._no_characters),
-    #         )
-    #     )
-    #     sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))
-    #     self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
-    #     print(">Rotor connections established")
-    #     self._update_dicts(False)
-    #     # if showConfig:
-    #     #     self._show_config()
-    #     # self.export_rotor()
-    #     # And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
-    #     # in the case of the connection board, an extra number should be used to determine number of connections, same as notches.
-
 
 class RotorDash(Rotor):
     def __init__(self):
         super().__init__(CHARACTERS_dash, EQUIVALENCE_DICT_dash)
-
-    # def _update_dicts(self, letter_to_num=True):
-    #     if letter_to_num:
-    #         self._forward_num_dict = transform_single_dict_dash(self._forward_dict)
-    #         self._backward_num_dict = transform_single_dict_dash(self._backward_dict)
-    #     else:
-    #         self._forward_dict = transform_single_dict_dash(self._forward_num_dict)
-    #         self._backward_dict = transform_single_dict_dash(self._backward_num_dict)

@@ -292,7 +292,6 @@ def _reset_and_streamline_connections_by_pairs_rt(rotor_ref: rotors.Rotor):
     #     elif accbool == "y":
     #         break
     _connect_all_letters_rt(rotor_ref)
-    rotor_ref.lacks_conn = True
     utils_cli.returningToMenuMessage("You exited without forming all connections!")
 
 
@@ -313,7 +312,7 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
         utils_cli.returningToMenuMessage(
             "Seed is necessary for randomization of connections"
         )
-    rotor_ref._reset_dictionaries()
+    # rotor_ref._reset_dictionaries() Necessary?
     rotor_ref._randomize_dictionaries(seed)
     utils_cli.returningToMenuMessage("Rotor connections established")
 
@@ -325,6 +324,7 @@ def _reset_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     rotor_ref._reset_dictionaries()
+    rotor_ref.lacks_conn = True
 
 
 def _print_name_rt(rotor_ref: rotors.Rotor):
@@ -343,6 +343,44 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
     rotor_ref._random_name()
     utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
+
+
+def _change_notches_rt(rotor_ref: rotors.Rotor):
+    utils_cli.printOutput("Rotor notches:", rotor_ref.get_notchlist_letters())
+    positions = [
+        i
+        for i in rotor_ref._define_notches(
+            utils_cli.askingInput("Input new notches(empty to skip):").split()
+        )
+    ]
+    if not positions:
+        return
+
+    rotor_ref._define_notches(positions)
+
+
+def _randomize_notches_rt(rotor_ref: rotors.Rotor):
+    seed = input(
+        utils_cli.askingInput(
+            "Introduce a positive integer as a seed to randomize the rotor connections: "
+        )
+    )
+    if not isinstance(seed, int) and seed > 0:
+        utils_cli.returningToMenuMessage("Number is not a positive integer")
+    if not seed:
+        utils_cli.returningToMenuMessage(
+            "Seed is necessary for randomization of connections"
+        )
+    random.seed(seed)
+    positions = [
+        i
+        for i in set(
+            random.sample(range(0, rotor_ref._no_characters), random.randint(1, 5))
+        )
+    ]
+    rotor_ref._define_notches(positions)
+    utils_cli.printOutput("New rotor notches:", rotor_ref.get_notchlist_letters())
+    utils_cli.returningToMenuMessage("Rotor notches established")
 
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
@@ -381,33 +419,19 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
 
 
 def _exitMenu_rt(rotor_ref: rotors.Rotor):
-    (
-        _,
-        _,
-        front_unformed,
-        _,
-    ) = utils.simplify_rotor_dictionary_paired_unpaired(
-        rotor_ref._forward_dict, rotor_ref._backward_dict
-    )
-    if len(front_unformed) > 0:
+    # (
+    #     _,
+    #     _,
+    #     front_unformed,
+    #     _,
+    # ) = utils.simplify_rotor_dictionary_paired_unpaired(
+    #     rotor_ref._forward_dict, rotor_ref._backward_dict
+    # )
+    if rotor_ref.lacks_conn:
         utils_cli.returningToMenuMessage(
             "Due to implementation reasons, a partially connected rotor is not allowed"
         )
     utils_cli.exitMenu()
-
-
-def _change_notches_rt(rotor_ref: rotors.Rotor):
-    utils_cli.printOutput("Rotor notches: ", rotor_ref.get_notchlist_letters())
-    positions = [
-        i
-        for i in rotor_ref._define_notches(
-            utils_cli.askingInput("Input new notches(empty to skip):").split()
-        )
-    ]
-    if not positions:
-        return
-
-    rotor_ref._define_notches(positions)
 
     def show_rotor_config(self):
         print(">ROTORS START")
@@ -552,13 +576,7 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
             self._conversion_in_use[random.randint(0, self._no_characters)]
         )  # Check in the future whether this setups are correct
         # Notches
-        notch_list = [
-            self._conversion_in_use[i]
-            for i in set(
-                random.sample(range(0, self._no_characters), random.randint(1, 5))
-            )
-        ]
-        self._define_notches(notch_list)
+
         # self.define_rotor_jump(random.randint(1,25))
         # Forward dictionary
         num_list = list(range(0, self._no_characters))
