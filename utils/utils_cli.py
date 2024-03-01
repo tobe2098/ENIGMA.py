@@ -9,16 +9,16 @@ def askForMenuOption():
     return askingInput("Choose a menu option: ")
 
 
-def printOutput(message: str):
-    print(">" + message)
+def printOutput(*args):
+    print(">", args)
 
 
-def askingInput(message: str):
-    return input(">>>" + message + " ")
+def askingInput(*args):
+    return input(">>>", args, end=" ")
 
 
-def printMenuOption(message: str):
-    print(">$ " + message)
+def printMenuOption(*args):
+    print(">$ ", args)
 
 
 class MenuExitException(Exception):
@@ -74,15 +74,14 @@ def clearScreenConvenience():
 def checkIfFileExists(path, name, suffix):
     return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
 
-def regular_menu_call(object_for_call, menu:dict):
+
+def regular_menu_call(object_for_call, menu: dict):
     try:
         for key in sorted(menu.keys()):
             printMenuOption(key + ":" + menu[key][0])
 
         answer = str(input(askForMenuOption()))
-        menu.get(answer, [None, invalidChoice])[1](
-            object_for_call
-        )
+        menu.get(answer, [None, invalidChoice])[1](object_for_call)
     except ReturnToMenuException:
         print(ReturnToMenuException.message)
     except MenuExitException:
