@@ -418,6 +418,9 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
     )
 
 
+##Review here
+After types
+
 def _load_saved_rotor():
     current_path = os.path.dirname(__file__)
     new_folder = utils.ROTORS_FILE_HANDLE
