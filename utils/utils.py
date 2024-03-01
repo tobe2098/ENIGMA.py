@@ -24,6 +24,28 @@ ROTORS_FILE_HANDLE = "SAVED_ROTORS"
 REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
 MACHINES_FILE_HANDLE = "SAVED_MACHINES"
 
+
+class Parent:
+    pass
+
+
+class Child(Parent):
+    pass
+
+
+obj_parent = Parent()
+obj_child = Child()
+
+# Check the type of objects
+print(type(obj_parent))  # Output: <class '__main__.Parent'>
+print(type(obj_child))  # Output: <class '__main__.Child'>
+
+# Compare types using isinstance()
+print(isinstance(obj_parent, Parent))  # Output: True
+print(isinstance(obj_child, Parent))  # Output: True
+print(isinstance(obj_parent, Child))  # Output: False
+print(isinstance(obj_child, Child))  # Output: True
+
 # def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does exactly the same
 #     '''
 #     The function generates a random list from 1 to 26 (incl.)

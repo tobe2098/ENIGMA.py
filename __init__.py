@@ -1,5 +1,5 @@
 import core
-import client
+import CLI
 import gui
 
 ## IMPORTANT TO SET TIMEOUTS IN ALL FILE I/O
