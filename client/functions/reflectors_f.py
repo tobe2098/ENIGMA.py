@@ -254,7 +254,7 @@ def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
             utils_cli.askingInput("Please assign a new name to the reflector:")
         ).strip()
     current_path = os.getcwd()
-    new_folder = "SAVED_REFLECTORS"
+    new_folder = REFLECTORS_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
@@ -283,7 +283,7 @@ def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
 
 def _load_saved_reflector():
     current_path = os.path.dirname(__file__)
-    new_folder = "SAVED_REFLECTORS"
+    new_folder = REFLECTORS_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         utils_cli.returningToMenuMessage("There is no {} folder".format(path))

@@ -1,4 +1,5 @@
 """Module that provides global functions and constants"""
+
 import pandas as pd
 
 
@@ -18,6 +19,10 @@ EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
 EQUIVALENCE_DICT_dash = dict(zip(CHARACTERS_dash, NUMBERS_dash))
 EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
 EQUIVALENCE_DICT_dash.update(dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()]))
+
+ROTORS_FILE_HANDLE = "SAVED_ROTORS"
+REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
+MACHINES_FILE_HANDLE = "SAVED_MACHINES"
 
 # def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does exactly the same
 #     '''
