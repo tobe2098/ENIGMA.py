@@ -47,13 +47,13 @@ def returningToMenuNoMessage():
 
 
 def invalidChoice(*args):
-    printOutput("Choice was invalid.")
+    printOutput("Choice was invalid")
 
 
 def getAnInputFromList(list_, message: str):
     input = askingInput(message)
     if input not in list_:
-        printOutput("Invalid input.")
+        printOutput("Invalid input")
         getAnInputFromList(list_, message)
 
 
@@ -61,14 +61,14 @@ def clearScreenSafety():
     if not SCREEN_CLEAR_SAFETY:
         return
     _ = call("clear" if os.name == "posix" else "cls")
-    printOutput("Screen cleared for safety purposes.")
+    printOutput("Screen cleared for safety purposes")
 
 
 def clearScreenConvenience():
     if not SCREEN_CLEAR_CONVENIENCE:
         return
     _ = call("clear" if os.name == "posix" else "cls")
-    printOutput("Screen cleared for convenience.")
+    printOutput("Screen cleared for convenience")
 
 
 def checkIfFileExists(path, name, suffix):

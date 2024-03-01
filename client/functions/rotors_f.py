@@ -43,7 +43,7 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     )
     if len(unpaired) > 0:
         utils_cli.printOutput(
-            "One or more connections are self-connections. This may go against proper practice."
+            "One or more connections are self-connections. This may go against proper practice"
         )
     utils_cli.returningToMenuNoMessage()
 
@@ -60,7 +60,7 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenuMessage("There are no available connections.")
+        utils_cli.returningToMenuMessage("There are no available connections")
 
     utils_cli.printOutput("Current connections are:")
     print(paired_df)
@@ -68,9 +68,9 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         _delete_a_connection_rt(rotor_ref=rotor_ref, connIndex=row)
-        utils_cli.returningToMenuMessage("Connection was deleted.")
+        utils_cli.returningToMenuMessage("Connection was deleted")
     else:
-        utils_cli.returningToMenuMessage("Index invalid.")
+        utils_cli.returningToMenuMessage("Index invalid")
 
 
 def _delete_a_connection_rt(rotor_ref: rotors.Rotor, connIndex):
@@ -109,23 +109,23 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     if len(front_unformed) == 0 and len(back_unformed) == 0:
         rotor_ref.lacks_conn = False
         utils_cli.returningToMenuMessage(
-            "There are no letters left to pair (one or fewer left unconnected)."
+            "There are no letters left to pair (one or fewer left unconnected)"
         )
     utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
 
     letter1 = utils_cli.askingInput("Choose a letter to pair from front side:").upper()
     if letter1 not in front_unformed:
-        utils_cli.returningToMenuMessage("Invalid input.")
+        utils_cli.returningToMenuMessage("Invalid input")
     utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
     letter2 = utils_cli.askingInput(
         "Choose the second letter from the back side:"
     ).upper()
     if letter2 not in back_unformed:
-        utils_cli.returningToMenuMessage("Invalid input.")
+        utils_cli.returningToMenuMessage("Invalid input")
     rotor_ref._forward_dict[letter1] = letter2
     rotor_ref._backward_dict[letter2] = letter1
     rotor_ref._update_dicts()
-    utils_cli.returningToMenuMessage("The connection was formed.")
+    utils_cli.returningToMenuMessage("The connection was formed")
     if len(front_unformed) - 1 == 0 and len(back_unformed) - 1 == 0:
         rotor_ref.lacks_conn = False
 
@@ -150,7 +150,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
     # if len(front_unformed) == 0 and len(back_unformed) == 0:
     #     rotor_ref.lacks_conn = True
     #     utils_cli.returningToMenuMessage(
-    #         "There are no letters left to pair (one or fewer left unconnected)."
+    #         "There are no letters left to pair (one or fewer left unconnected)"
     #     )
     while True:
         (
@@ -164,12 +164,12 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         if len(front_unformed) == 0 and len(back_unformed) == 0:
             rotor_ref.lacks_conn = False
             utils_cli.returningToMenuMessage(
-                "There are no letters left to pair (one or fewer left unconnected)."
+                "There are no letters left to pair (one or fewer left unconnected)"
             )
         utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
         utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
         utils_cli.printOutput(
-            "If you want to stop configurating the board, press Enter."
+            "If you want to stop configurating the board, press Enter"
         )
         letters = (
             utils_cli.askingInput(
@@ -183,16 +183,16 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         elif not letters:
             return
         else:
-            print("Error: Only 2 letters please.")
+            print("Error: Only 2 letters please")
             continue
         letters = list(letters)
         if letters[0] not in front_unformed or letters[1] not in back_unformed:
-            utils_cli.printOutput("One or more letters are already connected.")
+            utils_cli.printOutput("One or more letters are already connected")
             continue
         # break
         rotor_ref._forward_dict[letters[0]] = letters[1]
         rotor_ref._backward_dict[letters[1]] = letters[0]
-        utils_cli.printOutput("Connection formed.")
+        utils_cli.printOutput("Connection formed")
 
 
 def _form_all_connections_rt(rotor_ref: rotors.Rotor):
@@ -210,7 +210,7 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     utils_cli.returningToMenuMessage("You exited without forming all connections!")
 
     # utils_cli.returningToMenuMessage(
-    #     "There are no letters left to pair (one or fewer left unconnected)."
+    #     "There are no letters left to pair (one or fewer left unconnected)"
     # )
 
 
@@ -236,13 +236,13 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         "Choose a frontside connection by the frontside letter to swap:"
     ).upper()
     if letter1 not in rotor_ref._characters_in_use:
-        utils_cli.printOutput("Invalid input.")
+        utils_cli.printOutput("Invalid input")
         return
     letter2 = utils_cli.askingInput(
         "Choose a second frontside connection by the frontside letter to swap:"
     ).upper()
     if letter2 not in rotor_ref._characters_in_use:
-        utils_cli.printOutput("Invalid input.")
+        utils_cli.printOutput("Invalid input")
         return
     (
         rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]],
@@ -256,7 +256,7 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref._forward_dict[letter1],
     )
     rotor_ref._update_dicts()
-    utils_cli.printOutput("The connection was swapped.")
+    utils_cli.printOutput("The connection was swapped")
 
 
 def _swap_connections_rt(rotor_ref: rotors.Rotor):
@@ -308,7 +308,7 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
         )
     )
     if not isinstance(seed, int) and seed > 0:
-        utils_cli.returningToMenuMessage("Number is not a positive integer.")
+        utils_cli.returningToMenuMessage("Number is not a positive integer")
     if not seed:
         utils_cli.returningToMenuMessage(
             "Seed is necessary for randomization of connections"
@@ -334,7 +334,7 @@ def _print_name_rt(rotor_ref: rotors.Rotor):
 def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
     new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     while any(not c.isalnum() for c in new_name) or not new_name:
-        utils_cli.printOutput("Input only alphanumerical.")
+        utils_cli.printOutput("Input only alphanumerical")
         new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     rotor_ref._change_name(new_name)
     utils_cli.returningToMenuMessage("Rotor name changed to: " + rotor_ref._name)
@@ -361,7 +361,7 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
         os.mkdir(path)
         utils_cli.printOutput("Directory '% s' created" % path)
     if utils_cli.checkIfFileExists(path, rotor_ref._name, "rotor"):
-        utils_cli.printOutput("A rotor with this name already exists.")
+        utils_cli.printOutput("A rotor with this name already exists")
         accbool = ""
         while not accbool == "n" or not accbool == "y":
             accbool = input(
@@ -391,7 +391,7 @@ def _exitMenu_rt(rotor_ref: rotors.Rotor):
     )
     if len(front_unformed) > 0:
         utils_cli.returningToMenuMessage(
-            "Due to implementation reasons, a partially connected rotor is not allowed."
+            "Due to implementation reasons, a partially connected rotor is not allowed"
         )
     utils_cli.exitMenu()
 

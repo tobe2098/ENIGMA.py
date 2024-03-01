@@ -24,7 +24,10 @@ _menu_rotor_reset_options = {
         "Reset and form max. connections",
         rotors_f._reset_and_streamline_connections_by_pairs_rt,
     ),
-    "2": ("Reset and randomize connections", rotors_f._reset_and_randomize_connections_rt),
+    "2": (
+        "Reset and randomize connections",
+        rotors_f._reset_and_randomize_connections_rt,
+    ),
     "3": ("Reset connections", rotors_f._reset_connections_rt),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
@@ -34,12 +37,15 @@ _menu_rotor_saved_rotor = {
     "2": ("Change rotor name", rotors_f._change_rotor_name_rt),
     "3": ("Delete a single connection", rotors_f._choose_connection_to_delete_rt),
     "4": ("Create a single connection", rotors_f._create_a_connection_single_choice_rt),
-    "5": ("Form all connections left",rotors_f._form_all_connections_rt),
+    "5": ("Form all connections left", rotors_f._form_all_connections_rt),
     "6": (
         "Reset and form max. connections",
         rotors_f._reset_and_streamline_connections_by_pairs_rt,
     ),
-    "7": ("Reset and randomize connections", rotors_f._reset_and_randomize_connections_rt),
+    "7": (
+        "Reset and randomize connections",
+        rotors_f._reset_and_randomize_connections_rt,
+    ),
     "8": ("Reset connections", rotors_f._reset_connections_rt),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
@@ -47,7 +53,7 @@ _menu_rotor_saved_rotor = {
 
 def _name_rotor_menu(rotor_ref: rotors.Rotor):
     while True:
-        
+
         rotors_f._print_name_rt(rotor_ref)
         try:
             for key in sorted(_menu_rotor_name_options.keys()):
@@ -69,12 +75,14 @@ def _connections_rotor_menu(rotor_ref: rotors.Rotor):
         try:
             rotors_f._show_config_rt(rotor_ref)
             for key in sorted(_menu_rotor_connections_options.keys()):
-                utils_cli.printMenuOption(key + ":" + _menu_rotor_connections_options[key][0])
+                utils_cli.printMenuOption(
+                    key + ":" + _menu_rotor_connections_options[key][0]
+                )
 
             answer = str(input(utils_cli.askForMenuOption()))
-            _menu_rotor_connections_options.get(answer, [None, utils_cli.invalidChoice])[1](
-                rotor_ref
-            )
+            _menu_rotor_connections_options.get(
+                answer, [None, utils_cli.invalidChoice]
+            )[1](rotor_ref)
         except utils_cli.ReturnToMenuException:
             print(utils_cli.ReturnToMenuException.message)
         except utils_cli.MenuExitException:
@@ -118,9 +126,7 @@ def _saved_rotor_menu(rotor_ref: rotors.Rotor):
             utils_cli.exitMenu()
 
 
-def _load_saved_rotor_for_editing(
-    rotor: rotors.Rotor = None, recursive: bool = False
-):
+def _load_saved_rotor_for_editing(rotor: rotors.Rotor = None, recursive: bool = False):
     if not recursive:
         rotor = load_saved_rotor()
     _saved_rotor_menu(rotor)
@@ -132,13 +138,15 @@ def _load_saved_rotor_for_editing(
         new_folder = "SAVED_rotorS"
         path = os.path.join(current_path, new_folder)
         if not utils_cli.checkIfFileExists(path, rotor._name, "rotor"):
-            utils_cli.printOutput("A file with the rotor's name was not detected.")
+            utils_cli.printOutput("A file with the rotor's name was not detected")
             accbool = ""
             while not accbool == "n" or not accbool == "y":
-                accbool = input(utils_cli.askingInput("Do you want to exit anyway?[y/n]")).lower()
+                accbool = input(
+                    utils_cli.askingInput("Do you want to exit anyway?[y/n]")
+                ).lower()
             if accbool == "n":
                 _load_saved_rotor_for_editing(rotor, True)
-            utils_cli.returningToMenuMessage((f"rotor {rotor.name} was discarded."))
+            utils_cli.returningToMenuMessage((f"rotor {rotor.name} was discarded"))
     # Conda activation: conda info --envs, conda activate {}
 
 
@@ -367,8 +375,7 @@ def _random_conf_rotors(self, jump):
         random.seed(seed)
         # Name generation
         name_list = [
-            random.sample(range(0, self._no_characters), 1)[0]
-            for _ in range(0, 13)
+            random.sample(range(0, self._no_characters), 1)[0] for _ in range(0, 13)
         ]
         name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
         name_list[9:13] = [str(i % 10) for i in name_list[9:13]]
@@ -383,9 +390,7 @@ def _random_conf_rotors(self, jump):
         notch_list = [
             self._conversion_in_use[i]
             for i in set(
-                random.sample(
-                    range(0, self._no_characters), random.randint(1, 5)
-                )
+                random.sample(range(0, self._no_characters), random.randint(1, 5))
             )
         ]
         self._define_notches(notch_list)
@@ -395,9 +400,7 @@ def _random_conf_rotors(self, jump):
         self._forward_num_dict = dict(
             zip(
                 num_list,
-                random.sample(
-                    range(0, self._no_characters), self._no_characters
-                ),
+                random.sample(range(0, self._no_characters), self._no_characters),
             )
         )
         sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))

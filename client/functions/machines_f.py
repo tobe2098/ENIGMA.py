@@ -134,7 +134,7 @@ def save_machine():
         self._reflector.configure()
         # Name. IMPORTANT: name is used to save as pickled object.
         # Not changing the name will overwrite previous machine with same name
-        print(">Machine is ready to go. Changing name is advised.")
+        print(">Machine is ready to go. Changing name is advised")
         name = input(
             ">>>Input machine name (previous save with the same name will be overwritten):"
         )

@@ -40,9 +40,7 @@ class PlugBoard:
         return self._board_num_dict[number_io]
 
     def random_setup(self, seed=None):
-        if not seed:
-            utils_cli.printOutput("Please input a seed.")
-            return
+
         random.seed(seed)
 
         # Now set the connections
@@ -60,7 +58,6 @@ class PlugBoard:
         self._update_dicts(False)
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-        utils_cli.printOutput("Board setup is generated.")
 
 
 class PlugBoardDash(PlugBoard):

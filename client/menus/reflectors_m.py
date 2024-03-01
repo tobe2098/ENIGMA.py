@@ -66,20 +66,22 @@ def _name_reflector_menu(reflector_ref: reflectors.Reflector):
 
 
 def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
-        while True:
-            _print_name_rf(reflector_ref)
-            utils_cli.regular_menu_call(reflector_ref, _menu_reflector_connections_options)
+    while True:
+        _print_name_rf(reflector_ref)
+        utils_cli.regular_menu_call(reflector_ref, _menu_reflector_connections_options)
+
 
 def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
-        while True:
-            _print_name_rf(reflector_ref)
-            utils_cli.regular_menu_call(reflector_ref, _menu_reflector_reset_options)
+    while True:
+        _print_name_rf(reflector_ref)
+        utils_cli.regular_menu_call(reflector_ref, _menu_reflector_reset_options)
 
 
 def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
-        while True:
-            _print_name_rf(reflector_ref)
-            utils_cli.regular_menu_call(reflector_ref, _saved_reflector_menu)
+    while True:
+        _print_name_rf(reflector_ref)
+        utils_cli.regular_menu_call(reflector_ref, _saved_reflector_menu)
+
 
 def _load_saved_reflector_for_editing(
     reflector: reflectors.Reflector = None, recursive: bool = False
@@ -95,13 +97,17 @@ def _load_saved_reflector_for_editing(
         new_folder = "SAVED_REFLECTORS"
         path = os.path.join(current_path, new_folder)
         if not utils_cli.checkIfFileExists(path, reflector._name, "reflector"):
-            utils_cli.printOutput("A file with the reflector's name was not detected.")
+            utils_cli.printOutput("A file with the reflector's name was not detected")
             accbool = ""
             while not accbool == "n" or not accbool == "y":
-                accbool = input(utils_cli.askingInput("Do you want to exit anyway?[y/n]")).lower()
+                accbool = input(
+                    utils_cli.askingInput("Do you want to exit anyway?[y/n]")
+                ).lower()
             if accbool == "n":
                 _load_saved_reflector_for_editing(reflector=reflector, recursive=True)
-            utils_cli.returningToMenuMessage((f"Reflector {reflector.name} was discarded."))
+            utils_cli.returningToMenuMessage(
+                (f"Reflector {reflector.name} was discarded")
+            )
     # Conda activation: conda info --envs, conda activate {}
 
 
@@ -118,5 +124,5 @@ _menu_reflector = {
 
 def main_reflector_menu(machine_ref: machines.Machine):
     while True:
-      _print_name_rf(machine_ref._reflector)
-      utils_cli.regular_menu_call(machine_ref._reflector, _menu_reflector)
+        _print_name_rf(machine_ref._reflector)
+        utils_cli.regular_menu_call(machine_ref._reflector, _menu_reflector)
