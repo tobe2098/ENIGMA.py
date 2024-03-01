@@ -26,8 +26,12 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Rotor letter jumps:" + str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
     utils_cli.printOutput("Rotor notches:" + str(notchlist))
-    utils_cli.printOutput("Forward connections in the rotor:" + str(rotor_ref._forward_dict))
-    utils_cli.printOutput("Backward connections in the rotor:" + str(rotor_ref._backward_dict))
+    utils_cli.printOutput(
+        "Forward connections in the rotor:" + str(rotor_ref._forward_dict)
+    )
+    utils_cli.printOutput(
+        "Backward connections in the rotor:" + str(rotor_ref._backward_dict)
+    )
     utils_cli.printOutput("Rotor name:" + str(rotor_ref._name))
     (
         _,
@@ -37,8 +41,10 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     ) = utils.simplify_rotor_dictionary_paired_unpaired(
         rotor_ref._forward_dict, rotor_ref._backward_dict
     )
-    if len(unpaired)>0:
-        utils_cli.printOutput("One or more connections are self-connections. This may go against proper practice.")
+    if len(unpaired) > 0:
+        utils_cli.printOutput(
+            "One or more connections are self-connections. This may go against proper practice."
+        )
     utils_cli.returningToMenuNoMessage()
 
 
@@ -111,7 +117,9 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     if letter1 not in front_unformed:
         utils_cli.returningToMenuMessage("Invalid input.")
     utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
-    letter2 = utils_cli.askingInput("Choose the second letter from the back side:").upper()
+    letter2 = utils_cli.askingInput(
+        "Choose the second letter from the back side:"
+    ).upper()
     if letter2 not in back_unformed:
         utils_cli.returningToMenuMessage("Invalid input.")
     rotor_ref._forward_dict[letter1] = letter2
@@ -160,7 +168,9 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
             )
         utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
         utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
-        utils_cli.printOutput("If you want to stop configurating the board, press Enter.")
+        utils_cli.printOutput(
+            "If you want to stop configurating the board, press Enter."
+        )
         letters = (
             utils_cli.askingInput(
                 "Input one letter from front side, one from back side (in order):"
@@ -184,6 +194,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         rotor_ref._backward_dict[letters[1]] = letters[0]
         utils_cli.printOutput("Connection formed.")
 
+
 def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
@@ -195,7 +206,7 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     #     rotor_ref._board_dict
     # )
     _connect_all_letters_rt(rotor_ref)
-    rotor_ref.lacks_conn=True
+    rotor_ref.lacks_conn = True
     utils_cli.returningToMenuMessage("You exited without forming all connections!")
 
     # utils_cli.returningToMenuMessage(
@@ -221,16 +232,29 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         connections (int): _description_
     """
     _show_config_rt(rotor_ref)
-    letter1 = utils_cli.askingInput("Choose a frontside connection by the frontside letter to swap:").upper()
+    letter1 = utils_cli.askingInput(
+        "Choose a frontside connection by the frontside letter to swap:"
+    ).upper()
     if letter1 not in rotor_ref._characters_in_use:
         utils_cli.printOutput("Invalid input.")
         return
-    letter2 = utils_cli.askingInput("Choose a second frontside connection by the frontside letter to swap:").upper()
+    letter2 = utils_cli.askingInput(
+        "Choose a second frontside connection by the frontside letter to swap:"
+    ).upper()
     if letter2 not in rotor_ref._characters_in_use:
         utils_cli.printOutput("Invalid input.")
         return
-    rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]], rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]]=rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]], rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]]
-    rotor_ref._forward_dict[letter1], rotor_ref._forward_dict[letter2]=rotor_ref._forward_dict[letter2], rotor_ref._forward_dict[letter1]
+    (
+        rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]],
+        rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]],
+    ) = (
+        rotor_ref._backward_dict[rotor_ref._forward_dict[letter2]],
+        rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]],
+    )
+    rotor_ref._forward_dict[letter1], rotor_ref._forward_dict[letter2] = (
+        rotor_ref._forward_dict[letter2],
+        rotor_ref._forward_dict[letter1],
+    )
     rotor_ref._update_dicts()
     utils_cli.printOutput("The connection was swapped.")
 
@@ -242,10 +266,12 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     while True:
-      boolean=utils_cli.askingInput("If you do not want to continue swapping, enter N:").upper()
-      if (boolean=='N'):
-          utils_cli.returningToMenuMessage("Returning to menu...")
-      _swap_two_connections_rt(rotor_ref=rotor_ref)
+        boolean = utils_cli.askingInput(
+            "If you do not want to continue swapping, enter N:"
+        ).upper()
+        if boolean == "N":
+            utils_cli.returningToMenuMessage("Returning to menu...")
+        _swap_two_connections_rt(rotor_ref=rotor_ref)
 
     # utils_cli.returningToMenuMessage(
     #     "There are no letters left to pair (one or fewer left unconnected)."
@@ -266,10 +292,8 @@ def _reset_and_streamline_connections_by_pairs_rt(rotor_ref: rotors.Rotor):
     #     elif accbool == "y":
     #         break
     _connect_all_letters_rt(rotor_ref)
-    rotor_ref.lacks_conn=True
+    rotor_ref.lacks_conn = True
     utils_cli.returningToMenuMessage("You exited without forming all connections!")
-
-
 
 
 def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
@@ -285,8 +309,13 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
     )
     if not isinstance(seed, int) and seed > 0:
         utils_cli.returningToMenuMessage("Number is not a positive integer.")
+    if not seed:
+        utils_cli.returningToMenuMessage(
+            "Seed is necessary for randomization of connections"
+        )
     rotor_ref._reset_dictionaries()
     rotor_ref._randomize_dictionaries(seed)
+    utils_cli.returningToMenuMessage("Rotor connections established")
 
 
 def _reset_connections_rt(rotor_ref: rotors.Rotor):
@@ -350,68 +379,35 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
         )
     )
 
+
 def _exitMenu_rt(rotor_ref: rotors.Rotor):
     (
-    _,
-    _,
-    front_unformed,
-    _,
-) = utils.simplify_rotor_dictionary_paired_unpaired(
-    rotor_ref._forward_dict, rotor_ref._backward_dict
-)
+        _,
+        _,
+        front_unformed,
+        _,
+    ) = utils.simplify_rotor_dictionary_paired_unpaired(
+        rotor_ref._forward_dict, rotor_ref._backward_dict
+    )
     if len(front_unformed) > 0:
         utils_cli.returningToMenuMessage(
             "Due to implementation reasons, a partially connected rotor is not allowed."
         )
     utils_cli.exitMenu()
 
-def _change_rotor_letter_position(self):
-    # MENU
-    pos1 = input(">>>Letter position for rotor 1:")
-    pos2 = input(">>>Letter position for rotor 2:")
-    pos3 = input(">>>Letter position for rotor 3:")
-    if self.rotor4:
-        pos4 = input(">>>Letter position for rotor 4:")
-        self.rotor4._define_position(pos4)
-    self.rotor1._define_position(pos1)
-    self.rotor2._define_position(pos2)
-    self.rotor3._define_position(pos3)
-    print(">Rottor letter positions set")
 
-
-def _rotor_order_change(self):
-    while True:
-        for i in range(len(self._rotors)):
-            print(">Rotor {}:".format(i + 1), self._rotors[i].get_name())
-        selec1 = input(
-            ">>>Select rotor to put in a placeholder to get swapped (-1 to exit):"
+def _change_notches_rt(rotor_ref: rotors.Rotor):
+    utils_cli.printOutput("Rotor notches: ", rotor_ref.get_notchlist_letters())
+    positions = [
+        i
+        for i in rotor_ref._define_notches(
+            utils_cli.askingInput("Input new notches(empty to skip):").split()
         )
-        selec2 = input(
-            ">>>Select rotor to put placeholder's order position and complete swap:"
-        )
+    ]
+    if not positions:
+        return
 
-        if selec1 == -1:
-            print(">Finished with swaps")
-            return
-        else:
-            selec1 -= 1
-            selec2 -= 1
-            self._rotors[selec1], self._rotors[selec2] = (
-                self._rotors[selec2],
-                self._rotors[selec1],
-            )
-
-
-def _change_rotor_notches(self):
-    for i in range(len(self._rotors)):
-        print(">Rotor {} notches:", self._rotors[i].get_notchlist())
-        self._rotors[i]._define_notches(input(">>>Input new notches(empty to skip):"))
-
-
-def _tune_loaded_rotors(self):
-    for i in range(len(self._rotors)):
-        print(">Configurating rotor {} connections:".format(i))
-        self._rotors[i].customize_connections()
+    rotor_ref._define_notches(positions)
 
 
 # RNG functions
@@ -564,8 +560,7 @@ def _random_conf_rotors(self, jump):
         random.seed(seed)
         # Name generation
         name_list = [
-            random.sample(range(0, self._no_characters), 1)[0]
-            for _ in range(0, 13)
+            random.sample(range(0, self._no_characters), 1)[0] for _ in range(0, 13)
         ]
         name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
         name_list[9:13] = [str(i % 10) for i in name_list[9:13]]
@@ -580,9 +575,7 @@ def _random_conf_rotors(self, jump):
         notch_list = [
             self._conversion_in_use[i]
             for i in set(
-                random.sample(
-                    range(0, self._no_characters), random.randint(1, 5)
-                )
+                random.sample(range(0, self._no_characters), random.randint(1, 5))
             )
         ]
         self._define_notches(notch_list)
@@ -592,9 +585,7 @@ def _random_conf_rotors(self, jump):
         self._forward_num_dict = dict(
             zip(
                 num_list,
-                random.sample(
-                    range(0, self._no_characters), self._no_characters
-                ),
+                random.sample(range(0, self._no_characters), self._no_characters),
             )
         )
         sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))

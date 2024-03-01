@@ -16,15 +16,15 @@ class Rotor:
         # Note: variables can be defined on the fly
 
         self._name = "name"  # randomly generating a name is going to happen I guess
-        
+
         self._position = 1  # Can go from 1 to 26
-        self.jump=1 #Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
+        self.jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
-        self._no_characters=len(characters)
+        self._no_characters = len(characters)
         self._notches = [
-            self._no_characters-1
+            self._no_characters - 1
         ]  # self.notch can be a list. When does the next rotor move relative to the notch?
         self._forward_dict = dict(zip(self._characters_in_use, self._characters_in_use))
 
@@ -45,7 +45,10 @@ class Rotor:
         return [self._conversion_in_use[i] for i in self._notches]
 
     def notch_check_move_forward(self):
-        if any((notch-self._position)%self._no_characters<self._jump for notch in self._notches):
+        if any(
+            (notch - self._position) % self._no_characters < self._jump
+            for notch in self._notches
+        ):
             self._position += self._jump
             self._position %= self._no_characters
             return True
@@ -57,7 +60,10 @@ class Rotor:
     def backspace(self):
         self._position -= self._jump
         self._position %= self._no_characters
-        return any((self._position-notch)%self._no_characters<self._jump for notch in self._notches)
+        return any(
+            (self._position - notch) % self._no_characters < self._jump
+            for notch in self._notches
+        )
 
     def forward_pass(self, input_letter_number):
         input_letter_number += self._position
@@ -100,15 +106,12 @@ class Rotor:
         #     )
         # )
 
-    def _define_notches(self, position):
-        position = [i for i in position]
+    def _define_notches(self, positions):
         notch_list = [
             self._conversion_in_use[notch]
-            for notch in position
-            if notch in self._characters_in_use
+            for notch in positions
+            if notch in self._characters_in_use and notch != ""
         ]
-        if not notch_list:
-            return
         self._notches = notch_list
         # print(
         #     ">Now the rotor has {} notches in positions {}".format(
@@ -131,11 +134,11 @@ class Rotor:
             self._backward_dict = transform_single_dict(
                 self._backward_num_dict, self._conversion_in_use
             )
-    
+
     def _reset_dictionaries(self):
-        empty_list=["" for _ in range(self._no_characters)]
-        self._forward_dict=zip(self._characters_in_use, empty_list)
-        self._backward_dict=zip(self._characters_in_use, empty_list)
+        empty_list = ["" for _ in range(self._no_characters)]
+        self._forward_dict = zip(self._characters_in_use, empty_list)
+        self._backward_dict = zip(self._characters_in_use, empty_list)
         self._update_dicts()
 
     # def export_rotor(self):
@@ -177,8 +180,7 @@ class Rotor:
         random.seed(seed)
         # Name generation
         name_list = [
-            random.sample(range(0, self._no_characters), 1)[0]
-            for _ in range(0, 13)
+            random.sample(range(0, self._no_characters), 1)[0] for _ in range(0, 13)
         ]
         name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
         name_list[9:13] = [str(i % 10) for i in name_list[9:13]]
@@ -187,24 +189,18 @@ class Rotor:
         self._change_name(name)
 
     def _randomize_dictionaries(self, seed=None):
-        if not seed:
-            print(
-                ">>Something went wrong. Make sure development has reached this stage!"
-            )
+
         # Once the seed is set, as long as the same operations are performed the same numbers are generated:
         random.seed(seed)
         num_list = list(range(0, self._no_characters))
         self._forward_num_dict = dict(
             zip(
                 num_list,
-                random.sample(
-                    range(0, self._no_characters), self._no_characters
-                ),
+                random.sample(range(0, self._no_characters), self._no_characters),
             )
         )
         sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))
         self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
-        print(">Rotor connections established")
         self._update_dicts(False)
 
     def _random_setup(self, seed=None):
@@ -225,9 +221,7 @@ class Rotor:
         notch_list = [
             self._conversion_in_use[i]
             for i in set(
-                random.sample(
-                    range(0, self._no_characters), random.randint(1, 5)
-                )
+                random.sample(range(0, self._no_characters), random.randint(1, 5))
             )
         ]
         self._define_notches(notch_list)
@@ -237,9 +231,7 @@ class Rotor:
         self._forward_num_dict = dict(
             zip(
                 num_list,
-                random.sample(
-                    range(0, self._no_characters), self._no_characters
-                ),
+                random.sample(range(0, self._no_characters), self._no_characters),
             )
         )
         sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))

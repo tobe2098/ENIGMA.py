@@ -6,6 +6,67 @@ from ...core import machines
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
 
 
+def _tune_loaded_rotors(self):  ## This is just a menu call
+    for i in range(len(self._rotors)):
+        print(">Configurating rotor {} connections:".format(i))
+        self._rotors[i].customize_connections()
+
+
+def _change_rotor_letter_position(self):
+    # MENU in machine!!! LETTERS HAVE TO BE FROM THE LIST!!!
+    pos1 = input(">>>Letter position for rotor 1:")
+    pos2 = input(">>>Letter position for rotor 2:")
+    pos3 = input(">>>Letter position for rotor 3:")
+    if self.rotor4:
+        pos4 = input(">>>Letter position for rotor 4:")
+        self.rotor4._define_position(pos4)
+    self.rotor1._define_position(pos1)
+    self.rotor2._define_position(pos2)
+    self.rotor3._define_position(pos3)
+    print(">Rottor letter positions set")
+
+
+def _rotor_order_change(self):
+    while True:
+        for i in range(len(self._rotors)):
+            print(">Rotor {}:".format(i + 1), self._rotors[i].get_name())
+        selec1 = input(
+            ">>>Select rotor to put in a placeholder to get swapped (-1 to exit):"
+        )
+        selec2 = input(
+            ">>>Select rotor to put placeholder's order position and complete swap:"
+        )
+
+        if selec1 == -1:
+            print(">Finished with swaps")
+            return
+        else:
+            selec1 -= 1
+            selec2 -= 1
+            self._rotors[selec1], self._rotors[selec2] = (
+                self._rotors[selec2],
+                self._rotors[selec1],
+            )
+
+
+##import pickle
+
+# class Foo(object):
+#     pass
+
+# foo = Foo()
+# bar = Foo()
+# bar.foo_ref = foo
+
+# with open('tmp.pkl', 'wb') as f:
+#     pickle.dump((foo, bar), f)
+# with open('tmp.pkl', 'rb') as f:
+#     foo2, bar2 = pickle.load(f)
+
+# print id(foo) == id(bar.foo_ref) # True
+# print id(foo2) == id(bar2.foo_ref) # True
+
+
 def load_machine(
     self,
 ):  # THIS LOAD FUNCTION IS DEPRECATED, IT DOES NOT WORK, USE THE ONE THAT IS NOT CLASS DEFINED
