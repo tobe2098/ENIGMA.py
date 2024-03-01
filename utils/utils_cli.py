@@ -37,8 +37,8 @@ def exitMenu(*args):
     raise MenuExitException()
 
 
-def returningToMenuMessage(specific_message: str):
-    printOutput(specific_message)
+def returningToMenuMessage(*args):
+    printOutput(args)
     raise ReturnToMenuException()
 
 
@@ -50,11 +50,11 @@ def invalidChoice(*args):
     printOutput("Choice was invalid")
 
 
-def getAnInputFromList(list_, message: str):
-    input = askingInput(message)
-    if input not in list_:
+def getAnInputFromList(list_, message: str):  ##Use this
+    inp = askingInput(message)
+    if inp not in list_:
         printOutput("Invalid input")
-        getAnInputFromList(list_, message)
+        return getAnInputFromList(list_, message)
 
 
 def clearScreenSafety():
@@ -78,7 +78,7 @@ def checkIfFileExists(path, name, suffix):
 def regular_menu_call(object_for_call, menu: dict):
     try:
         for key in sorted(menu.keys()):
-            printMenuOption(key + ":" + menu[key][0])
+            printMenuOption(key, ":", menu[key][0])
 
         answer = str(input(askForMenuOption()))
         menu.get(answer, [None, invalidChoice])[1](object_for_call)
