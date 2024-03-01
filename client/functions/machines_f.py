@@ -4,6 +4,20 @@ from ...core import machines
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
 # ALL LOADING FUNCTIONS MUST BE HERE
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
+def _random_conf_rotors(self, jump):
+    for i in range(len(self._rotors)):
+        self._rotors[i].random_setup(self._seed + jump, showConfig=False)
+        jump += 1
+    return ">Rotors and reflector set up and saved."
+
+
+def _set_new_no_rotors(self, noRotors):
+    self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
+
+
+def _append_rotors(self, noRotors):
+    for _ in range(noRotors):
+        self._rotors.append(copy.copy(self._ref_rotor))
 
 
 def _tune_loaded_rotors(self):  ## This is just a menu call

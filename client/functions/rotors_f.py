@@ -20,19 +20,19 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     utils_cli.printOutput(
-        "Rotor letter position :"
-        + str(rotor_ref._conversion_in_use[rotor_ref._position])
+        "Rotor letter position :",
+        str(rotor_ref._conversion_in_use[rotor_ref._position]),
     )
-    utils_cli.printOutput("Rotor letter jumps:" + str(rotor_ref._jump))
+    utils_cli.printOutput("Rotor letter jumps:", str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
-    utils_cli.printOutput("Rotor notches:" + str(notchlist))
+    utils_cli.printOutput("Rotor notches:", str(notchlist))
     utils_cli.printOutput(
-        "Forward connections in the rotor:" + str(rotor_ref._forward_dict)
+        "Forward connections in the rotor:", (rotor_ref._forward_dict)
     )
     utils_cli.printOutput(
-        "Backward connections in the rotor:" + str(rotor_ref._backward_dict)
+        "Backward connections in the rotor:", str(rotor_ref._backward_dict)
     )
-    utils_cli.printOutput("Rotor name:" + str(rotor_ref._name))
+    utils_cli.printOutput("Rotor name:", str(rotor_ref._name))
     (
         _,
         unpaired,
@@ -111,12 +111,12 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
         utils_cli.returningToMenuMessage(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
+    utils_cli.printOutput("Unpaired letters in front side:", (front_unformed))
 
     letter1 = utils_cli.askingInput("Choose a letter to pair from front side:").upper()
     if letter1 not in front_unformed:
         utils_cli.returningToMenuMessage("Invalid input")
-    utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
+    utils_cli.printOutput("Unpaired letters in back side:", (back_unformed))
     letter2 = utils_cli.askingInput(
         "Choose the second letter from the back side:"
     ).upper()
@@ -166,8 +166,8 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
             utils_cli.returningToMenuMessage(
                 "There are no letters left to pair (one or fewer left unconnected)"
             )
-        utils_cli.printOutput("Unpaired letters in front side:" + str(front_unformed))
-        utils_cli.printOutput("Unpaired letters in back side:" + str(back_unformed))
+        utils_cli.printOutput("Unpaired letters in front side:", (front_unformed))
+        utils_cli.printOutput("Unpaired letters in back side:", (back_unformed))
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
@@ -328,7 +328,7 @@ def _reset_connections_rt(rotor_ref: rotors.Rotor):
 
 
 def _print_name_rt(rotor_ref: rotors.Rotor):
-    utils_cli.printOutput("ROTOR NAME: " + rotor_ref._name)
+    utils_cli.printOutput("ROTOR NAME:", rotor_ref._name)
 
 
 def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
@@ -337,12 +337,12 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
         utils_cli.printOutput("Input only alphanumerical")
         new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     rotor_ref._change_name(new_name)
-    utils_cli.returningToMenuMessage("Rotor name changed to: " + rotor_ref._name)
+    utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
     rotor_ref._random_name()
-    utils_cli.returningToMenuMessage("NEW NAME: " + rotor_ref._name)
+    utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
@@ -409,26 +409,6 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
 
     rotor_ref._define_notches(positions)
 
-
-# RNG functions
-def _random_conf_rotors(self, jump):
-    for i in range(len(self._rotors)):
-        self._rotors[i].random_setup(self._seed + jump, showConfig=False)
-        jump += 1
-    return ">Rotors and reflector set up and saved."
-
-    def _set_new_no_rotors(self, noRotors):
-        self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
-
-    def _append_rotors(self, noRotors):
-        for _ in range(noRotors):
-            self._rotors.append(copy.copy(self._ref_rotor))
-
-    # def add_a_rotor(self):
-    #     self.rotor4=Rotor()
-    #     self.n_rotors=4
-    #     print(">>>Fourth rotor added. Use self.rotor4.manual_rotor_setup() to modify or self.rotor4.random_rotor_setup()")
-    # Showing configs
     def show_rotor_config(self):
         print(">ROTORS START")
         for i in range(len(self._rotors)):
