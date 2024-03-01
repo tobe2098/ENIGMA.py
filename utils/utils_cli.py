@@ -10,7 +10,7 @@ def askForMenuOption():
 
 
 def printOutput(*args):
-    print(">", args)
+    print(">", args, end=".")
 
 
 def askingInput(*args):
