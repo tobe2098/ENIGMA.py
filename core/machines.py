@@ -109,7 +109,7 @@ class Machine:
         while self._name.strip() == "name" or self._name.strip() == "":
             self._name = input(">>>Please assign a new name to the machine:")
         current_path = os.path.dirname(__file__)
-        new_folder = MACHINES_FILE_HANDLE
+        new_folder = utils.MACHINES_FILE_HANDLE
         path = os.path.join(current_path, new_folder)
         if not os.path.exists(path):
             os.mkdir(path)

@@ -94,7 +94,7 @@ def _load_saved_reflector_for_editing(
         utils_cli.returningToMenuNoMessage()
     except utils_cli.MenuExitException:
         current_path = os.getcwd()
-        new_folder = REFLECTORS_FILE_HANDLE
+        new_folder = utils.REFLECTORS_FILE_HANDLE
         path = os.path.join(current_path, new_folder)
         if not utils_cli.checkIfFileExists(path, reflector._name, "reflector"):
             utils_cli.printOutput("A file with the reflector's name was not detected")

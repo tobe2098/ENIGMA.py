@@ -10,7 +10,7 @@ def load_machine(
     self,
 ):  # THIS LOAD FUNCTION IS DEPRECATED, IT DOES NOT WORK, USE THE ONE THAT IS NOT CLASS DEFINED
     current_path = os.path.dirname(__file__)
-    new_folder = MACHINES_FILE_HANDLE
+    new_folder = utils.MACHINES_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         print("There is no {} folder".format(path))
@@ -32,7 +32,7 @@ def load_machine(
 
 def load_existing_machine():
     current_path = os.path.dirname(__file__)
-    new_folder = MACHINES_FILE_HANDLE
+    new_folder = utils.MACHINES_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
         print(">There is no {} folder".format(path))
@@ -118,7 +118,7 @@ def save_machine():
 
     def import_rotor(self):
         current_path = os.path.dirname(__file__)
-        new_folder = ROTORS_FILE_HANDLE
+        new_folder = utils.ROTORS_FILE_HANDLE
         path = os.path.join(current_path, new_folder)
         if not os.path.exists(path):
             print("There is no {} folder".format(path))
@@ -135,7 +135,7 @@ def save_machine():
 
     def import_reflector(self):
         current_path = os.path.dirname(__file__)
-        new_folder = REFLECTORS_FILE_HANDLE
+        new_folder = utils.REFLECTORS_FILE_HANDLE
         path = os.path.join(current_path, new_folder)
         if not os.path.exists(path):
             print(">There is no {} folder".format(path))
