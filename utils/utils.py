@@ -29,41 +29,6 @@ def my_quit_fn():  # This function should be in utils.py
     raise SystemExit
 
 
-class Parent:
-    pass
-
-
-class Child(Parent):
-    pass
-
-
-obj_parent = Parent()
-obj_child = Child()
-
-# Check the type of objects
-print(type(obj_parent))  # Output: <class '__main__.Parent'>
-print(type(obj_child))  # Output: <class '__main__.Child'>
-
-# Compare types using isinstance()
-print(isinstance(obj_parent, Parent))  # Output: True
-print(isinstance(obj_child, Parent))  # Output: True
-print(isinstance(obj_parent, Child))  # Output: False
-print(isinstance(obj_child, Child))  # Output: True
-
-# def gen_rnd_26list(seed=None): #Deprecated, random.sample(range(1,27), n) does exactly the same
-#     '''
-#     The function generates a random list from 1 to 26 (incl.)
-
-#     seed (int): seed for randomization purposes
-#     '''
-#     if not seed:
-#         print("Problem in gen_rnd_26list()'s call")
-#     random.seed(seed)
-#     poplist=[i+1 for i in range (0,26)]
-#     random.shuffle(poplist)
-#     return poplist
-
-
 def simplify_simple_dictionary_paired_unpaired(board_dict):
     """
     The function simplifies the board dictionary such that there is only one copy of each letter in the output
