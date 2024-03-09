@@ -4,6 +4,7 @@
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
+from utils.types import isDashedObject
 from ...core import rotors
 from ...utils import utils
 from ...utils import utils_cli
@@ -334,14 +335,17 @@ def _print_name_rt(rotor_ref: rotors.Rotor):
 def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
     new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     while any(not c.isalnum() for c in new_name) or not new_name:
-        utils_cli.printOutput("Input only alphanumerical")
+        utils_cli.printOutput("Input only alphanumerical characters")
         new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
     rotor_ref._change_name(new_name)
     utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
-    rotor_ref._random_name()
+    seed=""
+    while not seed:
+        seed=utils_cli.askingInput("Input a seed input:") 
+    rotor_ref._random_name(seed)
     utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 
 
@@ -382,6 +386,28 @@ def _randomize_notches_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("New rotor notches:", rotor_ref.get_notchlist_letters())
     utils_cli.returningToMenuMessage("Rotor notches established")
 
+def _change_position_rt(rotor_ref:rotors.Rotor):
+    new_position = utils_cli.askingInput("Input a single letter to set the rotor to a new position:").upper()
+    while new_position not in rotor_ref._characters_in_use or len(new_position)>1:
+        if isDashedObject(rotor_ref):
+            utils_cli.printOutput("Input only a single letter")
+        else:
+            utils_cli.printOutput("Input only a single letter or a dash")
+        new_position = utils_cli.askingInput("Input a single letter to set the rotor to a new position:").upper()
+    rotor_ref._define_position(new_position)
+    utils_cli.returningToMenuMessage("Rotor position set to:", rotor_ref.get_position())
+
+def _randomize_position_rt(rotor_ref:rotors.Rotor,seed:int):
+    random.seed(seed)
+    new_position = random.sample(range(0,rotor_ref._characters_in_use),1)
+    rotor_ref._define_position(new_position)
+    utils_cli.returningToMenuMessage("Rotor position set to:", rotor_ref.get_position())
+
+def _randomize_position_ask_rt(rotor_ref:rotors.Rotor):
+    seed=""
+    while not seed:
+        seed=utils_cli.askingInput("Input a seed input:")
+    _randomize_position_rt(rotor_ref=rotor_ref, seed=seed)
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
     while (

@@ -17,7 +17,7 @@ class Rotor:
 
         self._name = "name"  # randomly generating a name is going to happen I guess
 
-        self._position = 1  # Can go from 1 to 26
+        self._position = 0  # Can go from 1 to 26
         self.jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
@@ -39,7 +39,7 @@ class Rotor:
         return self._name
 
     def get_position(self):
-        return self._position
+        return self._conversion_in_use[self._position]
 
     def get_notchlist_letters(self):
         return [self._conversion_in_use[i] for i in self._notches]
