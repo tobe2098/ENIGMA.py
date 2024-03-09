@@ -302,17 +302,7 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    seed = input(
-        utils_cli.askingInput(
-            "Introduce a positive integer as a seed to randomize the rotor connections: "
-        )
-    )
-    if not seed:
-        utils_cli.returningToMenuMessage(
-            "Seed is necessary for randomization of connections"
-        )
-    if not (utils.is_valid_seed(seed)):
-        utils_cli.returningToMenuMessage("Number is not a positive integer")
+    seed=utils_cli.getSeedFromUser()
 
     # rotor_ref._reset_dictionaries() Necessary?
     rotor_ref._randomize_dictionaries(seed)
@@ -334,10 +324,10 @@ def _print_name_rt(rotor_ref: rotors.Rotor):
 
 
 def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
-    new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
-    while any(not c.isalnum() for c in new_name) or not new_name:
-        utils_cli.printOutput("Input only alphanumerical characters")
-        new_name = str(utils_cli.askingInput("Input a new name for the rotor:"))
+    new_name = utils_cli.askingInput("Input a new name for the rotor:")
+    while not rotor_ref._is_name_valid(new_name):
+        utils_cli.printOutput("Input only alphanumerical characters or underscore")
+        new_name = utils_cli.askingInput("Input a new name for the rotor:")
     rotor_ref._change_name(new_name)
     utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 

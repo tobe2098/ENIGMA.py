@@ -1,6 +1,6 @@
 import os
 from subprocess import call
-import utils
+from utils import utils.utils.is_valid_seed
 
 SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True

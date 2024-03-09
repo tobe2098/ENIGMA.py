@@ -233,7 +233,7 @@ def _print_name_rf(reflector_ref: reflectors.Reflector):
 def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
     new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
     while any(not c.isalnum() for c in new_name) or not new_name:
-        utils_cli.printOutput("Input only alphanumerical")
+        utils_cli.printOutput("Input only alphanumerical characters or underscore")
         new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
     reflector_ref._change_name(new_name)
     utils_cli.returningToMenuMessage("Reflector name changed to: ", reflector_ref._name)
