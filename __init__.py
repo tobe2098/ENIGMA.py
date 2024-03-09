@@ -10,6 +10,8 @@ import gui
 # Move all annotations here
 # Just put the typename in all permutations as member variables, so a call to the ref will be easy (maybe as functions?)
 # Do type checking before encryption
+# Add waiting when clearing the screen
+# Put exceptions for every core function that manipulates the objects. ARGUMENT CHECKING SHOULD BE A SINGLE FUNCTION INSIDE THE CORE
 
 if __name__ == "__main__":
     import sys
