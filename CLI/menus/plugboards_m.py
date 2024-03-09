@@ -34,4 +34,4 @@ _menu_plugboard = {
 
 def main_plugboard_menu(machine_ref: machines.Machine):
     while True:
-        utils_cli.regular_menu_call(machine_ref._plugboard, _menu_plugboard)
+        utils_cli.runStandardMenu(machine_ref._plugboard, _menu_plugboard)

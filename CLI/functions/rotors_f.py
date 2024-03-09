@@ -307,12 +307,13 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
             "Introduce a positive integer as a seed to randomize the rotor connections: "
         )
     )
-    if not isinstance(seed, int) and seed > 0:
-        utils_cli.returningToMenuMessage("Number is not a positive integer")
     if not seed:
         utils_cli.returningToMenuMessage(
             "Seed is necessary for randomization of connections"
         )
+    if not (utils.is_valid_seed(seed)):
+        utils_cli.returningToMenuMessage("Number is not a positive integer")
+
     # rotor_ref._reset_dictionaries() Necessary?
     rotor_ref._randomize_dictionaries(seed)
     utils_cli.returningToMenuMessage("Rotor connections established")
@@ -342,9 +343,11 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
 
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
-    seed=""
-    while not seed:
-        seed=utils_cli.askingInput("Input a seed input:") 
+    seed=-1
+    while not utils.is_valid_seed(seed):
+        seed=utils_cli.askingInput("Input a seed input:")
+        if not seed:
+            utils_cli.returningToMenuNoMessage()
     rotor_ref._random_name(seed)
     utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 
@@ -353,28 +356,22 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Rotor notches:", rotor_ref.get_notchlist_letters())
     positions = [
         i
-        for i in rotor_ref._define_notches(
-            utils_cli.askingInput("Input new notches(empty to skip):").split()
-        )
+        for i in utils_cli.askingInput("Input new notches separated by a space (empty to skip):").split()
     ]
     if not positions:
-        return
+        utils_cli.returningToMenuNoMessage()
+    while not rotor_ref._are_notches_valid(positions):
+        positions = [
+        i for i in utils_cli.askingInput("Input new notches separated by a space (empty to skip):").split()
+        ]
+        if not positions:
+            utils_cli.returningToMenuNoMessage()
 
     rotor_ref._define_notches(positions)
 
 
 def _randomize_notches_rt(rotor_ref: rotors.Rotor):
-    seed = input(
-        utils_cli.askingInput(
-            "Introduce a positive integer as a seed to randomize the rotor connections: "
-        )
-    )
-    if not isinstance(seed, int) and seed > 0:
-        utils_cli.returningToMenuMessage("Number is not a positive integer")
-    if not seed:
-        utils_cli.returningToMenuMessage(
-            "Seed is necessary for randomization of connections"
-        )
+    seed=utils_cli.getSeedFromUser()
     random.seed(seed)
     positions = [
         i
@@ -388,7 +385,7 @@ def _randomize_notches_rt(rotor_ref: rotors.Rotor):
 
 def _change_position_rt(rotor_ref:rotors.Rotor):
     new_position = utils_cli.askingInput("Input a single letter to set the rotor to a new position:").upper()
-    while new_position not in rotor_ref._characters_in_use or len(new_position)>1:
+    while rotor_ref._is_position_invalid(new_position):
         if isDashedObject(rotor_ref):
             utils_cli.printOutput("Input only a single letter")
         else:
@@ -404,20 +401,15 @@ def _randomize_position_rt(rotor_ref:rotors.Rotor,seed:int):
     utils_cli.returningToMenuMessage("Rotor position set to:", rotor_ref.get_position())
 
 def _randomize_position_ask_rt(rotor_ref:rotors.Rotor):
-    seed=""
-    while not seed:
-        seed=utils_cli.askingInput("Input a seed input:")
+    seed=utils_cli.getSeedFromUser()
     _randomize_position_rt(rotor_ref=rotor_ref, seed=seed)
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
-    while (
-        rotor_ref._name == "name"
-        or rotor_ref._name == ""
-        or any(not c.isalnum() for c in rotor_ref._name)
-    ):
-        rotor_ref._change_name(
-            utils_cli.askingInput("Please assign a new name to the rotor:")
-        ).strip()
+    new_name=""
+    while not rotor_ref._is_name_valid(rotor_ref.get_name()):
+        new_name=utils_cli.askingInput("Please assign a new name to the rotor:").strip()
+    rotor_ref._change_name(new_name)
+
     current_path = os.getcwd()
     new_folder = utils.ROTORS_FILE_HANDLE
     path = os.path.join(current_path, new_folder)

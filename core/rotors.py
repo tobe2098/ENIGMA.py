@@ -81,14 +81,39 @@ class Rotor:
         output_number %= self._no_characters
         return output_number
 
+    def _is_name_valid(self, name):
+        return (
+            name != "name" and name != "" and all(c.isalnum() or c == "_" for c in name)
+        )
+
     def _change_name(self, new_name):
+        """_summary_
+
+        Args:
+            new_name (_type_): _description_
+
+        Raises:
+            Exception: _description_
+        """
         import re
 
-        self._name = new_name.strip()
-        re.sub(r"\W+", "", self._name)
+        new_name = new_name.strip()
+        if not self._is_name_valid(new_name):
+            raise Exception("Invalid input.")
+        self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
+    def _is_jump_invalid(self, jump):
+        return jump % self._characters_in_use == 0
+
     def _define_rotor_jump(self, jump):
+        """Not active for now
+
+        Args:
+            jump (int): number of jumps
+        """
+        if self._is_jump_invalid(jump):
+            raise Exception("Cryptographically invalid jump")
         self._jump = jump
         # print(
         #     ">Now rotor jumps ",
@@ -98,7 +123,19 @@ class Rotor:
 
     # Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
 
+    def _is_position_invalid(self, position):
+        return len(position) > 1 or position not in self._characters_in_use
+
     def _define_position(self, position):
+        """Sets the position of the rotor to the input value
+
+        Args:
+            position (string): A single character to set the position to
+        """
+        ##DEBUG
+        if self._is_position_invalid(position):
+            raise Exception("Wrong arguments")
+
         self._position = self._conversion_in_use[position]
         # print(
         #     ">Now rotor is in letter position {}".format(
@@ -106,7 +143,23 @@ class Rotor:
         #     )
         # )
 
+    def _are_notches_valid(self, notches):
+        return (
+            not notches
+            or any(not isinstance(i, str) for i in notches)
+            or any(len(i) > 1 for i in notches)
+        )
+
     def _define_notches(self, positions):
+        """Sets the notches of the rotor to the input list of single characters
+
+        Args:
+            positions (list): list of single characters
+        """
+        ##DEBUG
+        if self._are_notches_valid(positions):
+            raise Exception("Incorrect arguments")
+
         notch_list = [
             self._conversion_in_use[notch]
             for notch in positions

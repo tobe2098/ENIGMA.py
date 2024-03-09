@@ -1,5 +1,6 @@
 import os
 from subprocess import call
+import utils
 
 SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True
@@ -75,7 +76,24 @@ def checkIfFileExists(path, name, suffix):
     return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
 
 
-def regular_menu_call(object_for_call, menu: dict):
+def getSeedFromUser():
+    """Guaranteed to return a valid seed for random.seed()
+
+    Returns:
+        int: seed
+    """
+    seed = "a"
+    while not utils.is_valid_seed(seed):
+        seed = askingInput("Introduce a positive integer as a seeds:")
+        if not seed:
+            returningToMenuNoMessage()
+    seed = int(seed)
+    if seed < 0:
+        seed *= -1
+    return seed
+
+
+def runStandardMenu(object_for_call, menu: dict):
     try:
         for key in sorted(menu.keys()):
             printMenuOption(key, ":", menu[key][0])

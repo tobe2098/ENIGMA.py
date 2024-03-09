@@ -62,25 +62,25 @@ _menu_reflector_saved_reflector = {
 def _name_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        utils_cli.regular_menu_call(reflector_ref, _menu_reflector_name_options)
+        utils_cli.runStandardMenu(reflector_ref, _menu_reflector_name_options)
 
 
 def _connections_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        utils_cli.regular_menu_call(reflector_ref, _menu_reflector_connections_options)
+        utils_cli.runStandardMenu(reflector_ref, _menu_reflector_connections_options)
 
 
 def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        utils_cli.regular_menu_call(reflector_ref, _menu_reflector_reset_options)
+        utils_cli.runStandardMenu(reflector_ref, _menu_reflector_reset_options)
 
 
 def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        utils_cli.regular_menu_call(reflector_ref, _saved_reflector_menu)
+        utils_cli.runStandardMenu(reflector_ref, _saved_reflector_menu)
 
 
 def _load_saved_reflector_for_editing(
@@ -125,4 +125,4 @@ _menu_reflector = {
 def main_reflector_menu(machine_ref: machines.Machine):
     while True:
         _print_name_rf(machine_ref._reflector)
-        utils_cli.regular_menu_call(machine_ref._reflector, _menu_reflector)
+        utils_cli.runStandardMenu(machine_ref._reflector, _menu_reflector)

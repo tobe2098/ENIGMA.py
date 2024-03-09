@@ -103,6 +103,10 @@ def transform_single_dict(dictionary, conversion: dict):
     return {conversion[key]: conversion[value] for key, value in dictionary.items()}
 
 
+def is_valid_seed(seed):
+    return seed.isnum()
+
+
 # def transform_single_dict_dash(dictionary):
 #     """
 #     The function gets a letter or number (containing dash) dictionary and returns the other one
