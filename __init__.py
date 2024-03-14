@@ -12,6 +12,9 @@ import gui
 # Develop unit tests
 # with open('mypickle.pickle', 'wb') as f:
 #    pickle.dump(some_obj, f)
+# Review the contents of reflectors and plugboard according to the new utils_cli functionalities
+# Editing pre-existing rotors and reflectors has to be outside the machine menu
+# Valid input checking in reflectors, machines and rotors
 
 if __name__ == "__main__":
     import sys
