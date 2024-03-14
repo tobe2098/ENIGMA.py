@@ -333,11 +333,7 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
 
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
-    seed = -1
-    while not utils.is_valid_seed(seed):
-        seed = utils_cli.askingInput("Input a seed input:")
-        if not seed:
-            utils_cli.returningToMenuNoMessage()
+    seed = utils_cli.getSeedFromUser()
     rotor_ref._random_name(seed)
     utils_cli.returningToMenuMessage("Rotor name changed to:", rotor_ref._name)
 
@@ -439,9 +435,6 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
             )
         )
     )
-
-
-##Review here
 
 
 def _load_saved_rotor():
