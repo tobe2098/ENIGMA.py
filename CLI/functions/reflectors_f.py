@@ -5,7 +5,6 @@ from ...core import reflectors
 from ...utils import utils
 from ...utils import utils_cli
 import pickle
-from ...utils.utils import simplify_simple_dictionary_paired_unpaired
 
 
 def _show_config_rf(reflector_ref: reflectors.Reflector):
@@ -16,7 +15,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     """
 
     utils_cli.printOutput("Reflector name: ", reflector_ref._name)
-    paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
+    paired_df, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
     utils_cli.printOutput("Reflector pairs:")

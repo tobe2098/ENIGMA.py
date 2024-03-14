@@ -18,6 +18,9 @@ from ..functions.reflectors_f import (
     _show_config_rf,
     _print_name_rf,
     _load_saved_reflector,
+    _connect_all_letters_rf,
+    _delete_a_connection_rf,
+    _form_n_connections_rf,
 )
 
 _menu_reflector_name_options = {
