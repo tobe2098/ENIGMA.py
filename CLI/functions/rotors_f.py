@@ -302,7 +302,7 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    seed=utils_cli.getSeedFromUser()
+    seed = utils_cli.getSeedFromUser()
 
     # rotor_ref._reset_dictionaries() Necessary?
     rotor_ref._randomize_dictionaries(seed)
@@ -333,9 +333,9 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
 
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
-    seed=-1
+    seed = -1
     while not utils.is_valid_seed(seed):
-        seed=utils_cli.askingInput("Input a seed input:")
+        seed = utils_cli.askingInput("Input a seed input:")
         if not seed:
             utils_cli.returningToMenuNoMessage()
     rotor_ref._random_name(seed)
@@ -346,13 +346,18 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Rotor notches:", rotor_ref.get_notchlist_letters())
     positions = [
         i
-        for i in utils_cli.askingInput("Input new notches separated by a space (empty to skip):").split()
+        for i in utils_cli.askingInput(
+            "Input new notches separated by a space (empty to skip):"
+        ).split()
     ]
     if not positions:
         utils_cli.returningToMenuNoMessage()
     while not rotor_ref._are_notches_valid(positions):
         positions = [
-        i for i in utils_cli.askingInput("Input new notches separated by a space (empty to skip):").split()
+            i
+            for i in utils_cli.askingInput(
+                "Input new notches separated by a space (empty to skip):"
+            ).split()
         ]
         if not positions:
             utils_cli.returningToMenuNoMessage()
@@ -361,7 +366,7 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
 
 
 def _randomize_notches_rt(rotor_ref: rotors.Rotor):
-    seed=utils_cli.getSeedFromUser()
+    seed = utils_cli.getSeedFromUser()
     random.seed(seed)
     positions = [
         i
@@ -373,31 +378,41 @@ def _randomize_notches_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("New rotor notches:", rotor_ref.get_notchlist_letters())
     utils_cli.returningToMenuMessage("Rotor notches established")
 
-def _change_position_rt(rotor_ref:rotors.Rotor):
-    new_position = utils_cli.askingInput("Input a single letter to set the rotor to a new position:").upper()
+
+def _change_position_rt(rotor_ref: rotors.Rotor):
+    new_position = utils_cli.askingInput(
+        "Input a single letter to set the rotor to a new position:"
+    ).upper()
     while rotor_ref._is_position_invalid(new_position):
         if isDashedObject(rotor_ref):
             utils_cli.printOutput("Input only a single letter")
         else:
             utils_cli.printOutput("Input only a single letter or a dash")
-        new_position = utils_cli.askingInput("Input a single letter to set the rotor to a new position:").upper()
+        new_position = utils_cli.askingInput(
+            "Input a single letter to set the rotor to a new position:"
+        ).upper()
     rotor_ref._define_position(new_position)
     utils_cli.returningToMenuMessage("Rotor position set to:", rotor_ref.get_position())
 
-def _randomize_position_rt(rotor_ref:rotors.Rotor,seed:int):
+
+def _randomize_position_rt(rotor_ref: rotors.Rotor, seed: int):
     random.seed(seed)
-    new_position = random.sample(range(0,rotor_ref._characters_in_use),1)
+    new_position = random.sample(range(0, rotor_ref._characters_in_use), 1)
     rotor_ref._define_position(new_position)
     utils_cli.returningToMenuMessage("Rotor position set to:", rotor_ref.get_position())
 
-def _randomize_position_ask_rt(rotor_ref:rotors.Rotor):
-    seed=utils_cli.getSeedFromUser()
+
+def _randomize_position_ask_rt(rotor_ref: rotors.Rotor):
+    seed = utils_cli.getSeedFromUser()
     _randomize_position_rt(rotor_ref=rotor_ref, seed=seed)
 
+
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
-    new_name=""
+    new_name = ""
     while not rotor_ref._is_name_valid(rotor_ref.get_name()):
-        new_name=utils_cli.askingInput("Please assign a new name to the rotor:").strip()
+        new_name = utils_cli.askingInput(
+            "Please assign a new name to the rotor:"
+        ).strip()
     rotor_ref._change_name(new_name)
 
     current_path = os.getcwd()
@@ -427,7 +442,7 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
 
 
 ##Review here
-After types
+
 
 def _load_saved_rotor():
     current_path = os.path.dirname(__file__)
@@ -438,18 +453,13 @@ def _load_saved_rotor():
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
     if len(list_of_files) == 0:
         utils_cli.returningToMenuMessage("There are no rotors saved")
-    utils_cli.printOutput("Your available reflectors are: {}".format(list_of_files))
-    reflector = utils_cli.askingInput("Input reflector's position in the list: ")
-    while (
-        not isinstance(reflector, int)
-        or reflector > len(list_of_files) - 1
-        or reflector < 0
-    ):
+    utils_cli.printOutput("Your available rotors are:")
+    utils_cli.printListOfOptions(list_of_files)
+    rotor = utils_cli.askingInput("Input reflector's position in the list:")
+    while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
         utils_cli.printOutput("Please input a valid index")
-        reflector = utils_cli.askingInput("Input reflector's position in the list:")
-    filehandler = open(
-        r"{}\\{}.reflector".format(path, list_of_files[reflector - 1]), "rb"
-    )
+        rotor = utils_cli.askingInput("Input reflector's position in the list:")
+    filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[rotor]), "rb")
     return pickle.load(filehandler)
 
 
@@ -467,181 +477,3 @@ def _exitMenu_rt(rotor_ref: rotors.Rotor):
             "Due to implementation reasons, a partially connected rotor is not allowed"
         )
     utils_cli.exitMenu()
-
-
-def save_n_random_rotors(n, seed):
-    for i in range(0, n):
-        rotor = rotors.Rotor()
-        rotor._random_setup(seed + i)
-    return ">Done"
-
-
-def tune_existing_rotor():
-    rotor = rotors.Rotor()
-    rotor.import_rotor()
-    rotor.configure()
-    rotor.export_rotor()
-    return ">Rotor was edited and saved"
-    # def show_rotor_config(self):
-    #     print(">ROTORS START")
-    #     for i in range(len(self._rotors)):
-    #         print(">Rotor no. {}:".format(i + 1))
-    #         self._rotors[i].show_config()
-    #     print(">ROTORS END")
-
-    # def show_single_rotor_config(self, rotor_no):
-    #     print(">Rotor no. {}:".format(rotor_no))
-    #     self._rotors[rotor_no - 1].show_config()
-
-    # def _manual_rotor_setup(self):
-    #     while True:
-    #         raise Exception
-    #         # NEED A FULL MENU HERE, WITH ADD R/C/L, REMOVE, RESET AND RANDOMIZE, RESET AND CONFIGURE, LOAD ROTORS IN PLACE
-
-    #         actionEnum = (
-    #             input(
-    #                 ">>>Input rotor number to configure the rotor (press 0 to configure all, any higher number to abort):"
-    #             )
-    #             - 1
-    #         )
-    #         if actionEnum == -1:
-    #             self._all_rotor_setup()
-    #         elif actionEnum < len(self._rotors):
-    #             self._single_rotor_setup(self._rotors[actionEnum])
-    #         else:
-    #             break
-    #     print(">Setup of rotors completed.")
-
-    # def customize_connections(self):
-    #     entry_seen_letters = []
-    #     exit_seen_letters = []
-    #     if self._forward_dict and self._backward_dict:
-    #         print(">Current setup is:")
-    #         print(">Forward connections in the rotor:", self._forward_dict)
-    #         print(">Backward connections in the rotor:", self._backward_dict)
-    #         accbool = input(
-    #             ">>>Input N if you do not want to change the configuration:"
-    #         )
-    #         if accbool == "N":
-    #             return
-    #     entry_rotor_dict = dict(zip(self._characters_in_use, self._characters_in_use))
-    #     exit_rotor_dict = dict(zip(self._characters_in_use, self._characters_in_use))
-    #     entry_list = copy.copy(self._characters_in_use)
-    #     exit_list = copy.copy(self._characters_in_use)
-    #     while True:
-    #         print(">If you want to stop configurating the rotor, press Enter")
-    #         configpair = input(
-    #             ">>>Enter pair of letters for board configuration:"
-    #         ).upper()
-    #         if configpair.isalpha() or not configpair:
-    #             pass
-    #         else:
-    #             print(">Error: Input 2 letters please")
-    #             continue
-    #         if len(list(set(entry_list) - set(entry_seen_letters))) == 0:
-    #             break
-    #         configpair = list(configpair)
-    #         if len(configpair) == 2:
-    #             pass
-    #         elif len(configpair) == 0:
-    #             break
-    #         else:
-    #             print(">Error: Input 2 letters please")
-    #             continue
-    #         if any(map(lambda v: v in configpair, entry_seen_letters)):
-    #             print(">Already plugged")
-    #             continue
-    #         if any(map(lambda v: v in configpair, exit_seen_letters)):
-    #             print(">Already plugged")
-    #             continue
-    #         else:
-    #             entry_seen_letters.append(configpair[0])
-    #             exit_seen_letters.append(configpair[1])
-    #             entry_rotor_dict[configpair[0]] = configpair[1]
-    #             exit_rotor_dict[configpair[1]] = configpair[0]
-    #         print(">Current entry config:\n", simplify_board_dict(entry_rotor_dict))
-    #         print(">Current exit config:\n", simplify_board_dict(exit_rotor_dict))
-    #         print(
-    #             ">Not connected entry letters:\n",
-    #             list(set(entry_list) - set(entry_seen_letters)),
-    #         )
-    #         print(
-    #             ">Not connected exit letters:\n",
-    #             list(set(exit_list) - set(exit_seen_letters)),
-    #         )
-    #     self._forward_dict = entry_rotor_dict
-    #     self._backward_dict = exit_rotor_dict
-    #     self._update_dicts()
-    #     print(">Finished")
-
-    # def configure(self):
-    #     print("Press Enter with no input to skip configuration of the parameter.")
-    #     name = input("Write the rotor's name:").upper()
-    #     position = input("Write the rotor's position (in letters, only 1):").upper()
-    #     print("For your cryptosecurity, input between 1 and 5 notches, not more.")
-    #     notch = list(input("Write the rotor's notch position/s (in letters):").upper())
-    #     # jump=int(input("Write the position jump per letter (in a single number) * [0<x<26]:"))
-    #     while boolean not in list("y", "n"):
-    #         boolean = input(
-    #             "Do you want to configure the connections of the rotor?[y/n]"
-    #         )
-    #     if name:
-    #         self._change_name(name)
-    #     # if jump<26:
-    #     #     self.define_rotor_jump(jump)
-    #     if position in self._characters_in_use:
-    #         self._define_position(position)
-    #     if set(notch).issubset(
-    #         self._characters_in_use
-    #     ):  # DO this every time you want to check if set a is a subset of set b
-    #         self._define_notches(notch)
-    #     if boolean == "y":
-    #         self.customize_connections()
-    #     self.show_config()
-    #     print(
-    #         "You have finished configuring your rotor. If you want to save it in a file, use self.export_rotor() \n*Careful while defining notches"
-    #     )
-
-    # def random_setup(self, seed=None, showConfig=True):
-    #     # Randomly generate a rotor and store it in a folder
-    #     # Seed has to be added from the machine calling the function, where the seed is stored/generated
-    #     if not seed:
-    #         print(
-    #             ">>Something went wrong. Make sure development has reached this stage!"
-    #         )
-    #     # Once the seed is set, as long as the same operations are performed the same numbers are generated:
-    #     random.seed(seed)
-    #     # Name generation
-    #     name_list = [
-    #         random.sample(range(0, self._no_characters), 1)[0] for _ in range(0, 13)
-    #     ]
-    #     name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
-    #     name_list[9:13] = [str(i % 10) for i in name_list[9:13]]
-    #     string1 = ""
-    #     name = string1.join(name_list)
-    #     self._change_name(name)
-    #     # Position
-    #     self._define_position(
-    #         self._conversion_in_use[random.randint(0, self._no_characters)]
-    #     )  # Check in the future whether this setups are correct
-    #     # Notches
-
-    #     # self.define_rotor_jump(random.randint(1,25))
-    #     # Forward dictionary
-    #     num_list = list(range(0, self._no_characters))
-    #     self._forward_num_dict = dict(
-    #         zip(
-    #             num_list,
-    #             random.sample(range(0, self._no_characters), self._no_characters),
-    #         )
-    #     )
-    #     sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))
-    #     self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
-    #     print(">Rotor connections established")
-    #     self._update_dicts(False)
-    #     if showConfig:
-    #         self.show_config()
-    #     self.export_rotor()
-    #     return
-    #     # And we use this to generate numbers and lists of numbers from which to derive configurations, notches, positions and names
-    #     # in the case of the connection board, an extra number should be used to determine nu

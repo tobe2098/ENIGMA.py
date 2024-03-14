@@ -16,8 +16,24 @@ import gui
 if __name__ == "__main__":
     import sys
 
+
+def save_n_random_rotors(n, seed):
+    for i in range(0, n):
+        rotor = rotors.Rotor()
+        rotor._random_setup(seed + i)
+    return ">Done"
+
+
+def tune_existing_rotor():
+    rotor = rotors.Rotor()
+    rotor.import_rotor()
+    rotor.configure()
+    rotor.export_rotor()
+    return ">Rotor was edited and saved"
     # Extract args
     # Run client or gui
+
+
 # Creating a Python library involves organizing your code into a package or module that can be easily distributed and used by others. Here's a step-by-step guide to creating a Python library:
 
 # ### 1. Structure your code:

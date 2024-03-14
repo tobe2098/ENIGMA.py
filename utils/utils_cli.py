@@ -50,6 +50,10 @@ def returningToMenuNoMessage():
 def invalidChoice(*args):
     printOutput("Choice was invalid")
 
+def printListOfOptions(list_):
+    for i in range (len(list_)):
+        print(i,":", list_[i])
+
 
 def getAnInputFromList(list_, message: str):  ##Use this
     inp = askingInput(message)

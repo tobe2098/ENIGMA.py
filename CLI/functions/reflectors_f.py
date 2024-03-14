@@ -290,7 +290,8 @@ def _load_saved_reflector():
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
     if len(list_of_files) == 0:
         utils_cli.returningToMenuMessage("There are no reflectors saved")
-    utils_cli.printOutput("Your available reflectors are: {}".format(list_of_files))
+    utils_cli.printOutput("Your available reflectors are:")
+    utils_cli.printListOfOptions(list_of_files)
     reflector = utils_cli.askingInput("Input reflector's position in the list: ")
     while (
         not isinstance(reflector, int)
@@ -299,9 +300,7 @@ def _load_saved_reflector():
     ):
         utils_cli.printOutput("Please input a valid index")
         reflector = utils_cli.askingInput("Input reflector's position in the list:")
-    filehandler = open(
-        r"{}\\{}.reflector".format(path, list_of_files[reflector - 1]), "rb"
-    )
+    filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[reflector]), "rb")
     return pickle.load(filehandler)
 
 
