@@ -1,6 +1,6 @@
 import os
 from subprocess import call
-from utils import utils.utils.is_valid_seed
+from utils import is_valid_seed
 
 SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True
@@ -50,16 +50,19 @@ def returningToMenuNoMessage():
 def invalidChoice(*args):
     printOutput("Choice was invalid")
 
+
 def printListOfOptions(list_):
-    for i in range (len(list_)):
-        print(i,":", list_[i])
+    for i in range(len(list_)):
+        print(i, ":", list_[i])
 
 
-def getAnInputFromList(list_, message: str):  ##Use this
-    inp = askingInput(message)
-    if inp not in list_:
-        printOutput("Invalid input")
-        return getAnInputFromList(list_, message)
+# def getAnInputFromList(
+#     list_, message: str
+# ):  ## DO not use, this could open a window for induced stack overflowing
+#     inp = askingInput(message)
+#     if inp not in list_:
+#         printOutput("Invalid input")
+#         return getAnInputFromList(list_, message)
 
 
 def clearScreenSafety():
@@ -87,7 +90,7 @@ def getSeedFromUser():
         int: seed
     """
     seed = "a"
-    while not utils.is_valid_seed(seed):
+    while not is_valid_seed(seed):
         seed = askingInput("Introduce a positive integer as a seeds:")
         if not seed:
             returningToMenuNoMessage()
