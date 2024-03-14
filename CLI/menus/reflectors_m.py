@@ -4,6 +4,7 @@ import os
 from ...core import machines
 from ...core import reflectors
 from ...utils import utils_cli
+from ...utils import utils
 from ..functions.reflectors_f import (
     _change_reflector_name_rf,
     _randomize_name_rf,
@@ -18,9 +19,7 @@ from ..functions.reflectors_f import (
     _show_config_rf,
     _print_name_rf,
     _load_saved_reflector,
-    _connect_all_letters_rf,
-    _delete_a_connection_rf,
-    _form_n_connections_rf,
+    _form_n_connections_rf,  # Deprecated
 )
 
 _menu_reflector_name_options = {
@@ -83,7 +82,7 @@ def _reset_reflector_menu(reflector_ref: reflectors.Reflector):
 def _saved_reflector_menu(reflector_ref: reflectors.Reflector):
     while True:
         _print_name_rf(reflector_ref)
-        utils_cli.runStandardMenu(reflector_ref, _saved_reflector_menu)
+        utils_cli.runStandardMenu(reflector_ref, _menu_reflector_saved_reflector)
 
 
 def _load_saved_reflector_for_editing(
@@ -120,7 +119,7 @@ _menu_reflector = {
     "3": ("Naming menu", _name_reflector_menu),
     "4": ("Connections options menu", _connections_reflector_menu),
     "5": ("Resetting options menu", _reset_reflector_menu),
-    "6": ("Edit a previously saved rotor", _load_saved_reflector_for_editing),
+    # "6": ("Edit a previously saved rotor", _load_saved_reflector_for_editing),
     "0": ("Exit menu", _exitMenu_rf),
 }
 

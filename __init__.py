@@ -15,6 +15,7 @@ import gui
 # Review the contents of reflectors and plugboard according to the new utils_cli functionalities
 # Editing pre-existing rotors and reflectors has to be outside the machine menu
 # Valid input checking in reflectors, machines and rotors
+# Dictionary of dictionaries for menu calls summarized functions
 
 if __name__ == "__main__":
     import sys

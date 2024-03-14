@@ -43,13 +43,13 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     row = utils_cli.askingInput("Choose a connection to delete (by index):")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
-        _delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
+        __delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
         utils_cli.returningToMenuMessage("Connection was deleted")
     else:
         utils_cli.returningToMenuMessage("Index invalid")
 
 
-def _delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
+def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
     """_summary_
 
     Args:
@@ -97,7 +97,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
 
 
-def _connect_all_letters_rf(reflector_ref: reflectors.Reflector):
+def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
     """_summary_
 
     Args:
@@ -150,7 +150,7 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
     # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
-    _connect_all_letters_rf(reflector_ref)
+    __connect_all_letters_rf(reflector_ref)
     utils_cli.returningToMenuMessage("You exited without forming all connections!")
 
 
@@ -192,8 +192,7 @@ def _reset_and_form_all_connections_by_pairs_rf(reflector_ref: reflectors.Reflec
             utils_cli.returningToMenuNoMessage()
         elif accbool == "y":
             break
-    while True:
-        _connect_all_letters_rf(reflector_ref)
+    __connect_all_letters_rf(reflector_ref)
 
 
 ## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
