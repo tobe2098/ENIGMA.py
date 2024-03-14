@@ -1,7 +1,30 @@
 from ...core import machines
 from ...core import rotors
 from ...utils import utils_cli
-from ..functions import rotors_f
+from ..functions.rotors_f import (
+    _change_rotor_name_rt,
+    _change_position_rt,
+    _change_notches_rt,
+    _choose_connection_to_delete_rt,
+    _create_a_connection_single_choice_rt,
+    _randomize_name_rt,
+    _randomize_notches_rt,
+    _randomize_position_ask_rt,
+    _randomize_position_rt,
+    _reset_and_randomize_connections_rt,
+    _reset_and_streamline_connections_by_pairs_rt,
+    _connect_all_letters_rt,
+    _delete_a_connection_rt,
+    _exitMenu_rt,
+    _form_all_connections_rt,
+    _load_saved_rotor,
+    _print_name_rt,
+    _reset_connections_rt,
+    _save_in_current_directory_rt,
+    _show_config_rt,
+    _swap_connections_rt,
+    _swap_two_connections_rt,
+)
 import os
 
 
