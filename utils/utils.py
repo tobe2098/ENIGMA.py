@@ -104,7 +104,7 @@ def transform_single_dict(dictionary, conversion: dict):
 
 
 def is_valid_seed(seed):
-    return seed.isnum() or ""
+    return seed.isdigit()
 
 
 # def transform_single_dict_dash(dictionary):
