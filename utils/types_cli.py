@@ -4,7 +4,7 @@ from ..core.rotors import Rotor, RotorDash
 from ..core.reflectors import Reflector, ReflectorDash
 from ..core.plugboards import PlugBoard, PlugBoardDash
 
-from ..cli.functions.rotors_f import _show_config_rt
+from ..cli.functions.rotors_f import _print_name_rt
 
 
 def wrapperCall(obj_ref):
@@ -21,7 +21,7 @@ def wrapperCall(obj_ref):
 
 
 def rotorWrapper(rotor_ref):
-    _show_config_rt(rotor_ref)
+    _print_name_rt(rotor_ref)
 
 
 def machineWrapper(machine_ref):

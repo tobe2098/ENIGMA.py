@@ -320,10 +320,11 @@ def _reset_connections_rt(rotor_ref: rotors.Rotor):
 
 
 def _print_name_rt(rotor_ref: rotors.Rotor):
-    utils_cli.printOutput("ROTOR NAME:", rotor_ref._name)
+    utils_cli.printOutput("Current rotor name:", rotor_ref._name)
 
 
 def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
+    _print_name_rt(rotor_ref)
     new_name = utils_cli.askingInput("Input a new name for the rotor:")
     while not rotor_ref._is_name_valid(new_name):
         utils_cli.printOutput("Input only alphanumerical characters or underscore")
@@ -392,15 +393,11 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
 
 
 def _randomize_position_rt(rotor_ref: rotors.Rotor, seed: int):
+    seed = utils_cli.getSeedFromUser()
     random.seed(seed)
     new_position = random.sample(range(0, rotor_ref._characters_in_use), 1)
     rotor_ref._define_position(new_position)
     utils_cli.returningToMenuMessage("Rotor position set to:", rotor_ref.get_position())
-
-
-def _randomize_position_ask_rt(rotor_ref: rotors.Rotor):
-    seed = utils_cli.getSeedFromUser()
-    _randomize_position_rt(rotor_ref=rotor_ref, seed=seed)
 
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
