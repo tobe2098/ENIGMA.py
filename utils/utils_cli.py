@@ -40,7 +40,7 @@ class ReturnToMenuException(Exception):
 
 class DevOpsException(ReturnToMenuException):
     def __init__(
-        self, message=formatOutput("Development oversight. Returning to menu...")
+        self, message=formatOutput("Development oversight. Something happened here:")
     ):
         super().__init__(message)
         self.traceback = traceback.format_exc()
@@ -80,14 +80,14 @@ def printListOfOptions(list_):
 #         return getAnInputFromList(list_, message)
 
 
-def clearScreenSafety():
+def clearScreenSafetyCLI():
     if not SCREEN_CLEAR_SAFETY:
         return
     _ = call("clear" if os.name == "posix" else "cls")
     printOutput("Screen cleared for safety purposes")
 
 
-def clearScreenConvenience():
+def clearScreenConvenienceCLI():
     if not SCREEN_CLEAR_CONVENIENCE:
         return
     _ = call("clear" if os.name == "posix" else "cls")
@@ -118,45 +118,58 @@ def getSeedFromUser():
 # In development
 
 
-def runLeafMenu(object_for_call, menu: dict):
-    try:
-        for key in sorted(menu.keys()):
-            printMenuOption(key, ":", menu[key][0])
-
-        answer = input(askForMenuOption())
-        menu.get(answer, [None, invalidChoice])[1](object_for_call)
-    except ReturnToMenuException:
-        print(ReturnToMenuException.message)
-    except MenuExitException:
-        clearScreenConvenience()
-        exitMenu()
-
-
 def runNodeMenu(object_for_call, menu: dict):
     while True:
-        wrapperCall(object_for_call)
         try:
+            wrapperCall(object_for_call)
             for key in sorted(menu.keys()):
                 printMenuOption(key, ":", menu[key][0])
 
             answer = input(askForMenuOption())
-            next_menu = menu.get(answer, [None, None])[1](object_for_call)
+            next_menu = menu.get(answer, (None, None))[1]
+            if not next_menu:
+                invalidChoice()
+            else:
+                leaf = next_menu.get("leaf", None)
+                if leaf is None:
+                    raise DevOpsException("Menu has no leaf qualifier")
+                elif leaf:
+                    runLeafMenu(object_for_call, next_menu)
+                else:
+                    runNodeMenu(object_for_call, next_menu)
         except ReturnToMenuException:
-            print(ReturnToMenuException.message)
+            print(ReturnToMenuException)
         except MenuExitException:
-            clearScreenConvenience()
+            clearScreenConvenienceCLI()
             exitMenu()
 
 
-def runStandardMenu(object_for_call, menu: dict):
-    try:
-        for key in sorted(menu.keys()):
-            printMenuOption(key, ":", menu[key][0])
+def runLeafMenu(object_for_call, menu: dict):
+    while True:
+        try:
+            wrapperCall(object_for_call)
+            for key in sorted(menu.keys()):
+                printMenuOption(key, ":", menu[key][0])
 
-        answer = input(askForMenuOption())
-        menu.get(answer, [None, invalidChoice])[1](object_for_call)
-    except ReturnToMenuException:
-        print(ReturnToMenuException.message)
-    except MenuExitException:
-        clearScreenConvenience()
-        exitMenu()
+            answer = input(askForMenuOption())
+            menu.get(answer, (None, invalidChoice))[1](object_for_call)
+        except ReturnToMenuException:
+            print(ReturnToMenuException)
+        except MenuExitException:
+            clearScreenConvenienceCLI()
+            exitMenu()
+
+
+# Deprecated now
+# def runStandardMenu(object_for_call, menu: dict):
+#     try:
+#         for key in sorted(menu.keys()):
+#             printMenuOption(key, ":", menu[key][0])
+
+#         answer = input(askForMenuOption())
+#         menu.get(answer, [None, invalidChoice])[1](object_for_call)
+#     except ReturnToMenuException:
+#         print(ReturnToMenuException.message)
+#     except MenuExitException:
+#         clearScreenConvenienceCLI()
+#         exitMenu()
