@@ -1,6 +1,8 @@
 import os
 from subprocess import call
-from utils import is_valid_seed
+from utils.utils import is_valid_seed
+import traceback
+from utils.types_cli import wrapperCall
 
 SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True
@@ -8,6 +10,10 @@ SCREEN_CLEAR_SAFETY = True
 
 def askForMenuOption():
     return askingInput("Choose a menu option: ")
+
+
+def formatOutput(*args):
+    return ">" + args + "."
 
 
 def printOutput(*args):
@@ -23,15 +29,24 @@ def printMenuOption(*args):
 
 
 class MenuExitException(Exception):
-    def __init__(self, message=printOutput("Exiting menu...")):
-        self.message = message
+    def __init__(self, message=formatOutput("Exiting menu...")):
         super().__init__(self.message)
 
 
 class ReturnToMenuException(Exception):
-    def __init__(self, message=printOutput("Returning to menu...")):
-        self.message = message
-        super().__init__(self.message)
+    def __init__(self, message=formatOutput("Returning to menu...")):
+        super().__init__(message)
+
+
+class DevOpsException(ReturnToMenuException):
+    def __init__(
+        self, message=formatOutput("Development oversight. Returning to menu...")
+    ):
+        super().__init__(message)
+        self.traceback = traceback.format_exc()
+
+    def __str__(self):
+        return f"{super().__str__()}\nTraceback:\n{self.traceback}"
 
 
 def exitMenu(*args):
@@ -100,12 +115,45 @@ def getSeedFromUser():
     return seed
 
 
+# In development
+
+
+def runLeafMenu(object_for_call, menu: dict):
+    try:
+        for key in sorted(menu.keys()):
+            printMenuOption(key, ":", menu[key][0])
+
+        answer = input(askForMenuOption())
+        menu.get(answer, [None, invalidChoice])[1](object_for_call)
+    except ReturnToMenuException:
+        print(ReturnToMenuException.message)
+    except MenuExitException:
+        clearScreenConvenience()
+        exitMenu()
+
+
+def runNodeMenu(object_for_call, menu: dict):
+    while True:
+        wrapperCall(object_for_call)
+        try:
+            for key in sorted(menu.keys()):
+                printMenuOption(key, ":", menu[key][0])
+
+            answer = input(askForMenuOption())
+            next_menu = menu.get(answer, [None, None])[1](object_for_call)
+        except ReturnToMenuException:
+            print(ReturnToMenuException.message)
+        except MenuExitException:
+            clearScreenConvenience()
+            exitMenu()
+
+
 def runStandardMenu(object_for_call, menu: dict):
     try:
         for key in sorted(menu.keys()):
             printMenuOption(key, ":", menu[key][0])
 
-        answer = str(input(askForMenuOption()))
+        answer = input(askForMenuOption())
         menu.get(answer, [None, invalidChoice])[1](object_for_call)
     except ReturnToMenuException:
         print(ReturnToMenuException.message)
