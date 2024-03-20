@@ -29,24 +29,23 @@ def printMenuOption(*args):
 
 
 class MenuExitException(Exception):
-    def __init__(self, message=formatOutput("Exiting menu...")):
-        super().__init__(self.message)
+    def __init__(self, message="Exiting menu..."):
+        super().__init__(formatOutput(message))
 
 
 class ReturnToMenuException(Exception):
-    def __init__(self, message=formatOutput("Returning to menu...")):
-        super().__init__(message)
+    def __init__(self, message="Returning to menu..."):
+        super().__init__(formatOutput(message))
 
 
 class DevOpsException(ReturnToMenuException):
-    def __init__(
-        self, message=formatOutput("Development oversight. Something happened here:")
-    ):
+    def __init__(self, message):
         super().__init__(message)
+        self.type_msg = formatOutput("Development oversight. Something happened here:")
         self.traceback = traceback.format_exc()
 
     def __str__(self):
-        return f"{super().__str__()}\nTraceback:\n{self.traceback}"
+        return f"{super().__str__()}\n{self.type_msg}\nTraceback:\n{self.traceback}"
 
 
 def exitMenu(*args):
