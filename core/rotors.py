@@ -2,6 +2,8 @@ import random
 import pickle
 import os
 import copy
+
+from utils.utils_cli import DevOpsException
 from ..utils.utils import (
     transform_single_dict,
     CHARACTERS,
@@ -95,11 +97,10 @@ class Rotor:
         Raises:
             Exception: _description_
         """
-        import re
 
         new_name = new_name.strip()
         if not self._is_name_valid(new_name):
-            raise Exception("Invalid input.")
+            raise DevOpsException()
         self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
@@ -113,7 +114,7 @@ class Rotor:
             jump (int): number of jumps
         """
         if self._is_jump_invalid(jump):
-            raise Exception("Cryptographically invalid jump")
+            raise DevOpsException("Cryptographically invalid jump")
         self._jump = jump
         # print(
         #     ">Now rotor jumps ",
@@ -134,7 +135,7 @@ class Rotor:
         """
         ##DEBUG
         if self._is_position_invalid(position):
-            raise Exception("Wrong arguments")
+            raise DevOpsException("Wrong arguments")
 
         self._position = self._conversion_in_use[position]
         # print(
