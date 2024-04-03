@@ -3,11 +3,6 @@
 
 ## THIS FILE SHOULD  BE OUTSIDE THIS FOLDER AND IMPORT THE CLIENT FOLDER? OR VICEVERSA
 
-
-## REMEMBER TO DO THE DASH NOT DASH CHECKS!!!!
-## Add option to translate entire files (skipping non-standard characters)
-## Here we have the menuing functions outside the machine menus
-# Think about how to store functions
-
+## FLOW: Here we have the cli function that is called by parent __init__.py
 
 ## TO EXIT PROGRAM

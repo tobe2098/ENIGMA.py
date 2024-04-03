@@ -22,14 +22,12 @@ from ..functions.rotors_f import (
 
 
 _menu_rotor_name_options = {
-    "leaf": True,
     "1": ("Change name", _change_rotor_name_rt),
     "2": ("Randomize name", _randomize_name_rt),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 _menu_rotor_position_and_notches_options = {
-    "leaf": True,
     "1": ("Change position", _change_position_rt),
     "2": ("Randomize position", _randomize_position_rt),
     "3": ("Change notches", _change_notches_rt),
@@ -38,7 +36,6 @@ _menu_rotor_position_and_notches_options = {
 }
 
 _menu_rotor_connections_options = {
-    "leaf": True,
     "1": ("Delete a single connection", _choose_connection_to_delete_rt),
     "2": ("Create a single connection", _create_a_connection_single_choice_rt),
     "3": ("Form all connections left", _form_all_connections_rt),
@@ -77,7 +74,6 @@ def _load_saved_rotor_for_editing(rotor: rotors.Rotor = None, recursive: bool = 
 
 
 _menu_rotor = {
-    "leaf": False,
     "1": ("Show current rotor setup", _show_config_rt),
     "2": ("Save rotor", _save_in_current_directory_rt),
     "3": ("Naming menu", _menu_rotor_name_options),

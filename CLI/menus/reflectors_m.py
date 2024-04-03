@@ -19,7 +19,7 @@ from ..functions.reflectors_f import (
     _show_config_rf,
     _print_name_rf,
     _load_saved_reflector,
-    _form_n_connections_rf,  # Deprecated
+    # _form_n_connections_rf,  # Deprecated
 )
 
 _menu_reflector_name_options = {

@@ -125,17 +125,13 @@ def runNodeMenu(object_for_call, menu: dict):
                 printMenuOption(key, ":", menu[key][0])
 
             answer = input(askForMenuOption())
-            next_menu = menu.get(answer, (None, None))[1]
-            if not next_menu:
+            result = menu.get(answer, (None, None))[1]
+            if not result:
                 invalidChoice()
+            elif callable(result):
+                result(object_for_call)
             else:
-                leaf = next_menu.get("leaf", None)
-                if leaf is None:
-                    raise DevOpsException("Menu has no leaf qualifier")
-                elif leaf:
-                    runLeafMenu(object_for_call, next_menu)
-                else:
-                    runNodeMenu(object_for_call, next_menu)
+                runNodeMenu(object_for_call, result)
         except ReturnToMenuException:
             print(ReturnToMenuException)
         except MenuExitException:
@@ -143,20 +139,20 @@ def runNodeMenu(object_for_call, menu: dict):
             exitMenu()
 
 
-def runLeafMenu(object_for_call, menu: dict):
-    while True:
-        try:
-            wrapperCall(object_for_call)
-            for key in sorted(menu.keys()):
-                printMenuOption(key, ":", menu[key][0])
+# def runLeafMenu(object_for_call, menu: dict):
+#     while True:
+#         try:
+#             wrapperCall(object_for_call)
+#             for key in sorted(menu.keys()):
+#                 printMenuOption(key, ":", menu[key][0])
 
-            answer = input(askForMenuOption())
-            menu.get(answer, (None, invalidChoice))[1](object_for_call)
-        except ReturnToMenuException:
-            print(ReturnToMenuException)
-        except MenuExitException:
-            clearScreenConvenienceCLI()
-            exitMenu()
+#             answer = input(askForMenuOption())
+#             menu.get(answer, (None, invalidChoice))[1](object_for_call)
+#         except ReturnToMenuException:
+#             print(ReturnToMenuException)
+#         except MenuExitException:
+#             clearScreenConvenienceCLI()
+#             exitMenu()
 
 
 # Deprecated now
