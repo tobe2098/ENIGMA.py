@@ -16,9 +16,41 @@ import gui
 # Editing pre-existing rotors and reflectors has to be outside the machine menu
 # Valid input checking in reflectors, machines and rotors
 # Dictionary of dictionaries for menu calls summarized functions
+# Write down how the script is supposed to run with CLI options.
+# Make a check to avoid any menus that do not have an exit option.
 
+## REMEMBER TO DO THE DASH NOT DASH CHECKS!!!!
+## Add option to translate entire files (skipping non-standard characters)
+## Here we have the menuing functions outside the machine menus
+# Think about how to store functions
+
+##FLOW: in all inits, there should be the code related to loading default/saved setups/preferences
+
+
+# This should be in main.py
 if __name__ == "__main__":
+    # This should be in main.py
     import sys
+    import argparse
+
+# def main():
+#     parser = argparse.ArgumentParser(description="My Library CLI")
+
+#     # Add command-line arguments
+#     parser.add_argument('-v', '--verbose', action='store_true', help="Enable verbose mode")
+#     parser.add_argument('name', type=str, help="Name to greet")
+
+#     args = parser.parse_args()
+
+#     if args.verbose:
+#         print(f"Verbose mode enabled. Greeting {args.name}.")
+
+#     print(f"Hello, {args.name}!")
+
+# if __name__ == "__main__":
+#     main()
+
+# From here we should go to either the CLI or the GUI.
 
 
 def save_n_random_rotors(n, seed):
