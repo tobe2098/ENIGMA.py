@@ -2,26 +2,40 @@ import core
 import cli
 import gui
 
+# Tasks
+# Exit from every menu option (universal)
+# Review that all menus are ste according to utils_cli.py standards
+# rotors_m
+# Reflectors_m
+# Machine_m
+# Plugboards_m
+# Review that all functions use standardized I/O from utils_cli.py and other utils
+# rotors_m
+# Reflectors_m
+# Machine_m
+# Plugboards_m
+# Start main menu and encryption (on the go [this is interactive and I do not know how to do it]and text)
+# Finish __init__.pys and CLI.py. Look on how to organize the library for both cli and GUI calls
 ## For current version v1.0
 ## IMPORTANT TO SET TIMEOUTS IN ALL FILE I/O
 ## ADD MAx DEPTH for recursive calls
 # Move constants somewhere that is not utils? If I can make them static somehow (or constants.py file)
-# Do type checking before encryption
+# Do type checking before encryption## REMEMBER TO DO THE DASH NOT DASH CHECKS!!!!
+# Machine has to store initial state before starting to encrypt/decrypt
 # Put exceptions for every core function that manipulates the objects. ARGUMENT CHECKING SHOULD BE A SINGLE FUNCTION INSIDE THE CORE
 # In case pickling does not work: "a" is for appending, "w" for writing, "b" for binary
 # Develop unit tests
 # with open('mypickle.pickle', 'wb') as f:
 #    pickle.dump(some_obj, f)
-# Review the contents of reflectors and plugboard according to the new utils_cli functionalities
 # Editing pre-existing rotors and reflectors has to be outside the machine menu
 # Valid input checking in reflectors, machines and rotors
 # Dictionary of dictionaries for menu calls summarized functions
 # Write down how the script is supposed to run with CLI options.
 # Make a check to avoid any menus that do not have an exit option.
-
-## REMEMBER TO DO THE DASH NOT DASH CHECKS!!!!
-## Add option to translate entire files (skipping non-standard characters)
+# Write a white paper on the encryption novelty (?)
 ## Here we have the menuing functions outside the machine menus
+
+## Add option to translate entire files (skipping non-standard characters) (txt)
 # Think about how to store functions
 
 ##FLOW: in all inits, there should be the code related to loading default/saved setups/preferences

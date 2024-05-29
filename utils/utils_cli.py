@@ -120,6 +120,7 @@ def getSeedFromUser():
 def runNodeMenu(object_for_call, menu: dict):
     while True:
         try:
+            # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
             wrapperCall(object_for_call)
             for key in sorted(menu.keys()):
                 printMenuOption(key, ":", menu[key][0])
@@ -130,7 +131,7 @@ def runNodeMenu(object_for_call, menu: dict):
                 invalidChoice()
             elif callable(result):
                 result(object_for_call)
-            else:
+            else:  # Here we assume it is a dictionary
                 runNodeMenu(object_for_call, result)
         except ReturnToMenuException:
             print(ReturnToMenuException)
