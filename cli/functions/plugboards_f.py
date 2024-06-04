@@ -167,7 +167,7 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
         connections (int): _description_
     """
     for i in range(connections):
-        utils_cli.clearScreenConvenienceCLI()
+        utils_cli.clearScreenConvenienceCli()
         utils_cli.printOutput(f"Creating connection {i+1} of {connections}")
         _create_a_connection_single_choice_pb(plugboard_ref)
 

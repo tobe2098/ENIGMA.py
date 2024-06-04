@@ -172,7 +172,7 @@ def _form_n_connections_rf(reflector_ref: reflectors.Reflector, connections: int
         connections (int): _description_
     """
     for i in range(connections):
-        utils_cli.clearScreenConvenienceCLI()
+        utils_cli.clearScreenConvenienceCli()
         utils_cli.printOutput(f"Creating connection {i+1} of {connections}")
         _create_a_connection_single_choice_rf(reflector_ref)
 

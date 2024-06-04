@@ -12,7 +12,7 @@ def askForMenuOption():
     return askingInput("Choose a menu option: ")
 
 
-def formatOutput(*args):
+def formatAsOutput(*args):
     return ">" + args + "."
 
 
@@ -30,22 +30,32 @@ def printMenuOption(*args):
 
 class MenuExitException(Exception):
     def __init__(self, message="Exiting menu..."):
-        super().__init__(formatOutput(message))
+        super().__init__(formatAsOutput(message))
 
 
 class ReturnToMenuException(Exception):
     def __init__(self, message="Returning to menu..."):
-        super().__init__(formatOutput(message))
+        super().__init__(formatAsOutput(message))
 
 
 class DevOpsException(ReturnToMenuException):
     def __init__(self, message):
         super().__init__(message)
-        self.type_msg = formatOutput("Development oversight. Something happened here:")
+        self.type_msg = formatAsOutput(
+            "Development oversight. Something happened here:"
+        )
         self.traceback = traceback.format_exc()
 
     def __str__(self):
         return f"{super().__str__()}\n{self.type_msg}\nTraceback:\n{self.traceback}"
+
+
+class BadInputException(DevOpsException):
+    def __init__(self, message):
+        super().__init__(message)
+        self.type_msg = formatAsOutput(
+            "An incorrect input was received in the following function:"
+        )
 
 
 def exitMenu(*args):
@@ -86,7 +96,7 @@ def clearScreenSafetyCLI():
     printOutput("Screen cleared for safety purposes")
 
 
-def clearScreenConvenienceCLI():
+def clearScreenConvenienceCli():
     if not SCREEN_CLEAR_CONVENIENCE:
         return
     _ = call("clear" if os.name == "posix" else "cls")
@@ -136,7 +146,7 @@ def runNodeMenu(object_for_call, menu: dict):
         except ReturnToMenuException:
             print(ReturnToMenuException)
         except MenuExitException:
-            clearScreenConvenienceCLI()
+            clearScreenConvenienceCli()
             exitMenu()
 
 
