@@ -18,7 +18,7 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     )
     utils_cli.printOutput("Paired letters:", paired_df)
     utils_cli.printOutput("Unpaired letters:", unpaired_list)
-    utils_cli.returningToMenuNoMessage()
+    utils_cli.returningToMenu()
 
 
 def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
@@ -32,16 +32,16 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenuMessage("There are no available connections")
+        utils_cli.returningToMenu("There are no available connections")
 
     utils_cli.printOutput("Current connections are:", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index): ")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         _delete_a_connection_pb(plugboard_ref=plugboard_ref, connIndex=row)
-        utils_cli.returningToMenuMessage("Connection was deleted")
+        utils_cli.returningToMenu("Connection was deleted")
     else:
-        utils_cli.returningToMenuMessage("Index invalid")
+        utils_cli.returningToMenu("Index invalid")
 
 
 def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, connIndex):
@@ -72,21 +72,21 @@ def _create_a_connection_single_choice_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref._board_dict
     )
     if len(unpaired_list) < 2:
-        utils_cli.returningToMenuMessage(
+        utils_cli.returningToMenu(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
     utils_cli.printOutput("Unpaired letters:", (unpaired_list))
     letter1 = utils_cli.askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
-        utils_cli.returningToMenuMessage("Invalid input")
+        utils_cli.returningToMenu("Invalid input")
     utils_cli.printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
     letter2 = utils_cli.askingInput("Choose the second letter:").upper()
     if letter2 not in list(set(unpaired_list) - set(letter1)):
-        utils_cli.returningToMenuMessage("Invalid input")
+        utils_cli.returningToMenu("Invalid input")
     plugboard_ref._board_dict[letter1] = letter2
     plugboard_ref._board_dict[letter2] = letter1
     plugboard_ref._update_dicts()
-    utils_cli.returningToMenuMessage("The connection was formed")
+    utils_cli.returningToMenu("The connection was formed")
 
 
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
@@ -102,7 +102,7 @@ def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref._board_dict
     )
     if len(unpaired_list) < 2:
-        utils_cli.returningToMenuMessage(
+        utils_cli.returningToMenu(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
     while True:
@@ -114,7 +114,7 @@ def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
-            # utils_cli.returningToMenuNoMessage("No input")
+            # utils_cli.returningToMenu("No input")
             return
         else:
             print("Error: Input 2 letters please")
@@ -145,7 +145,7 @@ def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
         )
     )
     if connections > len(unpaired_list):
-        utils_cli.returningToMenuMessage("Number exceeds the maximum")
+        utils_cli.returningToMenu("Number exceeds the maximum")
     _form_n_extra_connections_pb(plugboard_ref, connections)
 
 
@@ -184,7 +184,7 @@ def _reset_and_form_all_connections_by_pairs_pb(plugboard_ref: plugboards.PlugBo
             "Do you want to keep making changes?[y/n]"
         ).lower()
         if accbool == "n":
-            utils_cli.returningToMenuNoMessage()
+            utils_cli.returningToMenu()
         elif accbool == "y":
             _connect_two_letters_pb(plugboard_ref)
 
@@ -204,7 +204,7 @@ def _reset_and_randomize_connections_pb(plugboard_ref: plugboards.PlugBoard):
         )
     )
     if not isinstance(seed, int) and seed > 0:
-        utils_cli.returningToMenuMessage("Number is not a positive integer")
+        utils_cli.returningToMenu("Number is not a positive integer")
     if not seed:
         utils_cli.printOutput("Please input a seed")
         return

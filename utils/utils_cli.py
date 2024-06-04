@@ -13,15 +13,51 @@ def askForMenuOption():
 
 
 def formatAsOutput(*args):
-    return ">" + args + "."
+    args_list = list(args)
+
+    args_list.insert(0, ">")
+    args_list.append(".")
+    updated_args = tuple(args_list)
+
+    return updated_args
+
+
+def formatAsWarning(*args):
+    args_list = list(args)
+
+    args_list.insert(0, "%.%Warning: ")
+    updated_args = tuple(args_list)
+
+    return updated_args
+
+
+def formatAsError(*args):
+    args_list = list(args)
+
+    args_list.insert(0, "$ERROR$: ")
+    updated_args = tuple(args_list)
+
+    return updated_args
 
 
 def printOutput(*args):
     print(formatAsOutput(args))
 
 
+def printWarning(*args):
+    print(formatAsWarning(args))
+
+
+def printError(*args):
+    print(formatAsError(args))
+
+
 def askingInput(*args):
-    return input(">>>", args, end=" ")
+    prompt = ">>>"
+    for arg in args:
+        prompt += arg
+    prompt += ": "
+    return input(prompt)
 
 
 def printMenuOption(*args):
@@ -54,7 +90,7 @@ class BadInputException(DevOpsException):
     def __init__(self, message):
         super().__init__(message)
         self.type_msg = formatAsOutput(
-            "An incorrect input was received in the following function:"
+            "An incorrect input was received in the following core function:"
         )
 
 
@@ -62,13 +98,24 @@ def exitMenu(*args):
     raise MenuExitException()
 
 
-def returningToMenuMessage(*args):
-    printOutput(args)
+def returningToMenu(*args):
+    if args:
+        print(args)
+    # args_list = list(args)
+
+    # # Get the first argument
+    # if args_list and args_list[0] == "E":
+    #     first_arg = args_list.pop(0)
+    #     remaining_args = tuple(args_list)
+    #     printError(remaining_args)
+    # elif args_list:
+    #     remaining_args = tuple(args_list)
+    #     printOutput(args_list)
     raise ReturnToMenuException()
 
 
-def returningToMenuNoMessage():
-    raise ReturnToMenuException()
+# def returningToMenu():
+#     raise ReturnToMenuException()
 
 
 def invalidChoice(*args):
@@ -107,6 +154,10 @@ def checkIfFileExists(path, name, suffix):
     return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
 
 
+def checkInputValidity(_input, _type=str, _range=None):
+    return isinstance(_input, _type) and (not _range or _input in _range)
+
+
 def getSeedFromUser():
     """Guaranteed to return a valid seed for random.seed()
 
@@ -117,7 +168,7 @@ def getSeedFromUser():
     while not is_valid_seed(seed):
         seed = askingInput("Introduce a positive integer as a seeds:")
         if not seed:
-            returningToMenuNoMessage()
+            returningToMenu()
     seed = int(seed)
     if seed < 0:
         seed *= -1

@@ -22,7 +22,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     print(paired_df)
     utils_cli.printOutput("Reflector unpaired:")
     print(unpaired_list)
-    utils_cli.returningToMenuNoMessage()
+    utils_cli.returningToMenu()
 
 
 def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
@@ -36,7 +36,7 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenuMessage("There are no available connections")
+        utils_cli.returningToMenu("There are no available connections")
 
     utils_cli.printOutput("Current connections are:")
     print(paired_df)
@@ -44,9 +44,9 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
-        utils_cli.returningToMenuMessage("Connection was deleted")
+        utils_cli.returningToMenu("Connection was deleted")
     else:
-        utils_cli.returningToMenuMessage("Index invalid")
+        utils_cli.returningToMenu("Index invalid")
 
 
 def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
@@ -77,21 +77,21 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
         reflector_ref._reflector_dict
     )
     if len(unpaired_list) < 2:
-        utils_cli.returningToMenuMessage(
+        utils_cli.returningToMenu(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
     utils_cli.printOutput("Unpaired letters:", (unpaired_list))
     letter1 = utils_cli.askingInput("Choose a letter to pair:").upper()
     if letter1 not in unpaired_list:
-        utils_cli.returningToMenuMessage("Invalid input")
+        utils_cli.returningToMenu("Invalid input")
     utils_cli.printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
     letter2 = utils_cli.askingInput("Choose the second letter:").upper()
     if letter2 not in list(set(unpaired_list) - set(letter1)):
-        utils_cli.returningToMenuMessage("Invalid input")
+        utils_cli.returningToMenu("Invalid input")
     reflector_ref._reflector_dict[letter1] = letter2
     reflector_ref._reflector_dict[letter2] = letter1
     reflector_ref._update_dicts()
-    utils_cli.returningToMenuMessage("The connection was formed")
+    utils_cli.returningToMenu("The connection was formed")
 
 
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
@@ -115,7 +115,7 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
             reflector_ref._reflector_dict
         )
         if len(unpaired_list) < 2:
-            utils_cli.returningToMenuMessage(
+            utils_cli.returningToMenu(
                 "There are no letters left to pair (one or fewer left unconnected)"
             )
         utils_cli.printOutput("Unpaired letters:", (unpaired_list))
@@ -151,7 +151,7 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
     #     reflector_ref._reflector_dict
     # )
     __connect_all_letters_rf(reflector_ref)
-    utils_cli.returningToMenuMessage("You exited without forming all connections!")
+    utils_cli.returningToMenu("You exited without forming all connections!")
 
 
 # def reset_and_form_all_connections(reflector_ref: reflectors.Reflector):
@@ -189,7 +189,7 @@ def _reset_and_form_all_connections_by_pairs_rf(reflector_ref: reflectors.Reflec
             "Do you still want to make changes?[y/n]"
         ).lower()
         if accbool == "n":
-            utils_cli.returningToMenuNoMessage()
+            utils_cli.returningToMenu()
         elif accbool == "y":
             break
     __connect_all_letters_rf(reflector_ref)
@@ -210,7 +210,7 @@ def _reset_and_randomize_connections_rf(reflector_ref: reflectors.Reflector):
         )
     )
     if not isinstance(seed, int) and seed > 0:
-        utils_cli.returningToMenuMessage("Number is not a positive integer")
+        utils_cli.returningToMenu("Number is not a positive integer")
     reflector_ref._reset_dictionaries()
     reflector_ref._random_setup(seed)
 
@@ -234,12 +234,12 @@ def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
         utils_cli.printOutput("Input only alphanumerical characters or underscore")
         new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
     reflector_ref._change_name(new_name)
-    utils_cli.returningToMenuMessage("Reflector name changed to: ", reflector_ref._name)
+    utils_cli.returningToMenu("Reflector name changed to: ", reflector_ref._name)
 
 
 def _randomize_name_rf(reflector_ref: reflectors.Reflector):
     reflector_ref._random_name()
-    utils_cli.returningToMenuMessage("NEW NAME: ", reflector_ref.name)
+    utils_cli.returningToMenu("NEW NAME: ", reflector_ref.name)
 
 
 def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
@@ -267,10 +267,10 @@ def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
                 )
             ).lower()
         if accbool == "n":
-            utils_cli.returningToMenuNoMessage()
+            utils_cli.returningToMenu()
     save_file = open(r"{}\\{}.reflector".format(path, reflector_ref._name), "wb")
     pickle.dump(reflector_ref, save_file)
-    utils_cli.returningToMenuMessage(
+    utils_cli.returningToMenu(
         (
             "{} has been saved into {}.reflector in {}".format(
                 reflector_ref.name, reflector_ref.name, path
@@ -284,10 +284,10 @@ def _load_saved_reflector():
     new_folder = utils.REFLECTORS_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
-        utils_cli.returningToMenuMessage("There is no {} folder".format(path))
+        utils_cli.returningToMenu("There is no {} folder".format(path))
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
     if len(list_of_files) == 0:
-        utils_cli.returningToMenuMessage("There are no reflectors saved")
+        utils_cli.returningToMenu("There are no reflectors saved")
     utils_cli.printOutput("Your available reflectors are:")
     utils_cli.printListOfOptions(list_of_files)
     reflector = utils_cli.askingInput("Input reflector's position in the list: ")
@@ -307,7 +307,7 @@ def _exitMenu_rf(reflector_ref: reflectors.Reflector):
         reflector_ref._reflector_dict
     )
     if len(unpaired_list) > 1:
-        utils_cli.returningToMenuMessage(
+        utils_cli.returningToMenu(
             "To avoid self-sabotage, a partially connected reflector is discouraged"
         )
     utils_cli.exitMenu()

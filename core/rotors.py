@@ -3,13 +3,14 @@ import pickle
 import os
 import copy
 
-from utils.utils_cli import DevOpsException
+from utils.utils_cli import BadInputException, DevOpsException, printOutput
 from ..utils.utils import (
     transform_single_dict,
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
     EQUIVALENCE_DICT_dash,
+    is_valid_seed,
 )
 
 
@@ -35,7 +36,7 @@ class Rotor:
         )
         self.lacks_conn = False
         self._update_dicts()
-        print(">Rotor has been created")
+        printOutput("Rotor has been created")
 
     def get_name(self):
         return self._name
@@ -100,12 +101,12 @@ class Rotor:
 
         new_name = new_name.strip()
         if not self._is_name_valid(new_name):
-            raise DevOpsException()
+            raise BadInputException()
         self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
     def _is_jump_invalid(self, jump):
-        return jump % self._characters_in_use == 0
+        return self._characters_in_use % jump == 0
 
     def _define_rotor_jump(self, jump):
         """Not active for now
@@ -135,7 +136,7 @@ class Rotor:
         """
         ##DEBUG
         if self._is_position_invalid(position):
-            raise DevOpsException("Wrong arguments")
+            raise BadInputException("Wrong arguments")
 
         self._position = self._conversion_in_use[position]
         # print(
@@ -159,7 +160,7 @@ class Rotor:
         """
         ##DEBUG
         if self._are_notches_valid(positions):
-            raise Exception("Incorrect arguments")
+            raise BadInputException("Incorrect arguments")
 
         notch_list = [
             self._conversion_in_use[notch]
@@ -196,9 +197,9 @@ class Rotor:
         self._update_dicts()
 
     def _random_name(self, seed=None):
-        if not seed:
-            print(
-                ">>Something went wrong. Make sure development has reached this stage!"
+        if not is_valid_seed(seed):
+            BadInputException(
+                "Something went wrong. Make sure development has reached this stage!"
             )
         random.seed(seed)
         # Name generation
@@ -214,6 +215,10 @@ class Rotor:
     def _randomize_dictionaries(self, seed=None):
 
         # Once the seed is set, as long as the same operations are performed the same numbers are generated:
+        if not is_valid_seed(seed):
+            BadInputException(
+                "Something went wrong. Make sure development has reached this stage!"
+            )
         random.seed(seed)
         num_list = list(range(0, self._no_characters))
         self._forward_num_dict = dict(

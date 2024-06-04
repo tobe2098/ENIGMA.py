@@ -34,9 +34,10 @@ import gui
 # Make a check to avoid any menus that do not have an exit option.
 # Write a white paper on the encryption novelty (?)
 ## Here we have the menuing functions outside the machine menus
+# Docs
 
 ## Add option to translate entire files (skipping non-standard characters) (txt)
-# Think about how to store functions
+# Code the other encryption method, using character for character (no backspace<=26) and bitwise too.
 
 ##FLOW: in all inits, there should be the code related to loading default/saved setups/preferences
 

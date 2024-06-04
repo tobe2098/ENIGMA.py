@@ -93,7 +93,7 @@ def _load_saved_reflector_for_editing(
     _saved_reflector_menu(reflector)
     try:
         _save_in_current_directory_rf(reflector)
-        utils_cli.returningToMenuNoMessage()
+        utils_cli.returningToMenu()
     except utils_cli.MenuExitException:
         current_path = os.getcwd()
         new_folder = utils.REFLECTORS_FILE_HANDLE
@@ -107,9 +107,7 @@ def _load_saved_reflector_for_editing(
                 ).lower()
             if accbool == "n":
                 _load_saved_reflector_for_editing(reflector=reflector, recursive=True)
-            utils_cli.returningToMenuMessage(
-                (f"Reflector {reflector.name} was discarded")
-            )
+            utils_cli.returningToMenu((f"Reflector {reflector.name} was discarded"))
     # Conda activation: conda info --envs, conda activate {}
 
 
