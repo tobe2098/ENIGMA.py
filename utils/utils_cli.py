@@ -2,7 +2,7 @@ import os
 from subprocess import call
 from utils.utils import is_valid_seed
 import traceback
-from utils.types_cli import wrapperCall
+from utils.types_utils_cli import wrapperCall
 
 SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True
@@ -17,7 +17,7 @@ def formatAsOutput(*args):
 
 
 def printOutput(*args):
-    print(">", args, end=".")
+    print(formatAsOutput(args))
 
 
 def askingInput(*args):
