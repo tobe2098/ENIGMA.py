@@ -154,6 +154,7 @@ class Machine:
         print(">Machine has been generated, saved and it is ready for use!")
 
     # Finally, the crypt function
+    ## Add text function and check for characters
     def encrypt_decrypt(self):
         CALL FOR CHECKS OF PROPER SETUP IN PLACE (AT LEAST ALL REFLECTOR CONNECTED, AT LEAST 1 ROTOR, AT LEAST ONE NOTCH PER ROTOR, SAVED MACHINE)
         # import copy as cp
@@ -166,7 +167,7 @@ class Machine:
         while input_var:
             # message_length = 0
             input_var = input(
-                ">>>Write Text (only letters and - will be encrypted): "
+                ">>>Write Text (only allowed characters will be encrypted): "
             ).upper()
             output_message_list = []
             # print(self.rotor1._position)

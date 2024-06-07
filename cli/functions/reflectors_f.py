@@ -18,10 +18,10 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     paired_df, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
-    utils_cli.printOutput("Reflector pairs:")
-    print(paired_df)
-    utils_cli.printOutput("Reflector unpaired:")
-    print(unpaired_list)
+    utils_cli.printOutput("Reflector pairs: ", paired_df)
+    print()
+    utils_cli.printOutput("Reflector unpaired: ", unpaired_list)
+    print()
     utils_cli.returningToMenu()
 
 
@@ -36,11 +36,11 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenu("There are no available connections")
+        utils_cli.returningToMenu("There are no available connections to delete")
 
     utils_cli.printOutput("Current connections are:")
     print(paired_df)
-    row = utils_cli.askingInput("Choose a connection to delete (by index):")
+    row = utils_cli.askingInput("Choose a connection to delete (by index)")
 
     if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
