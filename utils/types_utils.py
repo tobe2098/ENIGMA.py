@@ -1,7 +1,9 @@
-from ..core.machines import Machine, MachineDash
-from ..core.rotors import Rotor, RotorDash
-from ..core.reflectors import Reflector, ReflectorDash
-from ..core.plugboards import PlugBoard, PlugBoardDash
+from utils.exceptions import raiseBadInputException
+from ..core.machines import Machine
+from ..core.rotors import Rotor
+from ..core.reflectors import Reflector
+from ..core.plugboards import PlugBoard
+from ..utils.utils import Constants
 
 
 def getCapitalizedName(obj_ref):
@@ -55,7 +57,7 @@ def getLowerCaseName(obj_ref):
     elif isinstance(obj_ref, PlugBoard):
         return "plugboard"
     else:
-        raise Exception("An unexpected object was used in getLowerCaseName")
+        raise raiseBadInputException()
 
 
 def isDashedObject(obj_ref):
@@ -73,16 +75,4 @@ def isDashedObject(obj_ref):
     Returns:
         bool: Whether the object is using the extended dictionary
     """
-    if (
-        not isinstance(obj_ref, Machine)
-        and not isinstance(obj_ref, Rotor)
-        and not isinstance(obj_ref, Reflector)
-        and not isinstance(obj_ref, PlugBoard)
-    ):
-        raise Exception("An unexpected object was used in isDashedObject")
-    return (
-        isinstance(obj_ref, MachineDash)
-        or isinstance(obj_ref, RotorDash)
-        or isinstance(obj_ref, ReflectorDash)
-        or isinstance(obj_ref, PlugBoardDash)
-    )
+    return obj_ref._conversion_in_use == Constants.EQUIVALENCE_DICT_dash

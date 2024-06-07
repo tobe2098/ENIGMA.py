@@ -1,12 +1,9 @@
 import os
 from subprocess import call
 from utils.utils import is_valid_seed
-import traceback
 from utils.types_utils_cli import wrapperCall
 from exceptions import (
     MenuExitException,
-    DevOpsExceptionCLI,
-    BadInputExceptionCLI,
     ReturnToMenuException,
 )
 
@@ -18,32 +15,33 @@ def askForMenuOption():
     return askingInput("Choose a menu option: ")
 
 
-def formatAsOutput(*args):
-    args_list = list(args)
-
+def formatAsOutput(args_tuple):
+    args_list = list(args_tuple)
     args_list.insert(0, ">")
     args_list.append(".")
-    updated_args = tuple(args_list)
+    prompt = ""
+    for i in args_list:
+        prompt += str(i)
+    return prompt
 
-    return updated_args
 
-
-def formatAsWarning(*args):
-    args_list = list(args)
-
+def formatAsWarning(args_tuple):
+    args_list = list(args_tuple)
     args_list.insert(0, "%.%Warning: ")
-    updated_args = tuple(args_list)
+    prompt = ""
+    for i in args_list:
+        prompt += str(i)
+    return prompt
 
-    return updated_args
 
-
-def formatAsError(*args):
-    args_list = list(args)
+def formatAsError(args_tuple):
+    args_list = list(args_tuple)
 
     args_list.insert(0, "$ERROR$: ")
-    updated_args = tuple(args_list)
-
-    return updated_args
+    prompt = ""
+    for i in args_list:
+        prompt += str(i)
+    return prompt
 
 
 def printOutput(*args):
