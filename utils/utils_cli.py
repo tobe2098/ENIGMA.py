@@ -74,26 +74,6 @@ class ReturnToMenuException(Exception):
         super().__init__(formatAsOutput(message))
 
 
-class DevOpsException(ReturnToMenuException):
-    def __init__(self, message):
-        super().__init__(message)
-        self.type_msg = formatAsOutput(
-            "Development oversight. Something happened here:"
-        )
-        self.traceback = traceback.format_exc()
-
-    def __str__(self):
-        return f"{super().__str__()}\n{self.type_msg}\nTraceback:\n{self.traceback}"
-
-
-class BadInputException(DevOpsException):
-    def __init__(self, message):
-        super().__init__(message)
-        self.type_msg = formatAsOutput(
-            "An incorrect input was received in the following core function:"
-        )
-
-
 def exitMenu(*args):
     raise MenuExitException()
 

@@ -1,28 +1,28 @@
 """Module that provides global functions and constants"""
 
 import pandas as pd
+import traceback
+from .utils_cli import ReturnToMenuException, formatAsOutput, formatAsOutput
 
 
-MAX_NO_ROTORS = 100
-MAX_SEED = 2**2**10
-
-CHARACTERS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-CHARACTERS_dash = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ-")
-
-NUMBERS = list(range(0, len(CHARACTERS)))
-NUMBERS_dash = list(range(0, len(CHARACTERS_dash)))
-
-EQUIVALENCE_DICT = dict(zip(CHARACTERS, NUMBERS))
-EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
-EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
-
-EQUIVALENCE_DICT_dash = dict(zip(CHARACTERS_dash, NUMBERS_dash))
-EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
-EQUIVALENCE_DICT_dash.update(dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()]))
-
-ROTORS_FILE_HANDLE = "SAVED_ROTORS"
-REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
-MACHINES_FILE_HANDLE = "SAVED_MACHINES"
+class Constants:
+    MAX_NO_ROTORS = 100
+    MAX_SEED = 2**2**10
+    CHARACTERS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    CHARACTERS_dash = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ-")
+    NUMBERS = list(range(0, len(CHARACTERS)))
+    NUMBERS_dash = list(range(0, len(CHARACTERS_dash)))
+    EQUIVALENCE_DICT = dict(zip(CHARACTERS, NUMBERS))
+    EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
+    EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
+    EQUIVALENCE_DICT_dash = dict(zip(CHARACTERS_dash, NUMBERS_dash))
+    EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
+    EQUIVALENCE_DICT_dash.update(
+        dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()])
+    )
+    ROTORS_FILE_HANDLE = "SAVED_ROTORS"
+    REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
+    MACHINES_FILE_HANDLE = "SAVED_MACHINES"
 
 
 def my_quit_fn():  # This function should be in utils.py
@@ -111,9 +111,32 @@ def is_valid_seed(seed):
 #     """
 #     The function gets a letter or number (containing dash) dictionary and returns the other one
 
+
 #     dictionary (dict): dictionary to swap
 #     """
 #     return {
 #         EQUIVALENCE_DICT_dash[key]: EQUIVALENCE_DICT_dash[value]
 #         for key, value in dictionary.items()
 #     }
+class DevOpsExceptionCLI(ReturnToMenuException):
+    def __init__(self, message):
+        super().__init__(message)
+        self.type_msg = formatAsOutput(
+            "Development oversight. Something happened here:"
+        )
+        self.traceback = traceback.format_exc()
+
+    def __str__(self):
+        return f"{super().__str__()}\n{self.type_msg}\nTraceback:\n{self.traceback}"
+
+
+class BadInputException(DevOpsExceptionCLI):
+    def __init__(self, message):
+        self.type_msg = formatAsOutput(
+            "An incorrect input was received in the following core function:"
+        )
+        super().__init__(message)
+
+
+def areUsingSameDicts(obj1, obj2):
+    return obj1._conversion_in_use == obj2._conversion_in_use
