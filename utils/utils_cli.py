@@ -3,6 +3,12 @@ from subprocess import call
 from utils.utils import is_valid_seed
 import traceback
 from utils.types_utils_cli import wrapperCall
+from exceptions import (
+    MenuExitException,
+    DevOpsExceptionCLI,
+    BadInputExceptionCLI,
+    ReturnToMenuException,
+)
 
 SCREEN_CLEAR_CONVENIENCE = True
 SCREEN_CLEAR_SAFETY = True
@@ -62,16 +68,6 @@ def askingInput(*args):
 
 def printMenuOption(*args):
     print(">$ ", args)
-
-
-class MenuExitException(Exception):
-    def __init__(self, message="Exiting menu..."):
-        super().__init__(formatAsOutput(message))
-
-
-class ReturnToMenuException(Exception):
-    def __init__(self, message="Returning to menu..."):
-        super().__init__(formatAsOutput(message))
 
 
 def exitMenu(*args):

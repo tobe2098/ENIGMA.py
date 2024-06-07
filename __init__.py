@@ -1,6 +1,5 @@
 import core
-import cli
-import gui
+import utils
 
 # Tasks
 # Exit from every menu option (universal)
@@ -40,32 +39,19 @@ import gui
 # Code the other encryption method, using character for character (no backspace<=26) and bitwise too.
 
 ##FLOW: in all inits, there should be the code related to loading default/saved setups/preferences
-
-
-# This should be in main.py
-if __name__ == "__main__":
-    # This should be in main.py
-    import sys
-    import argparse
-
-# def main():
-#     parser = argparse.ArgumentParser(description="My Library CLI")
-
-#     # Add command-line arguments
-#     parser.add_argument('-v', '--verbose', action='store_true', help="Enable verbose mode")
-#     parser.add_argument('name', type=str, help="Name to greet")
-
-#     args = parser.parse_args()
-
-#     if args.verbose:
-#         print(f"Verbose mode enabled. Greeting {args.name}.")
-
-#     print(f"Hello, {args.name}!")
-
-# if __name__ == "__main__":
-#     main()
-
-# From here we should go to either the CLI or the GUI.
+    """>RECOMMENDATIONS FOR USE:
+-No writing down the seed, no sending it over unsecured channels. Preferably agree on a modification of the seed-generated machine.
+-Read README.md
+-Always keep a security copy of the machine.
+-Short messages are more secure. Changing the machine periodically, or its settings is recommended. Once you have an open comm channel that should not be a problem.
+-Passing the pickled machine on a USB is possibly the safest way to do it.
+-Save the module and the pickled objects in a separate folder if possible.
+-Do NOT write repeated sequences of words or predictable things like calling by name, saying "Hi", or "Goodbye".
+-Remember that using simple or small seeds is going to make your channel more easy to crack, as a simple programme iterating this code could do it.
+-Read the rest of the python files! I wrote a ton of functions to alter and personalize your machine, as well as tools to make it harder to crack.
+-As far as I am aware, unless you commit predictable mistakes, your channel should not be cracked in any realistic framework.
+-Communicate safely!
+"""
 
 
 def save_n_random_rotors(n, seed):
@@ -157,3 +143,5 @@ def tune_existing_rotor():
 # - **Documentation:** Maintain good documentation to help users understand and utilize your library effectively.
 
 # By following these steps, you can create a Python library that can be easily installed, used, and shared by others.
+
+__all__ = ["core", "utils"]

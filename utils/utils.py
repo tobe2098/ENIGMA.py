@@ -2,7 +2,7 @@
 
 import pandas as pd
 import traceback
-from .utils_cli import ReturnToMenuException, formatAsOutput, formatAsOutput
+from .utils_cli import ReturnToMenuException, formatAsOutput
 
 
 class Constants:
@@ -118,24 +118,6 @@ def is_valid_seed(seed):
 #         EQUIVALENCE_DICT_dash[key]: EQUIVALENCE_DICT_dash[value]
 #         for key, value in dictionary.items()
 #     }
-class DevOpsExceptionCLI(ReturnToMenuException):
-    def __init__(self, message):
-        super().__init__(message)
-        self.type_msg = formatAsOutput(
-            "Development oversight. Something happened here:"
-        )
-        self.traceback = traceback.format_exc()
-
-    def __str__(self):
-        return f"{super().__str__()}\n{self.type_msg}\nTraceback:\n{self.traceback}"
-
-
-class BadInputException(DevOpsExceptionCLI):
-    def __init__(self, message):
-        self.type_msg = formatAsOutput(
-            "An incorrect input was received in the following core function:"
-        )
-        super().__init__(message)
 
 
 def areUsingSameDicts(obj1, obj2):

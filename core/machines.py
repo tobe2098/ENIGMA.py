@@ -160,6 +160,7 @@ class Machine:
         print(
             ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
         )
+        
         # self.simple_show_config()
         input_var = 1
         while input_var:

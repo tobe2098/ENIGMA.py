@@ -1,6 +1,10 @@
 """Library for the usage of ENIGMA machines"""
-from .machines import *
-from ..utils.utils import *
-from .reflectors import *
-from .rotors import *
-from .plugboards import *
+
+__version__ = "1.0.0"
+
+import machines
+import plugboards
+import reflectors
+import rotors
+
+__all__ = ["machines", "rotors", "reflectors", "plugboards"]

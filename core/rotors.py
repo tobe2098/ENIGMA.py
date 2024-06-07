@@ -1,21 +1,21 @@
 import random
-import pickle
-import os
+
+# import pickle
+# import os
 import copy
 
-from utils.utils_cli import BadInputException, DevOpsException, printOutput
 from ..utils.utils import (
     transform_single_dict,
-    CHARACTERS,
-    CHARACTERS_dash,
-    EQUIVALENCE_DICT,
-    EQUIVALENCE_DICT_dash,
+    Constants,
     is_valid_seed,
 )
+from ..utils.exceptions import raiseBadInputException
 
 
 class Rotor:
-    def __init__(self, characters=CHARACTERS, conversion=EQUIVALENCE_DICT):
+    def __init__(
+        self, characters=Constants.CHARACTERS, conversion=Constants.EQUIVALENCE_DICT
+    ):
         # Note: variables can be defined on the fly
 
         self._name = "name"  # randomly generating a name is going to happen I guess
@@ -36,7 +36,6 @@ class Rotor:
         )
         self.lacks_conn = False
         self._update_dicts()
-        printOutput("Rotor has been created")
 
     def get_name(self):
         return self._name
@@ -101,7 +100,7 @@ class Rotor:
 
         new_name = new_name.strip()
         if not self._is_name_valid(new_name):
-            raise BadInputException()
+            raiseBadInputException()
         self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
@@ -115,7 +114,7 @@ class Rotor:
             jump (int): number of jumps
         """
         if self._is_jump_invalid(jump):
-            raise DevOpsException("Cryptographically invalid jump")
+            raiseBadInputException()
         self._jump = jump
         # print(
         #     ">Now rotor jumps ",
@@ -136,7 +135,7 @@ class Rotor:
         """
         ##DEBUG
         if self._is_position_invalid(position):
-            raise BadInputException("Wrong arguments")
+            raiseBadInputException()
 
         self._position = self._conversion_in_use[position]
         # print(
@@ -160,7 +159,7 @@ class Rotor:
         """
         ##DEBUG
         if self._are_notches_valid(positions):
-            raise BadInputException("Incorrect arguments")
+            raiseBadInputException()
 
         notch_list = [
             self._conversion_in_use[notch]
@@ -198,9 +197,7 @@ class Rotor:
 
     def _random_name(self, seed=None):
         if not is_valid_seed(seed):
-            BadInputException(
-                "Something went wrong. Make sure development has reached this stage!"
-            )
+            raiseBadInputException()
         random.seed(seed)
         # Name generation
         name_list = [
@@ -216,9 +213,7 @@ class Rotor:
 
         # Once the seed is set, as long as the same operations are performed the same numbers are generated:
         if not is_valid_seed(seed):
-            BadInputException(
-                "Something went wrong. Make sure development has reached this stage!"
-            )
+            raiseBadInputException()
         random.seed(seed)
         num_list = list(range(0, self._no_characters))
         self._forward_num_dict = dict(
@@ -234,4 +229,4 @@ class Rotor:
 
 class RotorDash(Rotor):
     def __init__(self):
-        super().__init__(CHARACTERS_dash, EQUIVALENCE_DICT_dash)
+        super().__init__(Constants.CHARACTERS_dash, Constants.EQUIVALENCE_DICT_dash)

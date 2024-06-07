@@ -1,18 +1,20 @@
 """This module contains the rotor classes"""
+
 import random
 import copy
 
 from ..utils.utils import (
-    CHARACTERS,
-    CHARACTERS_dash,
-    EQUIVALENCE_DICT,
-    EQUIVALENCE_DICT_dash,
+    Constants,
     transform_single_dict,
+    is_valid_seed,
 )
+from ..utils.exceptions import raiseBadInputException
 
 
 class Reflector:
-    def __init__(self, characters=CHARACTERS, conversion=EQUIVALENCE_DICT):
+    def __init__(
+        self, characters=Constants.CHARACTERS, conversion=Constants.EQUIVALENCE_DICT
+    ):
         self._name = "name"
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
@@ -22,11 +24,25 @@ class Reflector:
         self._reflector_num_dict = {}
         self._update_dicts()
 
-    def _change_name(self, new_name):
-        import re
+    def _is_name_valid(self, name):
+        return (
+            name != "name" and name != "" and all(c.isalnum() or c == "_" for c in name)
+        )
 
-        self._name = new_name.strip()
-        re.sub(r"\W+", "", self._name)
+    def _change_name(self, new_name):
+        """_summary_
+
+        Args:
+            new_name (_type_): _description_
+
+        Raises:
+            Exception: _description_
+        """
+
+        new_name = new_name.strip()
+        if not self._is_name_valid(new_name):
+            raiseBadInputException()
+        self._name = new_name
 
     def reflect(self, input_letter_number):
         # input_letter_number -= prev_rotor_position
@@ -54,10 +70,10 @@ class Reflector:
     #     #     print(
     #     #         ">Please assign a new name to the reflector with the function self.configure() or self.change_name()"
     #     #     )
-    def _random_name(self):
-        # if not seed:
-        #     stringOutput("Please input a seed."))
-        #     return
+    def _random_name(self, seed=None):
+        if not is_valid_seed(seed):
+            raiseBadInputException()
+        random.seed(seed)
         # random.seed(seed)
         # Set name
         # !!! Make sure letters do not connect to themselves!!!
@@ -69,11 +85,11 @@ class Reflector:
         self._change_name(new_name)
 
     def _random_setup(self, seed=None):
-        # Now set the connections
-        # num_list = [i for i in range(0, 26)]
+        if not is_valid_seed(seed):
+            raiseBadInputException()
         random.seed(seed)
         # letter_list1 = [key for key, _ in self._characters_in_use]
-        letter_list1=copy.copy(self._characters_in_use)
+        letter_list1 = copy.copy(self._characters_in_use)
         random.shuffle(letter_list1)
         # letter_list2 = copy.copy(self.characters_in_use)
         # random.shuffle(letter_list2)
@@ -94,7 +110,7 @@ class Reflector:
 
 class ReflectorDash(Reflector):
     def __init__(self):
-        super().__init__(CHARACTERS_dash, EQUIVALENCE_DICT_dash)
+        super().__init__(Constants.CHARACTERS_dash, Constants.EQUIVALENCE_DICT_dash)
         # self.reflector_dict={letter:letter for letter in CHARACTERS_dash}
 
     # def _update_dicts(self, letter_to_num=True):
