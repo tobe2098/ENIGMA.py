@@ -44,6 +44,9 @@ class Reflector:
             raiseBadInputException()
         self._name = new_name
 
+    def get_name(self):
+        return self._name
+
     def reflect(self, input_letter_number):
         # input_letter_number -= prev_rotor_position
         # input_letter_number %= len(self.characters_in_use)
