@@ -38,13 +38,13 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
 
     utils_cli.printOutput("Current connections are:", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
-
-    if utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0])):
+    row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
+    if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
         utils_cli.returningToMenu("Connection was deleted")
     else:
-        utils_cli.returningToMenu("Index invalid")
+        utils_cli.returningToMenu("Index invalid", output_type="e")
 
 
 def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
@@ -78,16 +78,18 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
         utils_cli.returningToMenu(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired letters:", (unpaired_list))
+    utils_cli.printOutput("Unpaired letters:", unpaired_list)
     letter1 = utils_cli.askingInput("Choose a letter to pair").upper()
-    if not utils_cli.checkInputValidity(letter1, _range=unpaired_list):
+    letter1 = utils_cli.checkInputValidity(letter1, _range=unpaired_list)
+    if not letter1:
         # if letter1 not in unpaired_list:
         utils_cli.returningToMenu("Invalid input", output_type="e")
-    utils_cli.printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
+    utils_cli.printOutput("Remaining letters:", list(set(unpaired_list) - set(letter1)))
     letter2 = utils_cli.askingInput("Choose the second letter:").upper()
-    if not utils_cli.checkInputValidity(
+    letter2 = utils_cli.checkInputValidity(
         letter2, _range=list(set(unpaired_list) - set(letter1))
-    ):
+    )
+    if not letter2:
         # if letter2 not in list(set(unpaired_list) - set(letter1)):
         utils_cli.returningToMenu("Invalid input", output_type="e")
     reflector_ref._reflector_dict[letter1] = letter2
@@ -124,18 +126,18 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
-        letters = utils_cli.askingInput("Input two letters to pair:").strip().upper()
+        letters = utils_cli.askingInput("Input two letters to pair").strip().upper()
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
             return
         else:
-            print("Error: Input 2 letters please")
+            utils_cli.printError("Input 2 letters please")
             continue
         letters = list(letters)
-        if not utils_cli.checkInputValidity(
-            letters[0], _range=unpaired_list
-        ) or not utils_cli.checkInputValidity(letters[1], _range=unpaired_list):
+        for i in range(2):
+            letters[i] = utils_cli.checkInputValidity(letters[i], _range=unpaired_list)
+        if not all(letters):
             # if not all(map(lambda v: v in letters, unpaired_list)):
             utils_cli.printOutput("One of the letters is already connected")
             continue
@@ -271,10 +273,8 @@ def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
     save_file = open(r"{}\\{}.reflector".format(path, reflector_ref._name), "wb")
     pickle.dump(reflector_ref, save_file)
     utils_cli.returningToMenu(
-        (
-            "{} has been saved into {}.reflector in {}".format(
-                reflector_ref.name, reflector_ref.name, path
-            )
+        "{} has been saved into {}.reflector in {}".format(
+            reflector_ref.name, reflector_ref.name, path
         )
     )
 
@@ -290,14 +290,16 @@ def _load_saved_reflector():
         utils_cli.returningToMenu("There are no reflectors saved")
     utils_cli.printOutput("Your available reflectors are:")
     utils_cli.printListOfOptions(list_of_files)
-    reflector = utils_cli.askingInput("Input reflector's position in the list: ")
-    while (
-        not isinstance(reflector, int)
-        or reflector > len(list_of_files) - 1
-        or reflector < 0
-    ):
+    reflector = utils_cli.askingInput("Input reflector's position in the list")
+    reflector = utils_cli.checkInputValidity(
+        reflector, int, range(0, len(list_of_files))
+    )
+    while not reflector:
         utils_cli.printOutput("Please input a valid index")
         reflector = utils_cli.askingInput("Input reflector's position in the list:")
+        reflector = utils_cli.checkInputValidity(
+            reflector, int, range(0, len(list_of_files))
+        )
     filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[reflector]), "rb")
     return pickle.load(filehandler)
 
