@@ -296,10 +296,10 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     while True:
-        boolean = utils_cli.askingInput(
+        accbool = utils_cli.askingInput(
             "If you do not want to continue swapping, enter N"
         ).upper()
-        if boolean == "N":
+        if accbool == "N":
             utils_cli.returningToMenu()
         _swap_two_connections_rt(rotor_ref=rotor_ref)
 
@@ -377,16 +377,21 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
         i
         for i in utils_cli.askingInput(
             "Input new notches separated by a space (empty to skip)"
-        ).split()
+        )
+        .upper()
+        .split()
     ]
     if not positions:
         utils_cli.returningToMenu()
     while not rotor_ref._are_notches_valid(positions):
+        utils_cli.printError("Input invalid")
         positions = [
             i
             for i in utils_cli.askingInput(
                 "Input new notches separated by a space (empty to skip)"
-            ).split()
+            )
+            .upper()
+            .split()
         ]
         if not positions:
             utils_cli.returningToMenu()
@@ -414,6 +419,7 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
     ).upper()
     while rotor_ref._is_position_invalid(new_position):
         utils_cli.printError("Input only allowed letters")
+        utils_cli.printOutput(rotor_ref._characters_in_use)
         new_position = utils_cli.askingInput(
             "Input a single allowed letter to set the rotor to a new position"
         ).upper()

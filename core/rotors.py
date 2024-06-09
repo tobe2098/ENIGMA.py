@@ -147,8 +147,10 @@ class Rotor:
     def _are_notches_valid(self, notches):
         return (
             not notches
-            or any(not isinstance(i, str) for i in notches)
+            or any(not i.isalpha() for i in notches)
             or any(len(i) > 1 for i in notches)
+            or any(i in self._characters_in_use for i in notches)
+            or len(notches) >= self._no_characters
         )
 
     def _define_notches(self, positions):
