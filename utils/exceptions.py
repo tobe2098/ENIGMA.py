@@ -1,4 +1,4 @@
-from utils_cli import formatAsOutput
+from utils_cli import formatAsError, formatAsOutput
 import traceback
 from main import get_is_cli_mode, get_is_gui_mode
 
@@ -6,27 +6,29 @@ from main import get_is_cli_mode, get_is_gui_mode
 class ExceptionOfExceptions(Exception):
     def __init__(
         self,
-        message="Somehow you are not running CLI or GUI and you raised an exception",
+        message=formatAsOutput(
+            "Somehow you are not running CLI or GUI and you raised an exception"
+        ),
     ):
-        super().__init__(formatAsOutput(message))
+        super().__init__(message)
 
 
 class MenuExitException(Exception):
-    def __init__(self, message="Exiting menu..."):
-        super().__init__(formatAsOutput(message))
+    def __init__(self, message=formatAsOutput("Exiting menu...")):
+        super().__init__(message)
 
 
 class ReturnToMenuException(Exception):
-    def __init__(self, message="Returning to menu..."):
-        super().__init__(formatAsOutput(message))
+    def __init__(self, message=formatAsOutput("Returning to menu...")):
+        super().__init__(message)
 
 
 class DevOpsExceptionCLI(ReturnToMenuException):
     def __init__(self, message=None):
+        # message += "\n" + formatAsError(
+        #     "Development oversight. Something happened here:"
+        # )
         super().__init__(message)
-        self.type_msg += "\n" + formatAsOutput(
-            "Development oversight. Something happened here:"
-        )
         self.traceback = traceback.format_exc()
 
     def __str__(self):
@@ -35,7 +37,7 @@ class DevOpsExceptionCLI(ReturnToMenuException):
 
 class BadInputExceptionCLI(DevOpsExceptionCLI):
     def __init__(self, message=None):
-        self.type_msg = formatAsOutput(
+        message += "\n" + formatAsError(
             "An incorrect input was received in the following core function:"
         )
         super().__init__(message)

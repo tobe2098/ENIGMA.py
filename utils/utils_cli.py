@@ -1,8 +1,11 @@
 import os
 from subprocess import call
+
+from click import BadArgumentUsage
 from utils.utils import is_valid_seed
 from utils.types_utils_cli import wrapperCall
 from exceptions import (
+    BadInputExceptionCLI,
     MenuExitException,
     ReturnToMenuException,
 )
@@ -72,9 +75,16 @@ def exitMenu(*args):
     raise MenuExitException()
 
 
-def returningToMenu(*args):
+def returningToMenu(*args, output_type="o"):
     if args:
-        print(args)
+        if output_type == "o":
+            printOutput(args)
+        elif output_type == "e":
+            printError(args)
+        elif output_type == "w":
+            printWarning(args)
+        else:
+            raise BadInputExceptionCLI()
     # args_list = list(args)
 
     # # Get the first argument
@@ -128,8 +138,16 @@ def checkIfFileExists(path, name, suffix):
     return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
 
 
-def checkInputValidity(_input, _type=str, _range=None):
-    return isinstance(_input, _type) and (not _range or _input in _range)
+def checkInputValidity(_input: str, _type=str, _range=None):
+    if _type == int:
+        if _input.isnumeric() and (not _range or int(_input) in _range):
+            return int(_input)
+    elif _type == str:
+        if isinstance(_input, str) and (not _range or _input in _range):
+            return _input
+    else:
+        raise BadInputExceptionCLI()
+    return None
 
 
 def getSeedFromUser():
@@ -140,7 +158,7 @@ def getSeedFromUser():
     """
     seed = "a"
     while not is_valid_seed(seed):
-        seed = askingInput("Introduce a positive integer as a seeds:")
+        seed = askingInput("Introduce a positive integer as a seed:")
         if not seed:
             returningToMenu()
     seed = int(seed)
