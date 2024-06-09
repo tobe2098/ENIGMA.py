@@ -21,6 +21,12 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
+    (paired_df, unpaired, unformed, _) = (
+        utils.simplify_rotor_dictionary_paired_unpaired(
+            rotor_ref._forward_dict, rotor_ref._backward_dict
+        )
+    )
+    unpaired.extend(unformed)
     utils_cli.printOutput(
         "Rotor letter position :",
         str(rotor_ref._conversion_in_use[rotor_ref._position]),
@@ -28,12 +34,13 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Rotor letter jumps:", str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
     utils_cli.printOutput("Rotor notches:", str(notchlist))
-    utils_cli.printOutput(
-        "Forward connections in the rotor:", str(rotor_ref._forward_dict)
-    )
-    utils_cli.printOutput(
-        "Backward connections in the rotor:", str(rotor_ref._backward_dict)
-    )
+    utils_cli.printOutput("Forward connections in the rotor:")
+    print(paired_df)
+    utils_cli.printOutput("Bad connections (self or none) in the rotor:", str(unpaired))
+
+    # utils_cli.printOutput(
+    #     "Backward connections in the rotor:", str(rotor_ref._backward_dict)
+    # )
     utils_cli.printOutput("Rotor name:", str(rotor_ref._name))
     (
         _,
@@ -62,20 +69,20 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenu(
-            utils_cli.formatAsError("There are no available connections")
-        )
+        utils_cli.returningToMenu("There are no available connections")
 
     utils_cli.printOutput("Current connections are:")
     print(paired_df)  # Need to test the index appears here TEST
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
 
-    if utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0])):
+    row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
+
+    if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         _delete_a_connection_rt(rotor_ref=rotor_ref, connIndex=row)
-        utils_cli.returningToMenu(utils_cli.formatAsOutput("Connection was deleted"))
+        utils_cli.returningToMenu("Connection was deleted")
     else:
-        utils_cli.returningToMenu(utils_cli.formatAsError("Index invalid"))
+        utils_cli.returningToMenu("Index invalid", output_type="e")
 
 
 def _delete_a_connection_rt(rotor_ref: rotors.Rotor, connIndex):
@@ -114,27 +121,27 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     if len(front_unformed) == 0 and len(back_unformed) == 0:
         rotor_ref.lacks_conn = False
         utils_cli.returningToMenu(
-            utils_cli.formatAsOutput(
-                "There are no letters left to pair (one or fewer left unconnected)"
-            )
+            "There are no letters left to pair (one or fewer left unconnected)",
         )
-    utils_cli.printOutput("Unpaired letters in front side:", (front_unformed))
+    utils_cli.printOutput("Unpaired letters in front side:", front_unformed)
 
     letter1 = utils_cli.askingInput("Choose a letter to pair from front side").upper()
-    if not utils_cli.checkInputValidity(letter1, str, front_unformed):
+    letter1 = utils_cli.checkInputValidity(letter1, _range=front_unformed)
+    if not letter1:
         # if letter1 not in front_unformed:
-        utils_cli.returningToMenu(utils_cli.formatAsError("Invalid input"))
-    utils_cli.printOutput("Unpaired letters in back side:", (back_unformed))
+        utils_cli.returningToMenu("Invalid input", output_type="e")
+    utils_cli.printOutput("Unpaired letters in back side:", back_unformed)
     letter2 = utils_cli.askingInput(
         "Choose the second letter from the back side"
     ).upper()
-    if not utils_cli.checkInputValidity(letter2, str, back_unformed):
+    letter2 = utils_cli.checkInputValidity(letter2, _range=back_unformed)
+    if not letter2:
         # if letter2 not in back_unformed:
-        utils_cli.returningToMenu(utils_cli.formatAsError("Invalid input"))
+        utils_cli.returningToMenu("Invalid input", output_type="e")
     rotor_ref._forward_dict[letter1] = letter2
     rotor_ref._backward_dict[letter2] = letter1
     rotor_ref._update_dicts()
-    utils_cli.returningToMenu(utils_cli.formatAsOutput("The connection was formed"))
+    utils_cli.returningToMenu("The connection was formed")
     if len(front_unformed) - 1 == 0 and len(back_unformed) - 1 == 0:
         rotor_ref.lacks_conn = False
 
@@ -173,9 +180,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         if len(front_unformed) == 0 and len(back_unformed) == 0:
             rotor_ref.lacks_conn = False
             utils_cli.returningToMenu(
-                utils_cli.formatAsOutput(
-                    "There are no letters left to pair (one or fewer left unconnected)"
-                )
+                "There are no letters left to pair (one or fewer left unconnected)",
             )
         utils_cli.printOutput("Unpaired letters in front side:", (front_unformed))
         utils_cli.printOutput("Unpaired letters in back side:", (back_unformed))
@@ -199,9 +204,9 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
         else:
             utils_cli.printError("Input only two allowed characters")
             continue
-        if not utils_cli.checkInputValidity(
-            letters[0], _range=front_unformed
-        ) or not utils_cli.checkInputValidity(letters[1], _range=back_unformed):
+        letters[0] = utils_cli.checkInputValidity(letters[0], _range=front_unformed)
+        letters[1] = utils_cli.checkInputValidity(letters[1], _range=back_unformed)
+        if not all(letters):
             # if letters[0] not in front_unformed or letters[1] not in back_unformed:
             utils_cli.printError("One or more letters are already connected")
             continue
@@ -224,7 +229,7 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     _connect_all_letters_rt(rotor_ref)
     rotor_ref.lacks_conn = True
     utils_cli.returningToMenu(
-        utils_cli.formatAsWarning("You exited without forming all connections!")
+        "You exited without forming all connections!", output_type="w"
     )
 
     # utils_cli.returningToMenuMessage(
@@ -249,18 +254,23 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
         connections (int): _description_
     """
-    _show_config_rt(rotor_ref)
-    letter1 = utils_cli.askingInput(
-        "Choose a frontside connection by the frontside letter to swap"
-    ).upper()
-    if utils_cli.checkInputValidity(letter1, _range=rotor_ref._characters_in_use):
+    (paired_df, _, _, _) = utils.simplify_rotor_dictionary_paired_unpaired(
+        rotor_ref._forward_dict, rotor_ref._backward_dict
+    )
+    print(paired_df)
+    letter1 = utils_cli.askingInput("Choose a frontside connection by the index")
+    letter1 = utils_cli.checkInputValidity(letter1, int, range(0, paired_df.shape[0]))
+    # letter1 = utils_cli.checkInputValidity(letter1, _range=rotor_ref._characters_in_use)
+    if not letter1:
         # if letter1 not in rotor_ref._characters_in_use:
         utils_cli.printError("Invalid input")
         return
     letter2 = utils_cli.askingInput(
-        "Choose a second frontside connection by the frontside letter to swap"
-    ).upper()
-    if utils_cli.checkInputValidity(letter2, _range=rotor_ref._characters_in_use):
+        "Choose a second frontside connection by the index to swap"
+    )
+    letter2 = utils_cli.checkInputValidity(letter2, int, range(0, paired_df.shape[0]))
+    # letter2 = utils_cli.checkInputValidity(letter2, _range=rotor_ref._characters_in_use)
+    if not letter2:
         # if letter2 not in rotor_ref._characters_in_use:
         utils_cli.printError("Invalid input")
         return
@@ -290,7 +300,7 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
             "If you do not want to continue swapping, enter N"
         ).upper()
         if boolean == "N":
-            utils_cli.returningToMenu(utils_cli.formatAsOutput("Returning to menu..."))
+            utils_cli.returningToMenu()
         _swap_two_connections_rt(rotor_ref=rotor_ref)
 
     # utils_cli.returningToMenuMessage(
@@ -314,7 +324,7 @@ def _reset_and_streamline_connections_by_pairs_rt(rotor_ref: rotors.Rotor):
     _connect_all_letters_rt(rotor_ref)
     rotor_ref.lacks_conn = True
     utils_cli.returningToMenu(
-        utils_cli.formatAsWarning("You exited without forming all connections!")
+        "You exited without forming all connections!", output_type="w"
     )
 
 
@@ -328,7 +338,7 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
 
     # rotor_ref._reset_dictionaries() Necessary?
     rotor_ref._randomize_dictionaries(seed)
-    utils_cli.returningToMenu(utils_cli.formatAsOutput("Rotor connections established"))
+    utils_cli.returningToMenu("Rotor connections established")
 
 
 def _reset_connections_rt(rotor_ref: rotors.Rotor):
@@ -352,17 +362,13 @@ def _change_rotor_name_rt(rotor_ref: rotors.Rotor):
         utils_cli.printOutput("Input only alphanumerical characters or underscores")
         new_name = utils_cli.askingInput("Input a new name for the rotor")
     rotor_ref._change_name(new_name)
-    utils_cli.returningToMenu(
-        utils_cli.formatAsOutput("Rotor name changed to:", rotor_ref._name)
-    )
+    utils_cli.returningToMenu("Rotor name changed to:", rotor_ref._name)
 
 
 def _randomize_name_rt(rotor_ref: rotors.Rotor):
     seed = utils_cli.getSeedFromUser()
     rotor_ref._random_name(seed)
-    utils_cli.returningToMenu(
-        utils_cli.formatAsOutput("Rotor name changed to:", rotor_ref._name)
-    )
+    utils_cli.returningToMenu("Rotor name changed to:", rotor_ref._name)
 
 
 def _change_notches_rt(rotor_ref: rotors.Rotor):
@@ -399,7 +405,7 @@ def _randomize_notches_rt(rotor_ref: rotors.Rotor):
     ]
     rotor_ref._define_notches(positions)
     utils_cli.printOutput("New rotor notches:", rotor_ref.get_notchlist_letters())
-    utils_cli.returningToMenu(utils_cli.formatAsOutput("Rotor notches established"))
+    utils_cli.returningToMenu("Rotor notches established")
 
 
 def _change_position_rt(rotor_ref: rotors.Rotor):
@@ -412,9 +418,7 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
             "Input a single allowed letter to set the rotor to a new position"
         ).upper()
     rotor_ref._define_position(new_position)
-    utils_cli.returningToMenu(
-        utils_cli.formatAsOutput("Rotor position set to:", rotor_ref.get_position())
-    )
+    utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
 
 
 def _randomize_position_rt(rotor_ref: rotors.Rotor, seed: int):
@@ -422,14 +426,12 @@ def _randomize_position_rt(rotor_ref: rotors.Rotor, seed: int):
     random.seed(seed)
     new_position = random.sample(range(0, rotor_ref._characters_in_use), 1)
     rotor_ref._define_position(new_position)
-    utils_cli.returningToMenu(
-        utils_cli.formatAsOutput("Rotor position set to:", rotor_ref.get_position())
-    )
+    utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
 
 
 def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
-    new_name = ""
-    while not rotor_ref._is_name_valid(rotor_ref.get_name()):
+    new_name = rotor_ref.get_name()
+    while not rotor_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
             "Please assign a new name to the rotor:"
         ).strip()
@@ -453,10 +455,8 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
     save_file = open(r"{}\\{}.rotor".format(path, rotor_ref._name), "wb")
     pickle.dump(rotor_ref, save_file)
     utils_cli.returningToMenu(
-        utils_cli.formatAsOutput(
-            "{} has been saved into {}.rotor in {}".format(
-                rotor_ref._name, rotor_ref._name, path
-            )
+        "{} has been saved into {}.rotor in {}".format(
+            rotor_ref._name, rotor_ref._name, path
         )
     )
 
@@ -466,19 +466,20 @@ def _load_saved_rotor():
     new_folder = utils.ROTORS_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
     if not os.path.exists(path):
-        utils_cli.returningToMenu(
-            utils_cli.formatAsError("There is no {} folder".format(path))
-        )
+        utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
     if len(list_of_files) == 0:
-        utils_cli.returningToMenu(utils_cli.formatAsError("There are no rotors saved"))
+        utils_cli.returningToMenu("There are no rotors saved", "e")
     utils_cli.printOutput("Your available rotors are:")
     utils_cli.printListOfOptions(list_of_files)
     rotor = utils_cli.askingInput("Input reflector's position in the list:")
-    while not utils_cli.checkInputValidity(rotor, int, range(0, len(list_of_files))):
+    rotor = utils_cli.checkInputValidity(rotor, int, range(0, len(list_of_files)))
+    while not rotor:
         # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
-        utils_cli.printOutput("Please input a valid index")
+        utils_cli.printError("Please input a valid index")
+        utils_cli.printListOfOptions(list_of_files)
         rotor = utils_cli.askingInput("Input rotor's position in the list:")
+        rotor = utils_cli.checkInputValidity(rotor, int, range(0, len(list_of_files)))
     filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[rotor]), "rb")
     return pickle.load(filehandler)
 
@@ -494,8 +495,7 @@ def _exitMenu_rt(rotor_ref: rotors.Rotor):
     # )
     if rotor_ref.lacks_conn:
         utils_cli.returningToMenu(
-            utils_cli.formatAsError(
-                "Due to implementation reasons, a partially connected rotor is not allowed"
-            )
+            "Due to implementation reasons, a partially connected rotor is not allowed",
+            "e",
         )
     utils_cli.exitMenu()

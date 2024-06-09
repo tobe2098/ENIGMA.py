@@ -14,14 +14,12 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
 
-    utils_cli.printOutput("Reflector name: ", reflector_ref._name)
+    utils_cli.printOutput("Reflector name:", reflector_ref._name)
     paired_df, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
-    utils_cli.printOutput("Reflector pairs: ", paired_df)
-    print()
-    utils_cli.printOutput("Reflector unpaired: ", unpaired_list)
-    print()
+    utils_cli.printOutput("Reflector pairs:", paired_df)
+    utils_cli.printOutput("Reflector unpaired:", unpaired_list)
     utils_cli.returningToMenu()
 
 
@@ -38,11 +36,11 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     if paired_df.shape[0] == 0:
         utils_cli.returningToMenu("There are no available connections to delete")
 
-    utils_cli.printOutput("Current connections are:")
-    print(paired_df)
+    utils_cli.printOutput("Current connections are:", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
 
-    if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
+    if utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0])):
+        # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
         utils_cli.returningToMenu("Connection was deleted")
     else:
@@ -81,13 +79,17 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
             "There are no letters left to pair (one or fewer left unconnected)"
         )
     utils_cli.printOutput("Unpaired letters:", (unpaired_list))
-    letter1 = utils_cli.askingInput("Choose a letter to pair:").upper()
-    if letter1 not in unpaired_list:
-        utils_cli.returningToMenu("Invalid input")
+    letter1 = utils_cli.askingInput("Choose a letter to pair").upper()
+    if not utils_cli.checkInputValidity(letter1, _range=unpaired_list):
+        # if letter1 not in unpaired_list:
+        utils_cli.returningToMenu("Invalid input", output_type="e")
     utils_cli.printOutput("Remaining letters:"), list(set(unpaired_list) - set(letter1))
     letter2 = utils_cli.askingInput("Choose the second letter:").upper()
-    if letter2 not in list(set(unpaired_list) - set(letter1)):
-        utils_cli.returningToMenu("Invalid input")
+    if not utils_cli.checkInputValidity(
+        letter2, _range=list(set(unpaired_list) - set(letter1))
+    ):
+        # if letter2 not in list(set(unpaired_list) - set(letter1)):
+        utils_cli.returningToMenu("Invalid input", output_type="e")
     reflector_ref._reflector_dict[letter1] = letter2
     reflector_ref._reflector_dict[letter2] = letter1
     reflector_ref._update_dicts()
@@ -118,7 +120,7 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
             utils_cli.returningToMenu(
                 "There are no letters left to pair (one or fewer left unconnected)"
             )
-        utils_cli.printOutput("Unpaired letters:", (unpaired_list))
+        utils_cli.printOutput("Unpaired letters:", unpaired_list)
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
@@ -131,7 +133,10 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
             print("Error: Input 2 letters please")
             continue
         letters = list(letters)
-        if not all(map(lambda v: v in letters, unpaired_list)):
+        if not utils_cli.checkInputValidity(
+            letters[0], _range=unpaired_list
+        ) or not utils_cli.checkInputValidity(letters[1], _range=unpaired_list):
+            # if not all(map(lambda v: v in letters, unpaired_list)):
             utils_cli.printOutput("One of the letters is already connected")
             continue
         # break
@@ -151,7 +156,9 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
     #     reflector_ref._reflector_dict
     # )
     __connect_all_letters_rf(reflector_ref)
-    utils_cli.returningToMenu("You exited without forming all connections!")
+    utils_cli.returningToMenu(
+        "You exited without forming all connections!", output_type="w"
+    )
 
 
 # def reset_and_form_all_connections(reflector_ref: reflectors.Reflector):
@@ -204,13 +211,7 @@ def _reset_and_randomize_connections_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    seed = input(
-        utils_cli.askingInput(
-            "Introduce a positive integer as a seed to randomize the reflector connections: "
-        )
-    )
-    if not isinstance(seed, int) and seed > 0:
-        utils_cli.returningToMenu("Number is not a positive integer")
+    seed = utils_cli.getSeedFromUser()
     reflector_ref._reset_dictionaries()
     reflector_ref._random_setup(seed)
 
@@ -225,32 +226,31 @@ def _reset_connections_rf(reflector_ref: reflectors.Reflector):
 
 
 def _print_name_rf(reflector_ref: reflectors.Reflector):
-    utils_cli.printOutput("REFLECTOR NAME: ", reflector_ref._name)
+    utils_cli.printOutput("Reflector name:", reflector_ref._name)
 
 
 def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
-    new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
-    while any(not c.isalnum() for c in new_name) or not new_name:
+    new_name = utils_cli.askingInput("Input a new name for the reflector")
+    while not reflector_ref._is_name_valid(new_name):
+        # while any(not c.isalnum() for c in new_name) or not new_name:
         utils_cli.printOutput("Input only alphanumerical characters or underscore")
-        new_name = str(utils_cli.askingInput("Input a new name for the reflector:"))
+        new_name = utils_cli.askingInput("Input a new name for the reflector")
     reflector_ref._change_name(new_name)
-    utils_cli.returningToMenu("Reflector name changed to: ", reflector_ref._name)
+    utils_cli.returningToMenu("Reflector name changed to:", reflector_ref._name)
 
 
 def _randomize_name_rf(reflector_ref: reflectors.Reflector):
     reflector_ref._random_name()
-    utils_cli.returningToMenu("NEW NAME: ", reflector_ref.name)
+    utils_cli.returningToMenu("Reflector's new name:", reflector_ref.name)
 
 
 def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
-    while (
-        reflector_ref.name == "name"
-        or reflector_ref.name == ""
-        or any(not c.isalnum() for c in reflector_ref.name)
-    ):
-        reflector_ref._change_name(
-            utils_cli.askingInput("Please assign a new name to the reflector:")
+    name = reflector_ref.get_name()
+    while not reflector_ref._is_name_valid(name):
+        name = utils_cli.askingInput(
+            "Please assign a new name to the reflector"
         ).strip()
+    reflector_ref._change_name(name)
     current_path = os.getcwd()
     new_folder = utils.REFLECTORS_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
