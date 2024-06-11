@@ -20,7 +20,7 @@ class Rotor:
 
         self._name = "name"  # randomly generating a name is going to happen I guess
 
-        self._position = 0  # Can go from 1 to 26
+        self._position = 0  # Can go from 1 to _no_characters
         self.jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
@@ -50,7 +50,7 @@ class Rotor:
         if any(
             (notch - self._position) % self._no_characters < self._jump
             for notch in self._notches
-        ):
+        ):  # This was double-checked
             self._position += self._jump
             self._position %= self._no_characters
             return True
@@ -65,7 +65,7 @@ class Rotor:
         return any(
             (self._position - notch) % self._no_characters < self._jump
             for notch in self._notches
-        )
+        )  # This was double-checked
 
     def forward_pass(self, input_letter_number):
         input_letter_number += self._position
