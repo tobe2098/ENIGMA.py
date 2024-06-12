@@ -1,8 +1,8 @@
 from utils.utils_cli import DevOpsException
-from ..core.machines import Machine, MachineDash
-from ..core.rotors import Rotor, RotorDash
-from ..core.reflectors import Reflector, ReflectorDash
-from ..core.plugboards import PlugBoard, PlugBoardDash
+from ..core.machines import Machine
+from ..core.rotors import Rotor
+from ..core.reflectors import Reflector
+from ..core.plugboards import PlugBoard
 
 from ..cli.functions.rotors_f import _print_name_rt
 

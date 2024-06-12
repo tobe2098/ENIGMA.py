@@ -18,7 +18,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     paired_df, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
-    utils_cli.printOutput("Reflector pairs:", paired_df)
+    utils_cli.printOutput("Reflector pairs:\n", paired_df)
     utils_cli.printOutput("Reflector unpaired:", unpaired_list)
     utils_cli.returningToMenu()
 
@@ -36,31 +36,35 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     if paired_df.shape[0] == 0:
         utils_cli.returningToMenu("There are no available connections to delete")
 
-    utils_cli.printOutput("Current connections are:", paired_df)
+    utils_cli.printOutput("Current connections are:\n", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
     row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
     if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
-        __delete_a_connection_rf(reflector_ref=reflector_ref, connIndex=row)
+        __delete_a_connection_rf(
+            reflector_ref=reflector_ref, letter1=paired_df.iloc[row][0]
+        )
         utils_cli.returningToMenu("Connection was deleted")
     else:
         utils_cli.returningToMenu("Index invalid", output_type="e")
 
 
-def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, connIndex):
+def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, letter1: str):
     """_summary_
 
     Args:
         reflector_ref (reflectors.Reflector): _description_
         connIndex (_type_): _description_
     """
-    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
-        reflector_ref._reflector_dict
-    )
-    for entry in paired_df.iloc[connIndex]:
-        # del reflector_ref._reflector_dict[entry] #Requires testing
-        reflector_ref._reflector_dict[entry] = entry
 
+    # del reflector_ref._reflector_dict[entry] #Requires testing
+    (
+        reflector_ref._reflector_dict[letter1],
+        reflector_ref._reflector_dict[reflector_ref._reflector_dict[letter1]],
+    ) = (
+        reflector_ref._reflector_dict[reflector_ref._reflector_dict[letter1]],
+        reflector_ref._reflector_dict[letter1],
+    )
     reflector_ref._update_dicts()
     # del d['k2']
 

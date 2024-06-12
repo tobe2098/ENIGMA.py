@@ -1,8 +1,6 @@
 """Module that provides global functions and constants"""
 
 import pandas as pd
-import traceback
-from .utils_cli import ReturnToMenuException, formatAsOutput
 
 
 class Constants:

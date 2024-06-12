@@ -34,8 +34,7 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Rotor letter jumps:", str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
     utils_cli.printOutput("Rotor notches:", str(notchlist))
-    utils_cli.printOutput("Forward connections in the rotor:")
-    print(paired_df)
+    utils_cli.printOutput("Forward connections in the rotor:\n", paired_df)
     utils_cli.printOutput("Bad connections (self or none) in the rotor:", str(unpaired))
 
     # utils_cli.printOutput(
@@ -71,34 +70,29 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     if paired_df.shape[0] == 0:
         utils_cli.returningToMenu("There are no available connections")
 
-    utils_cli.printOutput("Current connections are:")
-    print(paired_df)  # Need to test the index appears here TEST
+    utils_cli.printOutput("Current connections are:\n", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
 
     row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
 
     if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
-        _delete_a_connection_rt(rotor_ref=rotor_ref, connIndex=row)
+        _delete_a_connection_rt(rotor_ref=rotor_ref, letter1=paired_df.iloc[row][0])
         utils_cli.returningToMenu("Connection was deleted")
     else:
         utils_cli.returningToMenu("Index invalid", output_type="e")
 
 
-def _delete_a_connection_rt(rotor_ref: rotors.Rotor, connIndex):
+def _delete_a_connection_rt(rotor_ref: rotors.Rotor, letter1: str):
     """_summary_
 
     Args:
         rotor_ref (rotors.Rotor): _description_
         connIndex (_type_): _description_
     """
-    paired_df, _, _, _ = utils.simplify_rotor_dictionary_paired_unpaired(
-        rotor_ref._forward_dict, rotor_ref._backward_dict
-    )
-    entry1, entry2 = paired_df.iloc[connIndex]
+    rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]] = ""
     # del rotor_ref._board_dict[entry] #Requires testing
-    rotor_ref._forward_dict[entry1] = ""
-    rotor_ref._backward_dict[entry2] = ""
+    rotor_ref._forward_dict[letter1] = ""
     rotor_ref.lacks_conn = True
     rotor_ref._update_dicts()
     # del d['k2']
@@ -257,7 +251,7 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
     (paired_df, _, _, _) = utils.simplify_rotor_dictionary_paired_unpaired(
         rotor_ref._forward_dict, rotor_ref._backward_dict
     )
-    print(paired_df)
+    utils_cli.printOutput("Current connections are:\n", paired_df)
     letter1 = utils_cli.askingInput("Choose a frontside connection by the index")
     letter1 = utils_cli.checkInputValidity(letter1, int, range(0, paired_df.shape[0]))
     # letter1 = utils_cli.checkInputValidity(letter1, _range=rotor_ref._characters_in_use)
