@@ -1,12 +1,14 @@
 import copy
 import random
 
-from ..utils import utils_cli
+from utils.exceptions import raiseBadInputException
+
 from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
     EQUIVALENCE_DICT_dash,
+    is_valid_seed,
     transform_single_dict,
 )
 
@@ -41,6 +43,8 @@ class PlugBoard:
 
     def random_setup(self, seed=None):
 
+        if not is_valid_seed(seed):
+            raiseBadInputException()
         random.seed(seed)
 
         # Now set the connections
