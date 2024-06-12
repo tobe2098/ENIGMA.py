@@ -7,6 +7,8 @@ import copy
 # import sys
 import os
 
+from utils.exceptions import raiseBadInputException, raiseBadSetupException
+
 from .rotors import Rotor, RotorDash
 from ..utils.utils import (
     CHARACTERS,
@@ -15,6 +17,7 @@ from ..utils.utils import (
     EQUIVALENCE_DICT_dash,
     MAX_NO_ROTORS,
     MAX_SEED,
+    is_valid_seed,
 )
 from .reflectors import Reflector, ReflectorDash
 from .plugboards import PlugBoard, PlugBoardDash
@@ -27,9 +30,11 @@ class Machine:
         self._name = name
         # Include seed storages?
         # Write a default config
-        self._ref_rotor = Rotor()
+        if not self._ref_rotor:
+            self._ref_rotor = Rotor()
         self._set_new_no_rotors(3)
-        self._reflector = Reflector()
+        if not self._reflector:
+            self._reflector = Reflector()
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
         if not seed:
@@ -42,61 +47,77 @@ class Machine:
         else:
             self._seed = seed
         # For now, default is nothingness
-        self._plugboard = PlugBoard()
-        self._current_input_size = 0
+        if not self._plugboard:
+            self._plugboard = PlugBoard()
+        self._current_distance_from_original_state = 0
         # self.board_num_dict=transform_single_dict(self.board_dict)
         print(
             ">WARNING:Machine was just created, but it is NOT recommended for use until further configuration is done"
         )
 
     # Basic functions
-    def get_name_and_seed(self):
-        print(
-            ">Machine name is {}, and its random seed is {}\n>REMEMBER! Communicating the random seed or further adjsutments for the machine is the weakest link for its usage. \nPlease do it with care, do not leave it written anywhere after the opposite party has a configured machine.".format(
-                self._name, self._seed
-            )
+    def get_name(self):
+        return self._name
+    def _is_name_valid(self, name):
+        return (
+            name != "name" and name != "" and all(c.isalnum() or c == "_" for c in name)
         )
-
     def _change_name(self, new_name):
-        import re
+        """_summary_
 
-        self._name = new_name.strip()
-        re.sub(r"\W+", "", self._name)
-        print(">The machine's name is now:", self._name)
+        Args:
+            new_name (_type_): _description_
+
+        Raises:
+            Exception: _description_
+        """
+
+        new_name = new_name.strip()
+        if not self._is_name_valid(new_name):
+            raiseBadInputException()
+        self._name = new_name
+        # print(">Now name of the reflector is:", self._name)
+
+    def _is_machine_set_up(self):
+        return self._reflector.is_set_up() and all([rotor.is_set_up() for rotor in self._rotors])
+
+    def _is_valid_no_rotors(self, noRotors):
+        return noRotors>0 and noRotors<MAX_NO_ROTORS
 
     def _set_new_no_rotors(self, noRotors):
-        self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
+        if self._is_valid_no_rotors(noRotors):
+            self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
+        else:
+            raiseBadInputException()
 
     def _append_rotors(self, noRotors):
-        for _ in range(noRotors):
-            self._rotors.append(copy.copy(self._ref_rotor))
+        if self._is_valid_no_rotors(len(self._rotors)+noRotors):
+            for _ in range(noRotors):
+                self._rotors.append(copy.copy(self._ref_rotor))
+        else:
+            raiseBadInputException()
 
+    def _swap_two_rotors_positionally(self):
+        #In position
+        pass
+    def _load_a_rotor(self,position):
+        pass
+    def _show_rotors_positions(self):
+        pass
+    def _change_rotors_positions(self,positions_string:str):
+        pass
+    def _reorder_all_rotors(self,position_list:list):
+        pass #For every rotor they are asigned a new position in the list with their index
+    def _get_list_of_rotor_names(self):
+        pass
     # def add_a_rotor(self):
     #     self.rotor4=Rotor()
     #     self.n_rotors=4
     #     print(">>>Fourth rotor added. Use self.rotor4.manual_rotor_setup() to modify or self.rotor4.random_rotor_setup()")
     # Showing configs
 
-    def show_config(self):
-        print(">Board config:")
-        self._plugboard._show_config()
-        print(">Rotor configs:")
-        self.show_rotor_config()
-        print(">Reflector config:")
-        self._reflector._show_config()
 
-    def simple_show_config(self):
-        config = pd.DataFrame()
-        config["Rotor position"] = list(range(1, len(self._rotors)))
-        config["Rotors"] = [rotor.get_name() for rotor in self._rotors]
-        config["Letter position"] = [rotor._position for rotor in self._rotors]
-        config["Notches"] = [rotor.get_notchlist_letters() for rotor in self._rotors]
-        print("Board config:")
-        self._plugboard._show_config()
-        print("Reflector:", self._reflector.name)
-        print("Reflector:", self._reflector.name)
-        print("Rotor config:\n", config)
-        print("Machine name and seed:", self.get_name_and_seed())
+
         # return config #Only names, positions, letter positions and notches, and board, reflector name
 
     # def _single_rotor_setup(self, rotor: Rotor):
@@ -105,37 +126,10 @@ class Machine:
     #     print(">Rotor setup finished, going back to selection")
 
     # Pickled functions
-    def save_machine(self):
-        while self._name.strip() == "name" or self._name.strip() == "":
-            self._name = input(">>>Please assign a new name to the machine:")
-        current_path = os.path.dirname(__file__)
-        new_folder = utils.MACHINES_FILE_HANDLE
-        path = os.path.join(current_path, new_folder)
-        if not os.path.exists(path):
-            os.mkdir(path)
-            print("Directory '% s' created" % path)
-        save_file = open(r"{}/{}.machine".format(path, self._name), "wb")
-        pickle.dump(self, save_file)
-        print(
-            "{} has been saved into {}.machine in {}".format(
-                self._name, self._name, path
-            )
-        )
-        save_file.close()
-        # return  # End
 
-    def setup_random_machine(self):
-        print(">Randomly generating your ENIGMA machine:")
-        noRotors = "a"
-        while not isinstance(noRotors, int):
-            noRotors = input(">>>Input the number of rotors:")
-            if noRotors > MAX_NO_ROTORS:
-                noRotors = ""
-                print(
-                    "Maximum number of rotors allowed is {} (for your own good)".format(
-                        MAX_NO_ROTORS
-                    )
-                )
+    def setup_random_machine(self,seed, noRotors=3):
+        if not is_valid_seed(seed) or not self._is_valid_no_rotors(noRotors):
+            raiseBadInputException()
         self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
         random.seed(self._seed)
         jump = random.randint(1, 3000000)
@@ -155,7 +149,9 @@ class Machine:
 
     # Finally, the crypt function
     ## Add text function and check for characters
-    def encrypt_decrypt(self):
+    def encrypt_decrypt(self,text):
+        if not self._is_machine_set_up():
+            raiseBadSetupException()
         CALL FOR CHECKS OF PROPER SETUP IN PLACE (AT LEAST ALL REFLECTOR CONNECTED, AT LEAST 1 ROTOR, AT LEAST ONE NOTCH PER ROTOR, SAVED MACHINE)
         THIS SHOULD ONLY ENCRYPT A PASSED TEXT, AND A LETTER BY LETTER (FOR GUI)
         # import copy as cp
@@ -175,7 +171,7 @@ class Machine:
             for char in input_var:
                 if char not in self._characters_in_use:
                     continue
-                self._current_input_size += 1
+                self._current_distance_from_original_state += 1
                 # First, position changes in rotors.
                 for i in range(len(self._rotors)):
                     if not self._rotors[i].notch_check_move_forward():
@@ -198,17 +194,15 @@ class Machine:
             string1 = ""
             message = string1.join(output_message_list)
             print(message)
-            self.backspace(self._current_input_size)
+            self.backspace(self._current_distance_from_original_state)
 
     def type_character(self, character):
         if len(character) > 1:
-            raise Exception(
-                "Interfacing error, more than one character was not expected"
-            )
+            raiseBadInputException()
         if character not in self._characters_in_use:
             return ""
         # First, position changes in rotors.
-        self._current_input_size += 1
+        self._current_distance_from_original_state += 1
         for i in range(len(self._rotors)):
             if not self._rotors[i].notch_check_move_forward():
                 break
@@ -232,15 +226,21 @@ class Machine:
         # For erasing all the input box in GUI, I can keep track of the inputs with an internal variable
         # And call this with internal variable
         for _ in range(no_times):
-            for i in range(len(self._rotors)):
+            for i in range(len(self._rotors)): #We always move from first to last rotor
+                if not self._rotors[i].backspace():
+                    break
+    def backspace_to_original_state(self):
+        # For erasing all the input box in GUI, I can keep track of the inputs with an internal variable
+        # And call this with internal variable
+        for _ in range(self._current_distance_from_original_state):
+            for i in range(len(self._rotors)): #We always move from first to last rotor
                 if not self._rotors[i].backspace():
                     break
 
-
 class MachineDash(Machine):
     def __init__(self, name="name", seed=None):
-        super().__init__(name, seed, CHARACTERS_dash, EQUIVALENCE_DICT_dash)
         self._ref_rotor = RotorDash()
         self._reflector = ReflectorDash()
         self._plugboard = PlugBoardDash()
-        self._set_new_no_rotors(3)
+        super().__init__(name, seed, CHARACTERS_dash, EQUIVALENCE_DICT_dash)
+        # self._set_new_no_rotors(3)

@@ -4,6 +4,29 @@ from ...core import machines
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
 # ALL LOADING FUNCTIONS MUST BE HERE
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
+def show_config(self):
+    print(">Board config:")
+    self._plugboard._show_config()
+    print(">Rotor configs:")
+    self.show_rotor_config()
+    print(">Reflector config:")
+    self._reflector._show_config()
+
+
+def simple_show_config(self):
+    config = pd.DataFrame()
+    config["Rotor position"] = list(range(1, len(self._rotors)))
+    config["Rotors"] = [rotor.get_name() for rotor in self._rotors]
+    config["Letter position"] = [rotor._position for rotor in self._rotors]
+    config["Notches"] = [rotor.get_notchlist_letters() for rotor in self._rotors]
+    print("Board config:")
+    self._plugboard._show_config()
+    print("Reflector:", self._reflector.name)
+    print("Reflector:", self._reflector.name)
+    print("Rotor config:\n", config)
+    print("Machine name and seed:", self.get_name())
+
+
 def _random_conf_rotors(self, jump):
     for i in range(len(self._rotors)):
         self._rotors[i].random_setup(self._seed + jump, showConfig=False)
@@ -61,7 +84,23 @@ def _rotor_order_change(self):
                 self._rotors[selec2],
                 self._rotors[selec1],
             )
-
+def encrypt_decrypt(self):
+        CALL FOR CHECKS OF PROPER SETUP IN PLACE (AT LEAST ALL REFLECTOR CONNECTED, AT LEAST 1 ROTOR, AT LEAST ONE NOTCH PER ROTOR, SAVED MACHINE)
+        THIS SHOULD ONLY ENCRYPT A PASSED TEXT, AND A LETTER BY LETTER (FOR GUI)
+        # import copy as cp
+        print(
+            ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
+        )
+        
+        # self.simple_show_config()
+        input_var = 1
+        while input_var:
+            # message_length = 0
+            input_var = input(
+                ">>>Write Text (only allowed characters will be encrypted): "
+            ).upper()
+            output_message_list = []
+            # print(self.rotor1._position)
 
 ##import pickle
 
@@ -128,11 +167,36 @@ def load_existing_machine():
 
 
 def setup_random_machine(self):
-    pass
+    print(">Randomly generating your ENIGMA machine:")
+    noRotors = "a"
+    while not isinstance(noRotors, int):
+        noRotors = input(">>>Input the number of rotors:")
+        if noRotors > MAX_NO_ROTORS:
+            noRotors = ""
+            print(
+                "Maximum number of rotors allowed is {} (for your own good)".format(
+                    MAX_NO_ROTORS
+                )
+            )
 
 
-def save_machine():
-    pass
+def save_machine(self):
+    # Research on how to pickle and unpickle member custom classes
+    while self._name.strip() == "name" or self._name.strip() == "":
+        self._name = input(">>>Please assign a new name to the machine:")
+    current_path = os.path.dirname(__file__)
+    new_folder = utils.MACHINES_FILE_HANDLE
+    path = os.path.join(current_path, new_folder)
+    if not os.path.exists(path):
+        os.mkdir(path)
+        print("Directory '% s' created" % path)
+    save_file = open(r"{}/{}.machine".format(path, self._name), "wb")
+    pickle.dump(self, save_file)
+    print(
+        "{} has been saved into {}.machine in {}".format(self._name, self._name, path)
+    )
+    save_file.close()
+    # return  # End
 
     def manual_complete_config(self):
         # MENU HERE TOO
