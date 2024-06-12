@@ -43,9 +43,24 @@ class BadInputExceptionCLI(DevOpsExceptionCLI):
         super().__init__(message)
 
 
+class MachineBadSetupExceptionCLI(DevOpsExceptionCLI):
+    def __init__(self, message=None):
+        message += "\n" + formatAsError("The machine was not properly set up")
+        super().__init__(message)
+
+
 def raiseBadInputException():
     if get_is_cli_mode():
         raise BadInputExceptionCLI()
+    elif get_is_gui_mode():
+        raise ExceptionOfExceptions()
+    else:
+        raise ExceptionOfExceptions()
+
+
+def raiseBadSetupException():
+    if get_is_cli_mode():
+        raise MachineBadSetupExceptionCLI()
     elif get_is_gui_mode():
         raise ExceptionOfExceptions()
     else:

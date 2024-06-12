@@ -44,11 +44,13 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     (
         _,
         unpaired,
-        _,
+        unformed,
         _,
     ) = utils.simplify_rotor_dictionary_paired_unpaired(
         rotor_ref._forward_dict, rotor_ref._backward_dict
     )
+    if not unformed:
+        rotor_ref.lacks_connections = False
     if len(unpaired) > 0:
         utils_cli.printWarning(
             "One or more connections are self-connections. This may go against proper practice"
@@ -93,7 +95,7 @@ def _delete_a_connection_rt(rotor_ref: rotors.Rotor, letter1: str):
     rotor_ref._backward_dict[rotor_ref._forward_dict[letter1]] = ""
     # del rotor_ref._board_dict[entry] #Requires testing
     rotor_ref._forward_dict[letter1] = ""
-    rotor_ref.lacks_conn = True
+    rotor_ref.lacks_connections = True
     rotor_ref._update_dicts()
     # del d['k2']
 
@@ -113,7 +115,7 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
         rotor_ref._forward_dict, rotor_ref._backward_dict
     )
     if len(front_unformed) == 0 and len(back_unformed) == 0:
-        rotor_ref.lacks_conn = False
+        rotor_ref.lacks_connections = False
         utils_cli.returningToMenu(
             "There are no letters left to pair (one or fewer left unconnected)",
         )
@@ -137,7 +139,7 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     rotor_ref._update_dicts()
     utils_cli.returningToMenu("The connection was formed")
     if len(front_unformed) - 1 == 0 and len(back_unformed) - 1 == 0:
-        rotor_ref.lacks_conn = False
+        rotor_ref.lacks_connections = False
 
 
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
@@ -172,7 +174,7 @@ def _connect_all_letters_rt(rotor_ref: rotors.Rotor):
             rotor_ref._forward_dict, rotor_ref._backward_dict
         )
         if len(front_unformed) == 0 and len(back_unformed) == 0:
-            rotor_ref.lacks_conn = False
+            rotor_ref.lacks_connections = False
             utils_cli.returningToMenu(
                 "There are no letters left to pair (one or fewer left unconnected)",
             )
@@ -221,7 +223,7 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     #     rotor_ref._board_dict
     # )
     _connect_all_letters_rt(rotor_ref)
-    rotor_ref.lacks_conn = True
+    rotor_ref.lacks_connections = True
     utils_cli.returningToMenu(
         "You exited without forming all connections!", output_type="w"
     )
@@ -316,7 +318,7 @@ def _reset_and_streamline_connections_by_pairs_rt(rotor_ref: rotors.Rotor):
     #     elif accbool == "y":
     #         break
     _connect_all_letters_rt(rotor_ref)
-    rotor_ref.lacks_conn = True
+    rotor_ref.lacks_connections = True
     utils_cli.returningToMenu(
         "You exited without forming all connections!", output_type="w"
     )
@@ -342,7 +344,7 @@ def _reset_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     rotor_ref._reset_dictionaries()
-    rotor_ref.lacks_conn = True
+    rotor_ref.lacks_connections = True
 
 
 def _print_name_rt(rotor_ref: rotors.Rotor):
@@ -377,7 +379,7 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
     ]
     if not positions:
         utils_cli.returningToMenu()
-    while not rotor_ref._are_notches_valid(positions):
+    while not rotor_ref._are_notches_invalid(positions):
         utils_cli.printError("Input invalid")
         positions = [
             i
@@ -493,9 +495,9 @@ def _exitMenu_rt(rotor_ref: rotors.Rotor):
     # ) = utils.simplify_rotor_dictionary_paired_unpaired(
     #     rotor_ref._forward_dict, rotor_ref._backward_dict
     # )
-    if rotor_ref.lacks_conn:
+    if not rotor_ref.is_set_up():
         utils_cli.returningToMenu(
-            "Due to implementation reasons, a partially connected rotor is not allowed",
+            "Due to implementation reasons, an improperly setup rotor is not allowed",
             "e",
         )
     utils_cli.exitMenu()

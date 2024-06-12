@@ -88,17 +88,20 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
     letter1 = utils_cli.askingInput("Choose a letter to pair").upper()
     letter1 = utils_cli.checkInputValidity(letter1, _range=unpaired_list)
     if not letter1:
-        utils_cli.returningToMenu("Invalid input", "e")
+        utils_cli.printError("Invalid input")
+        return False
     remaining_letters = list(set(unpaired_list) - set(letter1))
     utils_cli.printOutput("Remaining letters:", remaining_letters)
     letter2 = utils_cli.askingInput("Choose the second letter").upper()
     letter2 = utils_cli.checkInputValidity(letter2, _range=remaining_letters)
     if not letter2:
-        utils_cli.returningToMenu("Invalid input", "e")
+        utils_cli.printError("Invalid input")
+        return False
     plugboard_ref._board_dict[letter1] = letter2
     plugboard_ref._board_dict[letter2] = letter1
     plugboard_ref._update_dicts()
-    utils_cli.returningToMenu("The connection was formed")
+    utils_cli.printOutput("The connection was formed")
+    return True
 
 
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
@@ -181,10 +184,12 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
         plugboard_ref (plugboards.PlugBoard): _description_
         connections (int): _description_
     """
-    for i in range(connections):
+    c = 0
+    while connections - c:
         utils_cli.clearScreenConvenienceCli()
-        utils_cli.printOutput(f"Creating connection {i+1} of {connections}")
-        _create_a_single_connection_pb(plugboard_ref)
+        utils_cli.printOutput(f"Creating connection {c+1} of {connections}")
+        if _create_a_single_connection_pb(plugboard_ref):
+            c += 1
 
 
 # def _reset_and_form_all_connections_by_pairs_pb(plugboard_ref: plugboards.PlugBoard):

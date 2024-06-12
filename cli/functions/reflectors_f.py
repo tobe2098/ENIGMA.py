@@ -20,6 +20,8 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     )
     utils_cli.printOutput("Reflector pairs:\n", paired_df)
     utils_cli.printOutput("Reflector unpaired:", unpaired_list)
+    if len(unpaired_list) < 2:
+        reflector_ref.lacks_connections = False
     utils_cli.returningToMenu()
 
 
@@ -44,6 +46,7 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
         __delete_a_connection_rf(
             reflector_ref=reflector_ref, letter1=paired_df.iloc[row][0]
         )
+        reflector_ref.lacks_connections = True
         utils_cli.returningToMenu("Connection was deleted")
     else:
         utils_cli.returningToMenu("Index invalid", output_type="e")
@@ -79,6 +82,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
         reflector_ref._reflector_dict
     )
     if len(unpaired_list) < 2:
+        reflector_ref.lacks_connections = False
         utils_cli.returningToMenu(
             "There are no letters left to pair (one or fewer left unconnected)"
         )
@@ -87,7 +91,9 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     letter1 = utils_cli.checkInputValidity(letter1, _range=unpaired_list)
     if not letter1:
         # if letter1 not in unpaired_list:
-        utils_cli.returningToMenu("Invalid input", output_type="e")
+        utils_cli.printError("Invalid input")
+        return False
+        # utils_cli.returningToMenu("Invalid input", output_type="e")
     utils_cli.printOutput("Remaining letters:", list(set(unpaired_list) - set(letter1)))
     letter2 = utils_cli.askingInput("Choose the second letter:").upper()
     letter2 = utils_cli.checkInputValidity(
@@ -95,11 +101,15 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     )
     if not letter2:
         # if letter2 not in list(set(unpaired_list) - set(letter1)):
-        utils_cli.returningToMenu("Invalid input", output_type="e")
+        utils_cli.printError("Invalid input")
+        return False
+        # utils_cli.returningToMenu("Invalid input", output_type="e")
     reflector_ref._reflector_dict[letter1] = letter2
     reflector_ref._reflector_dict[letter2] = letter1
     reflector_ref._update_dicts()
-    utils_cli.returningToMenu("The connection was formed")
+    utils_cli.printOutput("The connection was formed")
+    return True
+    # utils_cli.returningToMenu("The connection was formed")
 
 
 # First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
@@ -123,6 +133,7 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
             reflector_ref._reflector_dict
         )
         if len(unpaired_list) < 2:
+            reflector_ref.lacks_connections = False
             utils_cli.returningToMenu(
                 "There are no letters left to pair (one or fewer left unconnected)"
             )
@@ -134,7 +145,7 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
         if letters.isalpha() and len(letters) == 2:
             pass
         elif not letters:
-            return
+            utils_cli.returningToMenu()
         else:
             utils_cli.printError("Input 2 letters please")
             continue
@@ -184,10 +195,13 @@ def _form_n_connections_rf(reflector_ref: reflectors.Reflector, connections: int
         reflector_ref (reflectors.Reflector): _description_
         connections (int): _description_
     """
-    for i in range(connections):
+    c = 0
+    while connections - c:
+        # for i in range(connections):
         utils_cli.clearScreenConvenienceCli()
-        utils_cli.printOutput(f"Creating connection {i+1} of {connections}")
-        _create_a_connection_single_choice_rf(reflector_ref)
+        utils_cli.printOutput(f"Creating connection {c+1} of {connections}")
+        if _create_a_connection_single_choice_rf(reflector_ref):
+            c += 1
 
 
 def _reset_and_form_all_connections_by_pairs_rf(reflector_ref: reflectors.Reflector):
@@ -309,11 +323,11 @@ def _load_saved_reflector():
 
 
 def _exitMenu_rf(reflector_ref: reflectors.Reflector):
-    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
-        reflector_ref._reflector_dict
-    )
-    if len(unpaired_list) > 1:
+    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    #     reflector_ref._reflector_dict
+    # )
+    if not reflector_ref.is_set_up():
         utils_cli.returningToMenu(
-            "To avoid self-sabotage, a partially connected reflector is discouraged"
+            "To avoid self-sabotage, an improper reflector is discouraged"
         )
     utils_cli.exitMenu()

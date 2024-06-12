@@ -5,6 +5,7 @@ import random
 import copy
 
 from ..utils.utils import (
+    simplify_rotor_dictionary_paired_unpaired,
     transform_single_dict,
     Constants,
     is_valid_seed,
@@ -21,7 +22,7 @@ class Rotor:
         self._name = "name"  # randomly generating a name is going to happen I guess
 
         self._position = 0  # Can go from 1 to _no_characters
-        self.jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
+        self._jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
@@ -34,7 +35,7 @@ class Rotor:
         self._backward_dict = dict(
             zip(self._characters_in_use, self._characters_in_use)
         )
-        self.lacks_conn = False
+        self.lacks_connections = True
         self._update_dicts()
 
     def get_name(self):
@@ -105,7 +106,7 @@ class Rotor:
         # print(">Now name of the reflector is:", self._name)
 
     def _is_jump_invalid(self, jump):
-        return self._characters_in_use % jump == 0
+        return jump == 0 or self._characters_in_use % jump == 0 and jump != 1
 
     def _define_rotor_jump(self, jump):
         """Not active for now
@@ -144,7 +145,7 @@ class Rotor:
         #     )
         # )
 
-    def _are_notches_valid(self, notches):
+    def _are_notches_invalid(self, notches):
         return (
             not notches
             or any(not i.isalpha() for i in notches)
@@ -160,7 +161,7 @@ class Rotor:
             positions (list): list of single characters
         """
         ##DEBUG
-        if self._are_notches_valid(positions):
+        if self._are_notches_invalid(positions):
             raiseBadInputException()
 
         notch_list = [
@@ -227,6 +228,18 @@ class Rotor:
         sorted_dict = dict(sorted(self._forward_num_dict.items(), key=lambda x: x[1]))
         self._backward_num_dict = dict(zip(sorted_dict.values(), sorted_dict.keys()))
         self._update_dicts(False)
+
+    def is_set_up(self):
+        # (_, unpaired, unformed, _) = simplify_rotor_dictionary_paired_unpaired(
+        #     self._forward_dict, self._backward_dict
+        # )
+        # unpaired.extend(unformed)
+        return not (
+            self.lacks_connections
+            or self._are_notches_invalid(self._notches)
+            or self._is_jump_invalid(self._jump)
+            or self._is_position_invalid(self._position)
+        )
 
 
 class RotorDash(Rotor):

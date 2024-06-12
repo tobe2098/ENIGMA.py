@@ -23,6 +23,7 @@ class Reflector:
         )
         self._reflector_num_dict = {}
         self._update_dicts()
+        self.lacks_connections = True
 
     def _is_name_valid(self, name):
         return (
@@ -67,6 +68,13 @@ class Reflector:
             self._reflector_dict = transform_single_dict(
                 self._reflector_num_dict, self._conversion_in_use
             )
+
+    def is_set_up(self):
+        # (_, unpaired, unformed, _) = simplify_rotor_dictionary_paired_unpaired(
+        #     self._forward_dict, self._backward_dict
+        # )
+        # unpaired.extend(unformed)
+        return not self.lacks_connections
 
     # def export_reflector(self):
     #     # if self.name == "name":
