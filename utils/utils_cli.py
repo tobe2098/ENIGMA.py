@@ -1,7 +1,6 @@
 import os
 from subprocess import call
 
-from click import BadArgumentUsage
 from utils.utils import is_valid_seed
 from utils.types_utils_cli import wrapperCall
 from exceptions import (
