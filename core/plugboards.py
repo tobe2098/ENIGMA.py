@@ -1,11 +1,8 @@
 import copy
 import random
 
-<<<<<<< Updated upstream
 from utils.exceptions import raiseBadInputException
 
-=======
->>>>>>> Stashed changes
 from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
