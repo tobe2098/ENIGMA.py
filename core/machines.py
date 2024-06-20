@@ -1,12 +1,10 @@
 # from platform import machine
 import random
-import pickle
-import pandas as pd
 import copy
 
 # import sys
-import os
 
+from cli.functions.rotors_f import _load_saved_rotor
 from utils.exceptions import raiseBadInputException, raiseBadSetupException
 
 from .rotors import Rotor, RotorDash
@@ -43,7 +41,7 @@ class Machine:
                 0,
                 MAX_SEED,
             )
-            print("Seed has been randomly generated, and is now:", self._seed)
+            # print("Seed has been randomly generated, and is now:", self._seed)
         else:
             self._seed = seed
         # For now, default is nothingness
@@ -51,9 +49,10 @@ class Machine:
             self._plugboard = PlugBoard()
         self._current_distance_from_original_state = 0
         # self.board_num_dict=transform_single_dict(self.board_dict)
-        print(
-            ">WARNING:Machine was just created, but it is NOT recommended for use until further configuration is done"
-        )
+        # print(
+            # ">WARNING:Machine was just created, but it is NOT recommended for use until further configuration is done"
+        # )
+
 
     # Basic functions
     def get_name(self):
@@ -79,7 +78,7 @@ class Machine:
         # print(">Now name of the reflector is:", self._name)
 
     def _is_machine_set_up(self):
-        return self._reflector.is_set_up() and all([rotor.is_set_up() for rotor in self._rotors])
+        return self._reflector.is_set_up() and all([rotor.is_set_up() for rotor in self._rotors]) and len(self._rotors)>0
 
     def _is_valid_no_rotors(self, noRotors):
         return noRotors>0 and noRotors<MAX_NO_ROTORS
@@ -96,43 +95,75 @@ class Machine:
                 self._rotors.append(copy.copy(self._ref_rotor))
         else:
             raiseBadInputException()
-
-    def _swap_two_rotors_positionally(self):
-        #In position
-        pass
-    def _load_a_rotor(self,position):
-        pass
-    def _show_rotors_positions(self):
-        pass
+    def is_rotor_index_valid(self,idx):
+        return isinstance(idx, int) and idx>=0 and idx<len(self._rotors)
+    
+    def _swap_two_rotors_by_index(self, idx1, idx2):
+        if self.is_rotor_index_valid(idx1) and self.is_rotor_index_valid(idx2):
+           self._rotors[idx1],self._rotors[idx2]=self._rotors[idx2],self._rotors[idx1] 
+        else:
+            raiseBadInputException()
+        
+    def _load_a_rotor_on_index(self,idx):
+        if self.is_rotor_index_valid(idx):
+            self._rotors.insert(idx,_load_saved_rotor())
+        elif idx>len(self._rotors):
+            self._rotors.append(_load_saved_rotor())
+        else:
+            raiseBadInputException()
+        
+    def _get_rotors_names_positions(self):
+        return [rotor.get_name() for rotor in self._rotors]
+        
+    def _are_positions_valid(self,string_positions):
+        return all([char in self._characters_in_use for char in string_positions]) and len(string_positions)==len(self._rotors)
+    
     def _change_rotors_positions(self,positions_string:str):
-        pass
+        #Here we get a string of positions to set to the rotors in the list of rotors (all of them)
+        #First we check that all characters of the string are valid
+        if self._are_positions_valid(positions_string):
+            for i in range(len(positions_string)):
+                self._rotors[i]._define_position(positions_string[i])
+        else:
+            raiseBadInputException()
+
     def _reorder_all_rotors(self,position_list:list):
-        pass #For every rotor they are asigned a new position in the list with their index
-    def _get_list_of_rotor_names(self):
-        pass
-    # def add_a_rotor(self):
-    #     self.rotor4=Rotor()
-    #     self.n_rotors=4
-    #     print(">>>Fourth rotor added. Use self.rotor4.manual_rotor_setup() to modify or self.rotor4.random_rotor_setup()")
-    # Showing configs
-
-
-
-        # return config #Only names, positions, letter positions and notches, and board, reflector name
+        #For every rotor they are asigned a new position in the list with their index
+        #First we check that the position list that we are given is a scrambled list of non-repeated valid indexes
+        positions_copy=copy.copy(position_list)
+        positions_copy.sort()
+        if all([self.is_rotor_index_valid(idx) for idx in position_list]) and positions_copy==list(range(len(self._rotors))):
+            new_rotor_list=[i for i in range(len(self._rotors))]
+            for i in range(len(self._rotors)):
+                new_rotor_list[position_list[i]]=self._rotors[i]
+            self._rotors=new_rotor_list
+        else:
+            raiseBadInputException()
 
     # def _single_rotor_setup(self, rotor: Rotor):
     #     rotor.show_config()
     #     rotor.configure()
     #     print(">Rotor setup finished, going back to selection")
+    def _random_conf_rotors(self, jump):
+        if not is_valid_seed(jump):
+            raiseBadInputException()
+        temp_seed=self._seed
+        for rotor_ptr in self._rotors:
+            temp_seed+=jump
+            rotor_ptr._randomize_dictionaries(temp_seed)
+            rotor_ptr._random_name(temp_seed)
+            rotor_ptr._randomize_position(temp_seed)
+            rotor_ptr._randomize_notches(temp_seed)
+
 
     # Pickled functions
 
-    def setup_random_machine(self,seed, noRotors=3):
+    def setup_random_machine(self, seed=None, noRotors=3):
         if not is_valid_seed(seed) or not self._is_valid_no_rotors(noRotors):
             raiseBadInputException()
         self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
         random.seed(self._seed)
-        jump = random.randint(1, 3000000)
+        jump = random.randint(1, int(3e8))
         self._reflector._random_setup(self._seed * jump)
         self._random_conf_rotors(jump)
         self._plugboard.random_setup(self._seed / jump)
@@ -143,12 +174,12 @@ class Machine:
         string1 = ""
         name = string1.join(name_list)
         self._change_name(name)
-        self.show_config()
-        self.save_machine()
-        print(">Machine has been generated, saved and it is ready for use!")
+        # self.show_config()
+        # self.save_machine()
 
-    # Finally, the crypt function
+    # Finally, the crypt function <<<HERE IS WHERE I WAS LEFT, I NEED TO FINISH CRYPT LETTER, TEXT
     ## Add text function and check for characters
+
     def encrypt_decrypt(self,text):
         if not self._is_machine_set_up():
             raiseBadSetupException()
