@@ -218,6 +218,14 @@ class Rotor:
         random.seed(seed)
         self._define_position(random.sample(self._characters_in_use, 1)[0])
 
+    def _randomize_notches(self, seed=None):
+        if not is_valid_seed(seed):
+            raiseBadInputException()
+        random.seed(seed)
+        no_notches = random.randint(1, self._no_characters - 1)
+        notchlist = random.sample(self._characters_in_use, no_notches)
+        self._define_notches(notchlist)
+
     def _randomize_dictionaries(self, seed=None):
 
         # Once the seed is set, as long as the same operations are performed the same numbers are generated:
