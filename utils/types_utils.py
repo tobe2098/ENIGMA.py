@@ -1,4 +1,4 @@
-from utils.exceptions import raiseBadInputException
+from ..utils.exceptions import raiseBadInputException
 from ..core.machines import Machine
 from ..core.rotors import Rotor
 from ..core.reflectors import Reflector

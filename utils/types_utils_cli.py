@@ -1,4 +1,4 @@
-from utils.utils_cli import DevOpsException
+from ..utils.exceptions import raiseBadInputException
 from ..core.machines import Machine
 from ..core.rotors import Rotor
 from ..core.reflectors import Reflector
@@ -25,12 +25,12 @@ def rotorWrapper(rotor_ref):
 
 
 def machineWrapper(machine_ref):
-    raise DevOpsException("Incomplete")
+    raiseBadInputException()
 
 
 def reflectorWrapper(reflector_ref):
-    raise DevOpsException("Incomplete")
+    raiseBadInputException()
 
 
 def plugboardWrapper(plugboard_ref):
-    raise DevOpsException("Incomplete")
+    raiseBadInputException()

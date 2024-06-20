@@ -1,8 +1,8 @@
 import os
 from subprocess import call
 
-from utils.utils import is_valid_seed
-from utils.types_utils_cli import wrapperCall
+from ..utils.utils import is_valid_seed
+from ..utils.types_utils_cli import wrapperCall
 from exceptions import (
     BadInputExceptionCLI,
     MenuExitException,
@@ -160,7 +160,7 @@ def getSeedFromUser():
         seed = askingInput("Introduce a positive integer as a seed:")
         if not seed:
             returningToMenu()
-    seed = int(seed)
+        seed = int(seed)
     if seed < 0:
         seed *= -1
     return seed
