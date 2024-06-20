@@ -212,6 +212,12 @@ class Rotor:
         name = string1.join(name_list)
         self._change_name(name)
 
+    def _randomize_position(self, seed=None):
+        if not is_valid_seed(seed):
+            raiseBadInputException()
+        random.seed(seed)
+        self._define_position(random.sample(self._characters_in_use, 1)[0])
+
     def _randomize_dictionaries(self, seed=None):
 
         # Once the seed is set, as long as the same operations are performed the same numbers are generated:

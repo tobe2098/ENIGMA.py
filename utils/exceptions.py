@@ -1,6 +1,6 @@
 from utils_cli import formatAsError, formatAsOutput
 import traceback
-from main import get_is_cli_mode, get_is_gui_mode
+from ..main import get_is_cli_mode, get_is_gui_mode
 
 
 class ExceptionOfExceptions(Exception):
