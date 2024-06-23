@@ -29,23 +29,23 @@ def my_quit_fn():  # This function should be in utils.py
 
 def simplify_simple_dictionary_paired_unpaired(board_dict):
     """
-    The function simplifies the board dictionary such that there is only one copy of each letter in the output
+    The function simplifies the board dictionary such that there is only one copy of each character in the output
 
     board_dict (dict): board dictionary
     """
     seen_pairs = []
     pairs = []
     unpaired_list = []
-    # all_letters=[i for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-    for letter_a, letter_b in board_dict.items():
-        if letter_a in seen_pairs or letter_b in seen_pairs:
+    # all_characters=[i for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+    for character_a, character_b in board_dict.items():
+        if character_a in seen_pairs or character_b in seen_pairs:
             continue
-        if letter_b == letter_a:
-            unpaired_list.append(letter_a)
+        if character_b == character_a:
+            unpaired_list.append(character_a)
             continue
-        pairs.append([letter_a, letter_b])
-        seen_pairs.append(letter_a)
-        seen_pairs.append(letter_b)
+        pairs.append([character_a, character_b])
+        seen_pairs.append(character_a)
+        seen_pairs.append(character_b)
     paired_df = pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
     # board_dict_simpl["Unpaired"]=unpaired
     return paired_df, unpaired_list
@@ -53,7 +53,7 @@ def simplify_simple_dictionary_paired_unpaired(board_dict):
 
 def simplify_rotor_dictionary_paired_unpaired(forward_dict, backward_dict):
     """
-    The function simplifies the board dictionary such that there is only one copy of each letter in the output
+    The function simplifies the board dictionary such that there is only one copy of each character in the output
 
     board_dict (dict): board dictionary
     """
@@ -63,30 +63,30 @@ def simplify_rotor_dictionary_paired_unpaired(forward_dict, backward_dict):
     unpaired_list = []
     unformed = []
     back_unformed = []
-    # all_letters=[i for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-    for letter_a, letter_b in forward_dict.items():
-        if letter_a in seen:
+    # all_characters=[i for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+    for character_a, character_b in forward_dict.items():
+        if character_a in seen:
             continue
-        elif letter_b == letter_a:
-            unpaired_list.append(letter_a)
-            pairs.append([letter_a, letter_a])
+        elif character_b == character_a:
+            unpaired_list.append(character_a)
+            pairs.append([character_a, character_a])
 
-        elif letter_b == "":
-            unformed.append(letter_a)
+        elif character_b == "":
+            unformed.append(character_a)
 
         else:
-            pairs.append([letter_a, letter_b])
-        seen.append(letter_a)
-        seenb.append(letter_b)
-    for letter_a, letter_b in backward_dict.items():
-        if letter_a in seenb:
+            pairs.append([character_a, character_b])
+        seen.append(character_a)
+        seenb.append(character_b)
+    for character_a, character_b in backward_dict.items():
+        if character_a in seenb:
             continue
-        elif letter_b == letter_a:
+        elif character_b == character_a:
             continue
-        elif letter_b == "":
-            back_unformed.append(letter_a)
-        seenb.append(letter_a)
-        # seen.append(letter_b)
+        elif character_b == "":
+            back_unformed.append(character_a)
+        seenb.append(character_a)
+        # seen.append(character_b)
     paired_df = pd.DataFrame(pairs, columns=["Letter A", "Letter B"])
     # board_dict_simpl["Unpaired"]=unpaired
     return paired_df, unpaired_list, unformed, back_unformed
@@ -94,7 +94,7 @@ def simplify_rotor_dictionary_paired_unpaired(forward_dict, backward_dict):
 
 def transform_single_dict(dictionary, conversion: dict):
     """
-    The function gets a letter or number dictionary and returns the other one
+    The function gets a character or number dictionary and returns the other one
 
     dictionary (dict): dictionary to swap
     """
@@ -108,7 +108,7 @@ def is_valid_seed(seed):
 
 # def transform_single_dict_dash(dictionary):
 #     """
-#     The function gets a letter or number (containing dash) dictionary and returns the other one
+#     The function gets a character or number (containing dash) dictionary and returns the other one
 
 
 #     dictionary (dict): dictionary to swap

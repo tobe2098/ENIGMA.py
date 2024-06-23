@@ -44,7 +44,7 @@ class Rotor:
     def get_position(self):
         return self._conversion_in_use[self._position]
 
-    def get_notchlist_letters(self):
+    def get_notchlist_characters(self):
         return [self._conversion_in_use[i] for i in self._notches]
 
     def notch_check_move_forward(self):
@@ -68,18 +68,18 @@ class Rotor:
             for notch in self._notches
         )  # This was double-checked
 
-    def forward_pass(self, input_letter_number):
-        input_letter_number += self._position
-        input_letter_number %= self._no_characters
-        output_number = self._forward_num_dict[input_letter_number]
+    def forward_pass(self, input_character_number):
+        input_character_number += self._position
+        input_character_number %= self._no_characters
+        output_number = self._forward_num_dict[input_character_number]
         output_number -= self._position
         output_number %= self._no_characters
         return output_number
 
-    def backward_pass(self, input_letter_number):
-        input_letter_number += self._position
-        input_letter_number %= self._no_characters
-        output_number = self._backward_num_dict[input_letter_number]
+    def backward_pass(self, input_character_number):
+        input_character_number += self._position
+        input_character_number %= self._no_characters
+        output_number = self._backward_num_dict[input_character_number]
         output_number -= self._position
         output_number %= self._no_characters
         return output_number
@@ -123,7 +123,7 @@ class Rotor:
         #     " spaces for every input (not yet implemented in the machine)",
         # )
 
-    # Do dictionaries of str(numbers) to the new number (or the number of the new letter), and do 1 for each direction
+    # Do dictionaries of str(numbers) to the new number (or the number of the new character), and do 1 for each direction
 
     def _is_position_invalid(self, position):
         return len(position) > 1 or position not in self._characters_in_use
@@ -140,7 +140,7 @@ class Rotor:
 
         self._position = self._conversion_in_use[position]
         # print(
-        #     ">Now rotor is in letter position {}".format(
+        #     ">Now rotor is in character position {}".format(
         #         self._conversion_in_use[self._position]
         #     )
         # )
@@ -176,8 +176,8 @@ class Rotor:
         #     )
         # )
 
-    def _update_dicts(self, letter_to_num=True):
-        if letter_to_num:
+    def _update_dicts(self, character_to_num=True):
+        if character_to_num:
             self._forward_num_dict = transform_single_dict(
                 self._forward_dict, self._conversion_in_use
             )

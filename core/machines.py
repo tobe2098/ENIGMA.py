@@ -146,7 +146,7 @@ class Machine:
         if all(
             [self.is_rotor_index_valid(idx) for idx in position_list]
         ) and positions_copy == list(range(len(self._rotors))):
-            new_rotor_list = [i for i in range(len(self._rotors))]
+            new_rotor_list = [Rotor() for _ in range(len(self._rotors))]
             for i in range(len(self._rotors)):
                 new_rotor_list[position_list[i]] = self._rotors[i]
             self._rotors = new_rotor_list
@@ -157,7 +157,7 @@ class Machine:
     #     rotor.show_config()
     #     rotor.configure()
     #     print(">Rotor setup finished, going back to selection")
-    def _random_conf_rotors(self, jump):
+    def _random_setup_all_rotors(self, jump):
         if not is_valid_seed(jump):
             raiseBadInputException()
         temp_seed = self._seed
@@ -204,7 +204,7 @@ class Machine:
         output_message = ""
         # print(self.rotor1._position)
         for char in text:
-            letter_out = self.type_character(char)
+            character_out = self.type_character(char)
             #     if char not in self._characters_in_use:
             #         continue
             #     self._current_distance_from_original_state += 1
@@ -225,8 +225,8 @@ class Machine:
             #         backward_output = self._rotors[i].backward_pass(backward_output)
             #     backward_output = self._plugboard._input_output(backward_output)
 
-            #     letter_out = self._conversion_in_use[backward_output]
-            output_message.append(letter_out)
+            #     character_out = self._conversion_in_use[backward_output]
+            output_message.append(character_out)
             self.backspace_to_original_state()
             return output_message
 
@@ -253,8 +253,8 @@ class Machine:
             backward_output = self._rotors[i].backward_pass(backward_output)
         backward_output = self._plugboard._input_output(backward_output)
 
-        letter_out = self._conversion_in_use[backward_output]
-        return letter_out
+        character_out = self._conversion_in_use[backward_output]
+        return character_out
 
     def backspace(self, no_times=1):
         # For erasing all the input box in GUI, I can keep track of the inputs with an internal variable

@@ -149,7 +149,7 @@ def checkInputValidity(_input: str, _type=str, _range=None):
     return None
 
 
-def getSeedFromUser():
+def getSeedFromUser(ask="seed"):
     """Guaranteed to return a valid seed for random.seed()
 
     Returns:
@@ -157,7 +157,7 @@ def getSeedFromUser():
     """
     seed = "a"
     while not is_valid_seed(seed):
-        seed = askingInput("Introduce a positive integer as a seed:")
+        seed = askingInput(f"Introduce a positive integer as a {ask}:")
         if not seed:
             returningToMenu()
         seed = int(seed)

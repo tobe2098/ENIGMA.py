@@ -92,7 +92,7 @@ def save_machine():
         if choose == "y":
             self._tune_loaded_rotors()
             self._rotor_order_change()
-            self._change_rotor_letter_position()
+            self._change_rotor_character_position()
             self._change_rotor_notches()
         elif choose == "n":
             choose2 = input(

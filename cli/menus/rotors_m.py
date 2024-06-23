@@ -29,8 +29,8 @@ _menu_rotor_name_options = {
 }
 
 _menu_rotor_position_and_notches_options = {
-    "1": ("Change position", _change_position_rt),
-    "2": ("Randomize position", _randomize_position_rt),
+    "1": ("Change character position", _change_position_rt),
+    "2": ("Randomize character position", _randomize_position_rt),
     "3": ("Change notches", _change_notches_rt),
     "4": ("Randomize notches", _randomize_notches_rt),
     "0": ("Exit menu", utils_cli.exitMenu),

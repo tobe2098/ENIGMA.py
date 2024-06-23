@@ -44,7 +44,7 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(
-            reflector_ref=reflector_ref, letter1=paired_df.iloc[row][0]
+            reflector_ref=reflector_ref, character1=paired_df.iloc[row][0]
         )
         reflector_ref.lacks_connections = True
         utils_cli.returningToMenu("Connection was deleted")
@@ -52,7 +52,7 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
         utils_cli.returningToMenu("Index invalid", output_type="e")
 
 
-def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, letter1: str):
+def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, character1: str):
     """_summary_
 
     Args:
@@ -62,11 +62,11 @@ def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, letter1: str):
 
     # del reflector_ref._reflector_dict[entry] #Requires testing
     (
-        reflector_ref._reflector_dict[letter1],
-        reflector_ref._reflector_dict[reflector_ref._reflector_dict[letter1]],
+        reflector_ref._reflector_dict[character1],
+        reflector_ref._reflector_dict[reflector_ref._reflector_dict[character1]],
     ) = (
-        reflector_ref._reflector_dict[reflector_ref._reflector_dict[letter1]],
-        reflector_ref._reflector_dict[letter1],
+        reflector_ref._reflector_dict[reflector_ref._reflector_dict[character1]],
+        reflector_ref._reflector_dict[character1],
     )
     reflector_ref._update_dicts()
     # del d['k2']
@@ -84,38 +84,40 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     if len(unpaired_list) < 2:
         reflector_ref.lacks_connections = False
         utils_cli.returningToMenu(
-            "There are no letters left to pair (one or fewer left unconnected)"
+            "There are no characters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired letters:", unpaired_list)
-    letter1 = utils_cli.askingInput("Choose a letter to pair").upper()
-    letter1 = utils_cli.checkInputValidity(letter1, _range=unpaired_list)
-    if not letter1:
-        # if letter1 not in unpaired_list:
+    utils_cli.printOutput("Unpaired characters:", unpaired_list)
+    character1 = utils_cli.askingInput("Choose a character to pair").upper()
+    character1 = utils_cli.checkInputValidity(character1, _range=unpaired_list)
+    if not character1:
+        # if character1 not in unpaired_list:
         utils_cli.printError("Invalid input")
         return False
         # utils_cli.returningToMenu("Invalid input", output_type="e")
-    utils_cli.printOutput("Remaining letters:", list(set(unpaired_list) - set(letter1)))
-    letter2 = utils_cli.askingInput("Choose the second letter:").upper()
-    letter2 = utils_cli.checkInputValidity(
-        letter2, _range=list(set(unpaired_list) - set(letter1))
+    utils_cli.printOutput(
+        "Remaining characters:", list(set(unpaired_list) - set(character1))
     )
-    if not letter2:
-        # if letter2 not in list(set(unpaired_list) - set(letter1)):
+    character2 = utils_cli.askingInput("Choose the second character:").upper()
+    character2 = utils_cli.checkInputValidity(
+        character2, _range=list(set(unpaired_list) - set(character1))
+    )
+    if not character2:
+        # if character2 not in list(set(unpaired_list) - set(character1)):
         utils_cli.printError("Invalid input")
         return False
         # utils_cli.returningToMenu("Invalid input", output_type="e")
-    reflector_ref._reflector_dict[letter1] = letter2
-    reflector_ref._reflector_dict[letter2] = letter1
+    reflector_ref._reflector_dict[character1] = character2
+    reflector_ref._reflector_dict[character2] = character1
     reflector_ref._update_dicts()
     utils_cli.printOutput("The connection was formed")
     return True
     # utils_cli.returningToMenu("The connection was formed")
 
 
-# First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
+# First get a character, show unconnected again, then choose to connect. If wrong choice, go back to start
 
 
-def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
+def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
     """_summary_
 
     Args:
@@ -126,7 +128,7 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
     # )
     # if len(unpaired_list) < 2:
     #     utils_cli.returningToMenuMessage(
-    #         "There are no letters left to pair (one or fewer left unconnected)"
+    #         "There are no characters left to pair (one or fewer left unconnected)"
     #     )
     while True:
         _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
@@ -135,30 +137,34 @@ def __connect_all_letters_rf(reflector_ref: reflectors.Reflector):
         if len(unpaired_list) < 2:
             reflector_ref.lacks_connections = False
             utils_cli.returningToMenu(
-                "There are no letters left to pair (one or fewer left unconnected)"
+                "There are no characters left to pair (one or fewer left unconnected)"
             )
-        utils_cli.printOutput("Unpaired letters:", unpaired_list)
+        utils_cli.printOutput("Unpaired characters:", unpaired_list)
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
-        letters = utils_cli.askingInput("Input two letters to pair").strip().upper()
-        if letters.isalpha() and len(letters) == 2:
+        characters = (
+            utils_cli.askingInput("Input two characters to pair").strip().upper()
+        )
+        if characters.isalpha() and len(characters) == 2:
             pass
-        elif not letters:
+        elif not characters:
             utils_cli.returningToMenu()
         else:
-            utils_cli.printError("Input 2 letters please")
+            utils_cli.printError("Input 2 characters please")
             continue
-        letters = list(letters)
+        characters = list(characters)
         for i in range(2):
-            letters[i] = utils_cli.checkInputValidity(letters[i], _range=unpaired_list)
-        if not all(letters):
-            # if not all(map(lambda v: v in letters, unpaired_list)):
-            utils_cli.printOutput("One of the letters is already connected")
+            characters[i] = utils_cli.checkInputValidity(
+                characters[i], _range=unpaired_list
+            )
+        if not all(characters):
+            # if not all(map(lambda v: v in characters, unpaired_list)):
+            utils_cli.printOutput("One of the characters is already connected")
             continue
         # break
-        reflector_ref._reflector_dict[letters[0]] = letters[1]
-        reflector_ref._reflector_dict[letters[1]] = letters[0]
+        reflector_ref._reflector_dict[characters[0]] = characters[1]
+        reflector_ref._reflector_dict[characters[1]] = characters[0]
         utils_cli.printOutput("Connection formed")
 
 
@@ -172,7 +178,7 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
     # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
-    __connect_all_letters_rf(reflector_ref)
+    __connect_all_characters_rf(reflector_ref)
     utils_cli.returningToMenu(
         "You exited without forming all connections!", output_type="w"
     )
@@ -219,10 +225,10 @@ def _reset_and_form_all_connections_by_pairs_rf(reflector_ref: reflectors.Reflec
             utils_cli.returningToMenu()
         elif accbool == "y":
             break
-    __connect_all_letters_rf(reflector_ref)
+    __connect_all_characters_rf(reflector_ref)
 
 
-## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
+## The board is fully connected (one or fewer characters left unconnected). If wrong choice, go back to start
 
 
 def _reset_and_randomize_connections_rf(reflector_ref: reflectors.Reflector):

@@ -1,37 +1,67 @@
+from platform import machine
+from cli.functions.plugboards_f import _show_config_pb
+from cli.functions.reflectors_f import _show_config_rf
+from cli.functions.rotors_f import _show_config_rt
+from utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, returningToMenu
 from ...core import machines
+import pandas as pd
 
 
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
 # ALL LOADING FUNCTIONS MUST BE HERE
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
-def show_config(self):
-    print(">Board config:")
-    self._plugboard._show_config()
-    print(">Rotor configs:")
-    self.show_rotor_config()
-    print(">Reflector config:")
-    self._reflector._show_config()
+def _show_full_config_machine(machine_ref:machines.Machine):
+    printOutput("Plugboard config:")
+    _show_config_pb(machine_ref._plugboard)
+    for i in range(len(machine_ref._rotors)):
+        printOutput(f"Rotor {i+1} config:")
+        _show_config_rt(machine_ref._rotors[i])
+    printOutput("Reflector config:")
+    _show_config_rf(machine_ref._reflector)
 
 
-def simple_show_config(self):
+def _show_simple_config_machine(machine_ref: machines.Machine):
     config = pd.DataFrame()
-    config["Rotor position"] = list(range(1, len(self._rotors)))
-    config["Rotors"] = [rotor.get_name() for rotor in self._rotors]
-    config["Letter position"] = [rotor._position for rotor in self._rotors]
-    config["Notches"] = [rotor.get_notchlist_letters() for rotor in self._rotors]
-    print("Board config:")
-    self._plugboard._show_config()
-    print("Reflector:", self._reflector.name)
-    print("Reflector:", self._reflector.name)
-    print("Rotor config:\n", config)
-    print("Machine name and seed:", self.get_name())
+    config["Rotor position"] = list(range(1, len(machine_ref._rotors))+1)
+    config["Rotors"] = [rotor.get_name() for rotor in machine_ref._rotors]
+    config["Letter position"] = [rotor._position for rotor in machine_ref._rotors]
+    config["Notches"] = [rotor.get_notchlist_characters() for rotor in machine_ref._rotors]
+    printOutput("Plugboard config:")
+    _show_config_pb(machine_ref._plugboard)
+    printOutput("Reflector:", machine_ref._reflector.get_name())
+    printOutput("Rotor config:")
+    print(config)
+    printOutput("Machine name:", machine_ref.get_name())
 
 
-def _random_conf_rotors(self, jump):
-    for i in range(len(self._rotors)):
-        self._rotors[i].random_setup(self._seed + jump, showConfig=False)
-        jump += 1
-    return ">Rotors and reflector set up and saved."
+
+def _random_setup_all_rotors_machine(machine_ref:machines.Machine):
+    jump=getSeedFromUser("seed jump")
+    machine_ref._random_setup_all_rotors(jump=jump)
+
+def _random_setup_single_rotor_machine(machine_ref:machines.Machine):
+    printListOfOptions([rotor.get_name() for rotor in machine_ref._rotors])
+    rotor_index=askingInput("Input the rotor number (0 to n-1)")
+    rotor_index=checkInputValidity(rotor_index,int,range(len(machine_ref._rotors)))
+    if rotor_index:    
+        printOutput("Careful with your seed choice, if you use the same one you get the same results")
+        seed=getSeedFromUser()
+        machine_ref._rotors[rotor_index]._randomize_position(seed)
+        machine_ref._rotors[rotor_index]._randomize_dictionaries(seed)
+        machine_ref._rotors[rotor_index]._randomize_notches(seed)
+        
+    else:
+        returningToMenu("Invalid index",output_type='e')
+    
+def _random_setup_reflector(machine_ref:machines.Machine):
+    printOutput("Careful with your seed choice, if you use the same one you get the same results")
+    seed=getSeedFromUser()
+    machine_ref._reflector._randomize_dictionaries(seed)
+        
+def _random_setup_all_rotors(machine_ref:machines.Machine):
+    jump=getSeedFromUser("seed jump")
+    machine_ref._random_setup_all_rotors(jump=jump)
+
 
 
 def _set_new_no_rotors(self, noRotors):
@@ -43,13 +73,7 @@ def _append_rotors(self, noRotors):
         self._rotors.append(copy.copy(self._ref_rotor))
 
 
-def _tune_loaded_rotors(self):  ## This is just a menu call
-    for i in range(len(self._rotors)):
-        print(">Configurating rotor {} connections:".format(i))
-        self._rotors[i].customize_connections()
-
-
-def _change_rotor_letter_position(self):
+def _change_rotor_character_position(self):
     # MENU in machine!!! LETTERS HAVE TO BE FROM THE LIST!!!
     pos1 = input(">>>Letter position for rotor 1:")
     pos2 = input(">>>Letter position for rotor 2:")
@@ -60,7 +84,7 @@ def _change_rotor_letter_position(self):
     self.rotor1._define_position(pos1)
     self.rotor2._define_position(pos2)
     self.rotor3._define_position(pos3)
-    print(">Rottor letter positions set")
+    print(">Rottor character positions set")
 
 
 def _rotor_order_change(self):
@@ -84,33 +108,47 @@ def _rotor_order_change(self):
                 self._rotors[selec2],
                 self._rotors[selec1],
             )
+
+
+def _edit_a_rotors_config(self):  ## This is just a menu call
+    for i in range(len(self._rotors)):
+        print(">Configurating rotor {} connections:".format(i))
+        self._rotors[i].customize_connections()
+
+
+def _edit_reflector_config(machine_ref: machines.Machine):
+    pass
+
+
+def _edit_plugboard_config(machine_ref: machines.Machine):
+    pass
+
+
 def encrypt_decrypt(self):
-        CALL FOR CHECKS OF PROPER SETUP IN PLACE (AT LEAST ALL REFLECTOR CONNECTED, AT LEAST 1 ROTOR, AT LEAST ONE NOTCH PER ROTOR, SAVED MACHINE)
-        THIS SHOULD ONLY ENCRYPT A PASSED TEXT, AND A LETTER BY LETTER (FOR GUI)
-        # import copy as cp
-        print(
-            ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
-        )
-        
-        # self.simple_show_config()
-        input_var = 1
-        while input_var:
-            # message_length = 0
-            input_var = input(
-                ">>>Write Text (only allowed characters will be encrypted): "
-            ).upper()
-            output_message_list = []
-            # print(self.rotor1._position)
+    CALL FOR CHECKS OF PROPER SETUP IN PLACE (AT LEAST ALL REFLECTOR CONNECTED, AT LEAST 1 ROTOR, AT LEAST ONE NOTCH PER ROTOR, SAVED MACHINE)
+    THIS SHOULD ONLY ENCRYPT A PASSED TEXT, AND A LETTER BY LETTER (FOR GUI)
+    # import copy as cp
+    print(
+        ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
+    )
+
+    # self.simple_show_config()
+    input_var = 1
+    while input_var:
+        # message_length = 0
+        input_var = input(
+            ">>>Write Text (only allowed characters will be encrypted): "
+        ).upper()
+        output_message_list = []
+        # print(self.rotor1._position)
+
 
 ##import pickle
-
 # class Foo(object):
 #     pass
-
 # foo = Foo()
 # bar = Foo()
 # bar.foo_ref = foo
-
 # with open('tmp.pkl', 'wb') as f:
 #     pickle.dump((foo, bar), f)
 # with open('tmp.pkl', 'rb') as f:
@@ -123,6 +161,7 @@ def encrypt_decrypt(self):
 def load_machine(
     self,
 ):  # THIS LOAD FUNCTION IS DEPRECATED, IT DOES NOT WORK, USE THE ONE THAT IS NOT CLASS DEFINED
+    # THE FUNCTION MUST DEAL WITH THE STORED OBJECTS IN ORDER LOOK STACK OVERFLOW
     current_path = os.path.dirname(__file__)
     new_folder = utils.MACHINES_FILE_HANDLE
     path = os.path.join(current_path, new_folder)
@@ -231,7 +270,7 @@ def save_machine(self):
         if choose == "y":
             self._tune_loaded_rotors()
             self._rotor_order_change()
-            self._change_rotor_letter_position()
+            self._change_rotor_character_position()
             self._change_rotor_notches()
         elif choose == "n":
             choose2 = input(

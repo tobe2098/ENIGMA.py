@@ -16,8 +16,8 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
-    utils_cli.printOutput("Paired letters:", paired_df)
-    utils_cli.printOutput("Unpaired letters:", unpaired_list)
+    utils_cli.printOutput("Paired characters:", paired_df)
+    utils_cli.printOutput("Unpaired characters:", unpaired_list)
     utils_cli.printOutput(
         "Number of connections:", (plugboard_ref._characters_in_use - unpaired_list) / 2
     )
@@ -44,14 +44,14 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     if row:
         _delete_a_connection_pb(
             plugboard_ref=plugboard_ref,
-            letter1=paired_df.iloc[row][0],
+            character1=paired_df.iloc[row][0],
         )
         utils_cli.returningToMenu("Connection was deleted")
     else:
         utils_cli.returningToMenu("Index invalid", "e")
 
 
-def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, letter1: str):
+def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, character1: str):
     """_summary_
 
     Args:
@@ -60,11 +60,11 @@ def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, letter1: str):
     """
     # del plugboard_ref._board_dict[entry] #Requires testing
     (
-        plugboard_ref._board_dict[letter1],
-        plugboard_ref._board_dict[plugboard_ref._board_dict[letter1]],
+        plugboard_ref._board_dict[character1],
+        plugboard_ref._board_dict[plugboard_ref._board_dict[character1]],
     ) = (
-        plugboard_ref._board_dict[plugboard_ref._board_dict[letter1]],
-        plugboard_ref._board_dict[letter1],
+        plugboard_ref._board_dict[plugboard_ref._board_dict[character1]],
+        plugboard_ref._board_dict[character1],
     )
 
     plugboard_ref._update_dicts()
@@ -82,32 +82,32 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
     )
     if len(unpaired_list) < 2:
         utils_cli.returningToMenu(
-            "There are no letters left to pair (one or fewer left unconnected)"
+            "There are no characters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired letters:", unpaired_list)
-    letter1 = utils_cli.askingInput("Choose a letter to pair").upper()
-    letter1 = utils_cli.checkInputValidity(letter1, _range=unpaired_list)
-    if not letter1:
+    utils_cli.printOutput("Unpaired characters:", unpaired_list)
+    character1 = utils_cli.askingInput("Choose a character to pair").upper()
+    character1 = utils_cli.checkInputValidity(character1, _range=unpaired_list)
+    if not character1:
         utils_cli.printError("Invalid input")
         return False
-    remaining_letters = list(set(unpaired_list) - set(letter1))
-    utils_cli.printOutput("Remaining letters:", remaining_letters)
-    letter2 = utils_cli.askingInput("Choose the second letter").upper()
-    letter2 = utils_cli.checkInputValidity(letter2, _range=remaining_letters)
-    if not letter2:
+    remaining_characters = list(set(unpaired_list) - set(character1))
+    utils_cli.printOutput("Remaining characters:", remaining_characters)
+    character2 = utils_cli.askingInput("Choose the second character").upper()
+    character2 = utils_cli.checkInputValidity(character2, _range=remaining_characters)
+    if not character2:
         utils_cli.printError("Invalid input")
         return False
-    plugboard_ref._board_dict[letter1] = letter2
-    plugboard_ref._board_dict[letter2] = letter1
+    plugboard_ref._board_dict[character1] = character2
+    plugboard_ref._board_dict[character2] = character1
     plugboard_ref._update_dicts()
     utils_cli.printOutput("The connection was formed")
     return True
 
 
-# First get a letter, show unconnected again, then choose to connect. If wrong choice, go back to start
+# First get a character, show unconnected again, then choose to connect. If wrong choice, go back to start
 
 
-# def _connect_two_letters_pb(plugboard_ref: plugboards.PlugBoard):
+# def _connect_two_characters_pb(plugboard_ref: plugboards.PlugBoard):
 #     """_summary_
 
 #     Args:
@@ -118,32 +118,32 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
 #     )
 #     if len(unpaired_list) < 2:
 #         utils_cli.returningToMenu(
-#             "There are no letters left to pair (one or fewer left unconnected)"
+#             "There are no characters left to pair (one or fewer left unconnected)"
 #         )
 #     while True:
-#         utils_cli.printOutput("Unpaired letters:", (unpaired_list))
+#         utils_cli.printOutput("Unpaired characters:", (unpaired_list))
 #         utils_cli.printOutput(
 #             "If you want to stop configurating the board, press Enter"
 #         )
-#         letters = utils_cli.askingInput("Input two letters to pair:").strip().upper()
-#         if letters.isalpha() and len(letters) == 2:
+#         characters = utils_cli.askingInput("Input two characters to pair:").strip().upper()
+#         if characters.isalpha() and len(characters) == 2:
 #             pass
-#         elif not letters:
+#         elif not characters:
 #             # utils_cli.returningToMenu("No input")
 #             return
 #         else:
-#             print("Error: Input 2 letters please")
+#             print("Error: Input 2 characters please")
 #             continue
-#         letters = list(letters)
+#         characters = list(characters)
 #         for i in range(2):
-#             letters[i] = utils_cli.checkInputValidity(letters[i], _range=unpaired_list)
-#         if not all(letters):
-#             # if not all(map(lambda v: v in letters, unpaired_list)):
-#             utils_cli.printOutput("One of the letters is already connected")
+#             characters[i] = utils_cli.checkInputValidity(characters[i], _range=unpaired_list)
+#         if not all(characters):
+#             # if not all(map(lambda v: v in characters, unpaired_list)):
+#             utils_cli.printOutput("One of the characters is already connected")
 #             continue
 #         break
-#     plugboard_ref._board_dict[letters[0]] = letters[1]
-#     plugboard_ref._board_dict[letters[1]] = letters[0]
+#     plugboard_ref._board_dict[characters[0]] = characters[1]
+#     plugboard_ref._board_dict[characters[1]] = characters[0]
 #     utils_cli.printOutput("Connection formed")
 
 
@@ -209,7 +209,7 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
 #             _create_a_single_connection_pb(plugboard_ref)
 
 
-## The board is fully connected (one or fewer letters left unconnected). If wrong choice, go back to start
+## The board is fully connected (one or fewer characters left unconnected). If wrong choice, go back to start
 
 
 def _reset_and_randomize_connections_pb(plugboard_ref: plugboards.PlugBoard):

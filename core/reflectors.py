@@ -48,10 +48,10 @@ class Reflector:
     def get_name(self):
         return self._name
 
-    def reflect(self, input_letter_number):
-        # input_letter_number -= prev_rotor_position
-        # input_letter_number %= len(self.characters_in_use)
-        return self._reflector_num_dict[input_letter_number]
+    def reflect(self, input_character_number):
+        # input_character_number -= prev_rotor_position
+        # input_character_number %= len(self.characters_in_use)
+        return self._reflector_num_dict[input_character_number]
 
     def _reset_dictionaries(self):
         self._reflector_dict = dict(
@@ -59,8 +59,8 @@ class Reflector:
         )
         self._update_dicts()
 
-    def _update_dicts(self, letter_to_num=True):
-        if letter_to_num:
+    def _update_dicts(self, character_to_num=True):
+        if character_to_num:
             self._reflector_num_dict = transform_single_dict(
                 self._reflector_dict, self._conversion_in_use
             )
@@ -87,7 +87,7 @@ class Reflector:
         random.seed(seed)
         # random.seed(seed)
         # Set name
-        # !!! Make sure letters do not connect to themselves!!!
+        # !!! Make sure characters do not connect to themselves!!!
         name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 10)]
         name_list[0:6] = [chr(num + 65) for num in name_list[0:6]]
         name_list[6:10] = [str(i % 10) for i in name_list[6:10]]
@@ -99,18 +99,18 @@ class Reflector:
         if not is_valid_seed(seed):
             raiseBadInputException()
         random.seed(seed)
-        # letter_list1 = [key for key, _ in self._characters_in_use]
-        letter_list1 = copy.copy(self._characters_in_use)
-        random.shuffle(letter_list1)
-        # letter_list2 = copy.copy(self.characters_in_use)
-        # random.shuffle(letter_list2)
-        while len(letter_list1) > 1:
-            letterA = letter_list1.pop()
-            letterB = letter_list1.pop()
-            self._reflector_dict[letterA] = letterB
-            self._reflector_dict[letterB] = letterA
-        if len(letter_list1) == 1:
-            self._reflector_dict[letter_list1[0]] = letter_list1[0]
+        # character_list1 = [key for key, _ in self._characters_in_use]
+        character_list1 = copy.copy(self._characters_in_use)
+        random.shuffle(character_list1)
+        # character_list2 = copy.copy(self.characters_in_use)
+        # random.shuffle(character_list2)
+        while len(character_list1) > 1:
+            characterA = character_list1.pop()
+            characterB = character_list1.pop()
+            self._reflector_dict[characterA] = characterB
+            self._reflector_dict[characterB] = characterA
+        if len(character_list1) == 1:
+            self._reflector_dict[character_list1[0]] = character_list1[0]
         self._update_dicts()
         # Show final configuration
         # if showConfig:
@@ -122,10 +122,10 @@ class Reflector:
 class ReflectorDash(Reflector):
     def __init__(self):
         super().__init__(Constants.CHARACTERS_dash, Constants.EQUIVALENCE_DICT_dash)
-        # self.reflector_dict={letter:letter for letter in CHARACTERS_dash}
+        # self.reflector_dict={character:character for character in CHARACTERS_dash}
 
-    # def _update_dicts(self, letter_to_num=True):
-    #     if letter_to_num:
+    # def _update_dicts(self, character_to_num=True):
+    #     if character_to_num:
     #         self.reflector_num_dict = transform_single_dict_dash(self.reflector_dict)
     #     else:
     #         self.reflector_dict = transform_single_dict_dash(self.reflector_num_dict)

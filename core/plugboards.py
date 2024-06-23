@@ -22,8 +22,8 @@ class PlugBoard:
         )
         self._update_dicts()
 
-    def _update_dicts(self, letter_to_num=True):
-        if letter_to_num:
+    def _update_dicts(self, character_to_num=True):
+        if character_to_num:
             self._board_num_dict = transform_single_dict(
                 self._board_dict, self._conversion_in_use
             )
@@ -53,10 +53,10 @@ class PlugBoard:
         random.shuffle(num_list)
         cable_num = random.randint(0, int(len(self._characters_in_use) / 2))
         while cable_num > 0 and len(num_list) > 1:
-            letterA = num_list.pop()
-            letterB = num_list.pop()
-            self._board_num_dict[letterA] = letterB
-            self._board_num_dict[letterB] = letterA
+            characterA = num_list.pop()
+            characterB = num_list.pop()
+            self._board_num_dict[characterA] = characterB
+            self._board_num_dict[characterB] = characterA
             cable_num -= 1
 
         self._update_dicts(False)
