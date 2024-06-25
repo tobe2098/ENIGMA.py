@@ -1,12 +1,14 @@
 from platform import machine
-from cli.functions.plugboards_f import _show_config_pb
-from cli.functions.reflectors_f import _show_config_rf
-from cli.functions.rotors_f import _show_config_rt
+from re import S
+from cli.functions.plugboards_f import _reset_and_randomize_connections_pb, _show_config_pb
+from cli.functions.reflectors_f import _reset_and_randomize_connections_rf, _show_config_rf
+from cli.functions.rotors_f import _randomize_notches_rt, _randomize_position_rt, _reset_and_randomize_connections_rt, _show_config_rt
+from utils.utils import is_valid_seed
 from utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, returningToMenu
 from ...core import machines
 import pandas as pd
 
-
+import copy
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
 # ALL LOADING FUNCTIONS MUST BE HERE
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
@@ -35,36 +37,45 @@ def _show_simple_config_machine(machine_ref: machines.Machine):
 
 
 
-def _random_setup_all_rotors_machine(machine_ref:machines.Machine):
-    jump=getSeedFromUser("seed jump")
-    machine_ref._random_setup_all_rotors(jump=jump)
-
 def _random_setup_single_rotor_machine(machine_ref:machines.Machine):
     printListOfOptions([rotor.get_name() for rotor in machine_ref._rotors])
     rotor_index=askingInput("Input the rotor number (0 to n-1)")
     rotor_index=checkInputValidity(rotor_index,int,range(len(machine_ref._rotors)))
     if rotor_index:    
-        printOutput("Careful with your seed choice, if you use the same one you get the same results")
-        seed=getSeedFromUser()
-        machine_ref._rotors[rotor_index]._randomize_position(seed)
-        machine_ref._rotors[rotor_index]._randomize_dictionaries(seed)
-        machine_ref._rotors[rotor_index]._randomize_notches(seed)
-        
+        _reset_and_randomize_connections_rt(machine_ref._rotors[rotor_index])
+        _randomize_position_rt(machine_ref._rotors[rotor_index])
+        _randomize_notches_rt(machine_ref._rotors[rotor_index])
     else:
         returningToMenu("Invalid index",output_type='e')
     
-def _random_setup_reflector(machine_ref:machines.Machine):
+def _random_setup_reflector_machine(machine_ref:machines.Machine):
     printOutput("Careful with your seed choice, if you use the same one you get the same results")
     seed=getSeedFromUser()
     machine_ref._reflector._randomize_dictionaries(seed)
-        
-def _random_setup_all_rotors(machine_ref:machines.Machine):
+
+def _random_setup_reflector_global_seed_machine(machine_ref:machines.Machine):
+    if machine_ref.get_seed()==0:
+        returningToMenu("No global seed has been set",output_type='e')
+    machine_ref._reflector._randomize_dictionaries(machine_ref.get_seed())
+
+
+def _set_a_global_seed_machine(machine_ref:machines.Machine):
+    printOutput("Be aware that your general machine setup is not randomized after you set this seed.")
+    seed=getSeedFromUser()
+    if not is_valid_seed(seed):
+        returningToMenu("Not a valid seed", 'e')
+    machine_ref._change_seed(seed=seed)
+
+def _random_setup_all_rotors_machine(machine_ref:machines.Machine):
+    if machine_ref.get_seed()==0:
+        returningToMenu("No global seed has been set",output_type='e')
     jump=getSeedFromUser("seed jump")
     machine_ref._random_setup_all_rotors(jump=jump)
 
 
-
-def _set_new_no_rotors(self, noRotors):
+def _set_new_no_blank_rotors_machine(self, noRotors):
+    askingInput("")
+    
     self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
 
 

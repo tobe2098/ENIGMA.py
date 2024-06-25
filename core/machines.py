@@ -78,6 +78,15 @@ class Machine:
         self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
+    def get_seed(self):
+        return self.seed
+
+    def _change_seed(self, seed):
+        if not is_valid_seed(seed):
+            raiseBadInputException()
+
+        self._seed = seed
+
     def _is_machine_set_up(self):
         return (
             self._reflector.is_set_up()

@@ -314,6 +314,16 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
     # )
 
 
+def _reset_connections_rt(rotor_ref: rotors.Rotor):
+    """_summary_
+
+    Args:
+        rotor_ref (rotors.Rotor): _description_
+    """
+    rotor_ref._reset_dictionaries()
+    rotor_ref.lacks_connections = True
+
+
 def _reset_and_streamline_connections_by_pairs_rt(rotor_ref: rotors.Rotor):
     """_summary_
 
@@ -345,16 +355,6 @@ def _reset_and_randomize_connections_rt(rotor_ref: rotors.Rotor):
     # rotor_ref._reset_dictionaries() Necessary?
     rotor_ref._randomize_dictionaries(seed)
     utils_cli.returningToMenu("Rotor connections established")
-
-
-def _reset_connections_rt(rotor_ref: rotors.Rotor):
-    """_summary_
-
-    Args:
-        rotor_ref (rotors.Rotor): _description_
-    """
-    rotor_ref._reset_dictionaries()
-    rotor_ref.lacks_connections = True
 
 
 def _print_name_rt(rotor_ref: rotors.Rotor):
