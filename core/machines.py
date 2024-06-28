@@ -97,16 +97,19 @@ class Machine:
     def _is_valid_no_rotors(self, noRotors):
         return noRotors > 0 and noRotors < MAX_NO_ROTORS
 
-    def _set_new_no_rotors(self, noRotors):
+    def get_no_rotors(self):
+        return len(self._rotors)
+
+    def _set_new_no_rotors(self, noRotors: int):
         if self._is_valid_no_rotors(noRotors):
-            self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
+            self._rotors = [copy.deepcopy(self._ref_rotor) for _ in range(noRotors)]
         else:
             raiseBadInputException()
 
-    def _append_rotors(self, noRotors):
+    def _append_rotors(self, noRotors: int):
         if self._is_valid_no_rotors(len(self._rotors) + noRotors):
             for _ in range(noRotors):
-                self._rotors.append(copy.copy(self._ref_rotor))
+                self._rotors.append(copy.deepcopy(self._ref_rotor))
         else:
             raiseBadInputException()
 
@@ -130,8 +133,14 @@ class Machine:
         else:
             raiseBadInputException()
 
-    def _get_rotors_names_positions(self):
+    def get_rotors_names_positions(self):
         return [rotor.get_name() for rotor in self._rotors]
+
+    def get_rotor_char_pos(self, rotor_index: int):
+        if self.is_rotor_index_valid(rotor_index):
+            return self._rotors[rotor_index].get_position()
+        else:
+            raiseBadInputException()
 
     def _are_positions_valid(self, string_positions):
         return all(
@@ -179,22 +188,23 @@ class Machine:
 
     # Pickled functions
 
-    def setup_random_machine(self, seed=None, noRotors=3):
+    def setup_machine_randomly(self, seed=None, noRotors=3):
         if not is_valid_seed(seed) or not self._is_valid_no_rotors(noRotors):
             raiseBadInputException()
-        self._rotors = [copy.copy(self._ref_rotor) for _ in range(noRotors)]
+        self._rotors = [copy.deepcopy(self._ref_rotor) for _ in range(noRotors)]
+        self._seed = seed
         random.seed(self._seed)
         jump = random.randint(1, int(3e8))
         self._reflector._random_setup(self._seed * jump)
         self._random_conf_rotors(jump)
         self._plugboard.random_setup(self._seed / jump)
         # Generating the name
-        name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 20)]
-        name_list[0:14] = [self._conversion_in_use[num] for num in name_list[0:14]]
-        name_list[14:20] = [str(i % 10) for i in name_list[14:20]]
-        string1 = ""
-        name = string1.join(name_list)
-        self._change_name(name)
+        # name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 20)]
+        # name_list[0:14] = [self._conversion_in_use[num] for num in name_list[0:14]]
+        # name_list[14:20] = [str(i % 10) for i in name_list[14:20]]
+        # string1 = ""
+        # name = string1.join(name_list)
+        # self._change_name(name)
         # self.show_config()
         # self.save_machine()
 
