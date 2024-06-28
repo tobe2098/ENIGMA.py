@@ -481,7 +481,7 @@ def _load_saved_rotor():
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
     if len(list_of_files) == 0:
-        utils_cli.returningToMenu("There are no rotors saved", "e")
+        utils_cli.returningToMenu(f"There are no rotors saved at {path}", "e")
     utils_cli.printOutput("Your available rotors are:")
     utils_cli.printListOfOptions(list_of_files)
     rotor = utils_cli.askingInput("Input reflector's position in the list:")

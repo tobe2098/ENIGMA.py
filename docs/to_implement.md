@@ -10,7 +10,7 @@
 
 ## v2.0 (Great feature addition)
 - I can add the posibility of customizing the character table. Because it is all dictionaries and relative positions in the rotors, it should not spell any trouble. Requires checks on loading that depend on the character lists, requires a new class of every object for Custom, or changing current paradigm so that the base class admits any character list. Make sure there is no arithmetic on the characters.
-
+-Rotating reflectors with their own position too.
 ## v3.0
 - Setup compression. This would only work with the pre-set classes, unless the user also stores the character list and inputs it, or the entire string is also part of the compressed setup. It would look like a string of characters, where sets of characters determine the configuration (excluding names? Yes).
 

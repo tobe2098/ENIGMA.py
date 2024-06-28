@@ -133,7 +133,7 @@ class Machine:
         else:
             raiseBadInputException()
 
-    def get_rotors_names_positions(self):
+    def get_rotors_names_ordered(self):
         return [rotor.get_name() for rotor in self._rotors]
 
     def get_rotor_char_pos(self, rotor_index: int):
@@ -147,7 +147,7 @@ class Machine:
             [char in self._characters_in_use for char in string_positions]
         ) and len(string_positions) == len(self._rotors)
 
-    def _change_rotors_positions(self, positions_string: str):
+    def _change_rotors_character_positions(self, positions_string: str):
         # Here we get a string of positions to set to the rotors in the list of rotors (all of them)
         # First we check that all characters of the string are valid
         if self._are_positions_valid(positions_string):
