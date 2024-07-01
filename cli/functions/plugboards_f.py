@@ -39,7 +39,7 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
 
     utils_cli.printOutput("Current connections are:\n", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
-    row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
+    row = utils_cli.checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
 
     if row:
         _delete_a_connection_pb(

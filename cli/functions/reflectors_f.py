@@ -40,7 +40,7 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
 
     utils_cli.printOutput("Current connections are:\n", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
-    row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
+    row = utils_cli.checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
     if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(
@@ -316,13 +316,13 @@ def _load_saved_reflector():
     utils_cli.printListOfOptions(list_of_files)
     reflector = utils_cli.askingInput("Input reflector's position in the list")
     reflector = utils_cli.checkInputValidity(
-        reflector, int, range(0, len(list_of_files))
+        reflector, int, rangein=(0, len(list_of_files))
     )
     while not reflector:
         utils_cli.printOutput("Please input a valid index")
         reflector = utils_cli.askingInput("Input reflector's position in the list:")
         reflector = utils_cli.checkInputValidity(
-            reflector, int, range(0, len(list_of_files))
+            reflector, int, rangein=(0, len(list_of_files))
         )
     filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[reflector]), "rb")
     return pickle.load(filehandler)

@@ -75,7 +75,7 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Current connections are:\n", paired_df)
     row = utils_cli.askingInput("Choose a connection to delete (by index)")
 
-    row = utils_cli.checkInputValidity(row, int, range(0, paired_df.shape[0]))
+    row = utils_cli.checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
 
     if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
@@ -262,7 +262,7 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
     utils_cli.printOutput("Current connections are:\n", paired_df)
     character1 = utils_cli.askingInput("Choose a frontside connection by the index")
     character1 = utils_cli.checkInputValidity(
-        character1, int, range(0, paired_df.shape[0])
+        character1, int, rangein=(0, paired_df.shape[0])
     )
     # character1 = utils_cli.checkInputValidity(character1, _range=rotor_ref._characters_in_use)
     if not character1:
@@ -273,7 +273,7 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         "Choose a second frontside connection by the index to swap"
     )
     character2 = utils_cli.checkInputValidity(
-        character2, int, range(0, paired_df.shape[0])
+        character2, int, rangein=(0, paired_df.shape[0])
     )
     # character2 = utils_cli.checkInputValidity(character2, _range=rotor_ref._characters_in_use)
     if not character2:
@@ -478,7 +478,7 @@ def _load_saved_rotor():
     utils_cli.printOutput("Your available rotors are:")
     utils_cli.printListOfOptions(list_of_files)
     rotor = utils_cli.askingInput("Input reflector's position in the list:")
-    rotor = utils_cli.checkInputValidity(rotor, int, range(0, len(list_of_files)))
+    rotor = utils_cli.checkInputValidity(rotor, int, rangein=(0, len(list_of_files)))
     while not rotor:
         # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
         utils_cli.printError("Please input a valid index")
@@ -486,7 +486,9 @@ def _load_saved_rotor():
         rotor = utils_cli.askingInput("Input rotor's position in the list:")
         if not rotor:
             utils_cli.returningToMenu()
-        rotor = utils_cli.checkInputValidity(rotor, int, range(0, len(list_of_files)))
+        rotor = utils_cli.checkInputValidity(
+            rotor, int, rangein=(0, len(list_of_files))
+        )
     filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[rotor]), "rb")
     return pickle.load(filehandler)
 

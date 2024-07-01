@@ -139,7 +139,10 @@ def checkIfFileExists(path, name, suffix):
 
 def checkInputValidity(_input: str, _type=str, rangein=None):
     if _type == int:
-        if _input.isnumeric() and (not rangein or int(_input) in rangein):
+        if _input.isnumeric() and (
+            (isinstance(rangein, list) and (not rangein or int(_input) in rangein))
+            or (int(_input) < rangein[1] and int(_input) >= rangein[0])
+        ):
             return int(_input)
     elif _type == str:
         if isinstance(_input, str) and (not rangein or _input in rangein):
