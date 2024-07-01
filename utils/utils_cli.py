@@ -1,3 +1,4 @@
+from curses.ascii import isalpha
 import os
 from subprocess import call
 
@@ -163,7 +164,8 @@ def getSeedFromUser(ask="seed"):
         seed = askingInput(f"Introduce a positive integer as a {ask}:")
         if not seed:
             returningToMenu()
-        seed = int(seed)
+        elif seed.isnumeric():
+            seed = int(seed)
     if seed < 0:
         seed *= -1
     return seed

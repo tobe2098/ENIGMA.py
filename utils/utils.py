@@ -103,7 +103,7 @@ def transform_single_dict(dictionary, conversion: dict):
 
 
 def is_valid_seed(seed):
-    return isinstance(seed, int) and seed >= 0
+    return isinstance(seed, int) and seed >= 0 and seed < Constants.MAX_SEED
 
 
 # def transform_single_dict_dash(dictionary):
