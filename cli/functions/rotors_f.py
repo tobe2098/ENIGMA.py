@@ -124,7 +124,7 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     character1 = utils_cli.askingInput(
         "Choose a character to pair from front side"
     ).upper()
-    character1 = utils_cli.checkInputValidity(character1, _range=front_unformed)
+    character1 = utils_cli.checkInputValidity(character1, rangein=front_unformed)
     if not character1:
         # if character1 not in front_unformed:
         utils_cli.returningToMenu("Invalid input", output_type="e")
@@ -132,7 +132,7 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
     character2 = utils_cli.askingInput(
         "Choose the second character from the back side"
     ).upper()
-    character2 = utils_cli.checkInputValidity(character2, _range=back_unformed)
+    character2 = utils_cli.checkInputValidity(character2, rangein=back_unformed)
     if not character2:
         # if character2 not in back_unformed:
         utils_cli.returningToMenu("Invalid input", output_type="e")
@@ -203,10 +203,10 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
             utils_cli.printError("Input only two allowed characters")
             continue
         characters[0] = utils_cli.checkInputValidity(
-            characters[0], _range=front_unformed
+            characters[0], rangein=front_unformed
         )
         characters[1] = utils_cli.checkInputValidity(
-            characters[1], _range=back_unformed
+            characters[1], rangein=back_unformed
         )
         if not all(characters):
             # if characters[0] not in front_unformed or characters[1] not in back_unformed:
@@ -407,14 +407,7 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
 
 def _randomize_notches_rt(rotor_ref: rotors.Rotor):
     seed = utils_cli.getSeedFromUser()
-    random.seed(seed)
-    positions = [
-        i
-        for i in set(
-            random.sample(range(0, rotor_ref._no_characters), random.randint(1, 5))
-        )
-    ]
-    rotor_ref._define_notches(positions)
+    rotor_ref._randomize_notches(seed=seed)
     utils_cli.printOutput("New rotor notches:", rotor_ref.get_notchlist_characters())
     utils_cli.returningToMenu("Rotor notches established")
 

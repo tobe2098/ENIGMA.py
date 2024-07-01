@@ -86,14 +86,14 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
         )
     utils_cli.printOutput("Unpaired characters:", unpaired_list)
     character1 = utils_cli.askingInput("Choose a character to pair").upper()
-    character1 = utils_cli.checkInputValidity(character1, _range=unpaired_list)
+    character1 = utils_cli.checkInputValidity(character1, rangein=unpaired_list)
     if not character1:
         utils_cli.printError("Invalid input")
         return False
     remaining_characters = list(set(unpaired_list) - set(character1))
     utils_cli.printOutput("Remaining characters:", remaining_characters)
     character2 = utils_cli.askingInput("Choose the second character").upper()
-    character2 = utils_cli.checkInputValidity(character2, _range=remaining_characters)
+    character2 = utils_cli.checkInputValidity(character2, rangein=remaining_characters)
     if not character2:
         utils_cli.printError("Invalid input")
         return False

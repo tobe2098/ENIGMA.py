@@ -1,9 +1,7 @@
-from hmac import new
-from platform import machine
 from cli.functions.plugboards_f import _show_config_pb
 from cli.functions.reflectors_f import  _show_config_rf
 from cli.functions.rotors_f import _randomize_notches_rt, _randomize_position_rt, _reset_and_randomize_connections_rt, _show_config_rt
-from utils.utils import Constants, is_valid_seed
+from utils.utils import Constants, get_character_list, is_valid_seed
 from utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, printWarning, returningToMenu
 from ...core import machines
 import pandas as pd
@@ -20,7 +18,7 @@ def _show_full_config_machine(machine_ref:machines.Machine):
         _show_config_rt(machine_ref._rotors[i])
     printOutput("Reflector config:")
     _show_config_rf(machine_ref._reflector)
-
+    returningToMenu()
 
 def _show_simple_config_machine(machine_ref: machines.Machine):
     config = pd.DataFrame()
@@ -34,30 +32,35 @@ def _show_simple_config_machine(machine_ref: machines.Machine):
     printOutput("Rotor config:")
     print(config)
     printOutput("Machine name:", machine_ref.get_name())
-
+    returningToMenu()
 
 
 def _random_setup_single_rotor_machine(machine_ref:machines.Machine):
     printListOfOptions([rotor.get_name() for rotor in machine_ref._rotors])
     rotor_index=askingInput("Input the rotor number (0 to n-1)")
     rotor_index=checkInputValidity(rotor_index,int,range(len(machine_ref._rotors)))
-    if rotor_index:    
-        _reset_and_randomize_connections_rt(machine_ref._rotors[rotor_index])
-        _randomize_position_rt(machine_ref._rotors[rotor_index])
-        _randomize_notches_rt(machine_ref._rotors[rotor_index])
-    else:
+    if not rotor_index:    
         returningToMenu("Invalid index",output_type='e')
-    
+    seed1=getSeedFromUser("connections seed")
+    seed2=getSeedFromUser("character position seed")
+    seed3=getSeedFromUser("notches seed")
+    machine_ref._rotors[rotor_index]._randomize_dictionaries(seed1)
+    machine_ref._rotors[rotor_index]._randomize_notches(seed2)
+    machine_ref._rotors[rotor_index]._randomize_position(seed3)
+    returningToMenu("The rotor has been randomized with the provided seeds")
+
 def _random_setup_reflector_machine(machine_ref:machines.Machine):
     # printOutput("Careful with your seed choice, if you use the same one you get the same results")
     seed=getSeedFromUser()
     machine_ref._reflector._randomize_dictionaries(seed)
+    returningToMenu("Reflector has been randomized with the provided seed")
+
 
 def _random_setup_reflector_global_seed_machine(machine_ref:machines.Machine):
     if machine_ref.get_seed()==0:
         returningToMenu("No global seed has been set",output_type='e')
     machine_ref._reflector._randomize_dictionaries(machine_ref.get_seed())
-
+    returningToMenu("Reflector has been randomized with the machine's global seed")
 
 def _set_a_global_seed_machine(machine_ref:machines.Machine):
     printOutput("Be aware that your general machine setup is not randomized after you set this seed.")
@@ -65,12 +68,14 @@ def _set_a_global_seed_machine(machine_ref:machines.Machine):
     if not is_valid_seed(seed):
         returningToMenu("Not a valid seed", output_type='e')
     machine_ref._change_seed(seed=seed)
+    returningToMenu("Global seed has been set")
 
 def _random_setup_all_rotors_machine(machine_ref:machines.Machine):
     if machine_ref.get_seed()==0:
         returningToMenu("No global seed has been set",output_type='e')
     jump=getSeedFromUser("seed jump")
     machine_ref._random_setup_all_rotors(jump=jump)
+    returningToMenu("All rotors have been randomized")
 
 def _randomize_entire_machine(machine_ref:machines.Machine):
     printWarning("The previous global seed will be replaced by the seed you input")
@@ -78,30 +83,31 @@ def _randomize_entire_machine(machine_ref:machines.Machine):
     no_rotors=askingInput("Input desired number of rotors (invalid for same number)")
     no_rotors=checkInputValidity(no_rotors, int, range(1,Constants.MAX_NO_ROTORS))
     machine_ref.setup_machine_randomly(seed, no_rotors or machine_ref.get_no_rotors())
+    returningToMenu("The machine's seed has been replaced and its settings have been set according to that seed")
 
 def _re_randomize_with_global_seed_machine(machine_ref:machines.Machine):
     if machine_ref.get_seed()==0:
         returningToMenu("No global seed has been set",output_type='e')
     machine_ref.setup_machine_randomly(machine_ref.get_seed(),machine_ref.get_no_rotors())
+    returningToMenu("The machine's settings have been set according to the global seed")
 
 def _set_new_no_blank_rotors_machine(machine_ref:machines.Machine):
     new_no_rotors=askingInput(f"Enter number of new rotors to set in the machine (0 to {Constants.MAX_NO_ROTORS})")
     new_no_rotors=checkInputValidity(new_no_rotors, int, range(1, Constants.MAX_NO_ROTORS+1))
-    if new_no_rotors:
-        machine_ref._set_new_no_rotors(new_no_rotors)
-    else:
+    if not new_no_rotors:
         returningToMenu("Invalid input or input is zero",output_type='e')
-    
+    machine_ref._set_new_no_rotors(new_no_rotors)
+    returningToMenu(f"{new_no_rotors} blank rotors have been set as the machine's rotors")
+
 def _append_rotors(machine_ref:machines.Machine):
     if machine_ref.get_no_rotors()==Constants.MAX_NO_ROTORS:
         returningToMenu("You reached the maximum number of rotors. Why would you do such a thing?","e")
     no_rotors_append=askingInput(f"Enter number of new rotors to append to the machine (0 to {Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()})")
     no_rotors_append=checkInputValidity(no_rotors_append, int, range(1, Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()+1))
-    if no_rotors_append:
-        machine_ref._append_rotors(no_rotors_append)
-    else:
+    if not no_rotors_append:
         returningToMenu("Invalid input or input is zero",output_type='e')
-    
+    machine_ref._append_rotors(no_rotors_append)
+    returningToMenu("Rotors appended")
 
 def _load_rotors_at_index(machine_ref:machines.Machine):
     if machine_ref.get_no_rotors()==Constants.MAX_NO_ROTORS:
@@ -110,11 +116,10 @@ def _load_rotors_at_index(machine_ref:machines.Machine):
     index=checkInputValidity(index, int, range(0,machine_ref.get_no_rotors()-1))
     # no_rotors_insert=askingInput(f"Enter number of new rotors to append to the machine (1 to {Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()})")
     # no_rotors_insert=checkInputValidity(no_rotors_insert, int, range(1, Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()+1))
-    if index:
-        machine_ref._load_a_rotor_on_index(index)
-    else:
+    if not index:
         returningToMenu("Invalid index input",output_type='e')
-    
+    machine_ref._load_a_rotor_on_index(index)
+    returningToMenu(f"Rotor loaded at index {index}")    
 
 def _change_all_rotors_character_position(machine_ref:machines.Machine):
     # MENU in machine!!! LETTERS HAVE TO BE FROM THE LIST!!!
@@ -125,23 +130,36 @@ def _change_all_rotors_character_position(machine_ref:machines.Machine):
         remaining = list(set(machine_ref) - set(new_positions))
         printOutput("Remaining positions are ",remaining)
         new_pos=askingInput(f"Input new position for rotor {i+1}")
-        new_pos=checkInputValidity(new_pos, _range=machine_ref._characters_in_use)
+        new_pos=checkInputValidity(new_pos, rangein=get_character_list(machine_ref))
         while new_pos not in remaining:
             printOutput("Remaining positions are ",remaining)
             new_pos=askingInput(f"Input new position for rotor {i+1}")
-            new_pos=checkInputValidity(new_pos, _range=machine_ref._characters_in_use)
+            new_pos=checkInputValidity(new_pos, rangein=get_character_list(machine_ref))
         new_positions.append(new_pos)
     positions_copy = copy.copy(new_positions)
     positions_copy.sort()
-    if all(
-            [machine.is_rotor_index_valid(idx) for idx in new_positions]
+    if not all(
+            [machine_ref.is_rotor_index_valid(idx) for idx in new_positions]
         ) and positions_copy == list(range(machine_ref.get_no_rotors())):
-        machine_ref._reorder_all_rotors(position_list=new_positions)
-    else:
         returningToMenu("The positions you provided were not valid",output_type='e')
+    machine_ref._reorder_all_rotors(index_list=new_positions)
+    returningToMenu("Rotors reordered")
 
 def _change_a_rotor_character_position(machine_ref:machines.Machine):
-    pass
+    printOutput("Rotors:")
+    printListOfOptions(machine_ref.get_rotors_names_ordered())
+    rotor_index=askingInput("Input rotor index to change character position")
+    rotor_index=checkInputValidity(rotor_index, int, range(machine_ref.get_no_rotors()))
+    if not rotor_index:
+        returningToMenu("Invalid input",output_type="e")
+    printOutput("Current rotor character position is: ",machine_ref.get_rotor_char_pos(rotor_index))
+    printOutput("Valid character positions are: ",get_character_list(machine_ref))
+    new_char_pos=askingInput("Input new character position")
+    new_char_pos=checkInputValidity(new_char_pos, rangein=get_character_list(machine_ref))
+    if not new_char_pos:
+        returningToMenu("Invalid input",output_type="e")
+    machine_ref.change_rotor_char_position(rotor_index, new_char_pos)
+    returningToMenu("Position set")
 
 def _swap_two_rotors():
 def _reorder_all_rotors():

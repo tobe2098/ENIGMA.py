@@ -121,3 +121,7 @@ def is_valid_seed(seed):
 
 def areUsingSameDicts(obj1, obj2):
     return obj1._conversion_in_use == obj2._conversion_in_use
+
+
+def get_character_list(obj):
+    return obj._characters_in_use

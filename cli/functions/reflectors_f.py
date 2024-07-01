@@ -88,7 +88,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
         )
     utils_cli.printOutput("Unpaired characters:", unpaired_list)
     character1 = utils_cli.askingInput("Choose a character to pair").upper()
-    character1 = utils_cli.checkInputValidity(character1, _range=unpaired_list)
+    character1 = utils_cli.checkInputValidity(character1, rangein=unpaired_list)
     if not character1:
         # if character1 not in unpaired_list:
         utils_cli.printError("Invalid input")
@@ -99,7 +99,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     )
     character2 = utils_cli.askingInput("Choose the second character:").upper()
     character2 = utils_cli.checkInputValidity(
-        character2, _range=list(set(unpaired_list) - set(character1))
+        character2, rangein=list(set(unpaired_list) - set(character1))
     )
     if not character2:
         # if character2 not in list(set(unpaired_list) - set(character1)):
@@ -156,7 +156,7 @@ def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
         characters = list(characters)
         for i in range(2):
             characters[i] = utils_cli.checkInputValidity(
-                characters[i], _range=unpaired_list
+                characters[i], rangein=unpaired_list
             )
         if not all(characters):
             # if not all(map(lambda v: v in characters, unpaired_list)):

@@ -54,6 +54,10 @@ class Machine:
         # )
 
     # Basic functions
+
+    # def get_character_list(self):
+    #     return self._characters_in_use
+
     def get_name(self):
         return self._name
 
@@ -142,31 +146,39 @@ class Machine:
         else:
             raiseBadInputException()
 
-    def _are_positions_valid(self, string_positions):
+    def change_rotor_char_position(self, index: int, position: str):
+        if (
+            index not in range(self.get_no_rotors())
+            or position not in self._characters_in_use
+        ):
+            raiseBadInputException()
+        self._rotors[index]._define_position(position)
+
+    def _are_char_positions_valid(self, string_positions):
         return all(
             [char in self._characters_in_use for char in string_positions]
         ) and len(string_positions) == len(self._rotors)
 
-    def _change_rotors_character_positions(self, positions_string: str):
+    def change_all_rotors_character_positions(self, positions_string: str):
         # Here we get a string of positions to set to the rotors in the list of rotors (all of them)
         # First we check that all characters of the string are valid
-        if self._are_positions_valid(positions_string):
+        if self._are_char_positions_valid(positions_string):
             for i in range(len(positions_string)):
                 self._rotors[i]._define_position(positions_string[i])
         else:
             raiseBadInputException()
 
-    def _reorder_all_rotors(self, position_list: list):
+    def _reorder_all_rotors(self, index_list: list):
         # For every rotor they are asigned a new position in the list with their index
         # First we check that the position list that we are given is a scrambled list of non-repeated valid indexes
-        positions_copy = copy.copy(position_list)
-        positions_copy.sort()
+        indexes_copy = copy.copy(index_list)
+        indexes_copy.sort()
         if all(
-            [self.is_rotor_index_valid(idx) for idx in position_list]
-        ) and positions_copy == list(range(len(self._rotors))):
+            [self.is_rotor_index_valid(idx) for idx in index_list]
+        ) and indexes_copy == list(range(len(self._rotors))):
             new_rotor_list = [Rotor() for _ in range(len(self._rotors))]
             for i in range(len(self._rotors)):
-                new_rotor_list[position_list[i]] = self._rotors[i]
+                new_rotor_list[index_list[i]] = self._rotors[i]
             self._rotors = new_rotor_list
         else:
             raiseBadInputException()
