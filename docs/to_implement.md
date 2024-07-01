@@ -24,4 +24,4 @@
 - Put better character prints so that it looks more aesthetic
 - Put print("\a") somewhere? Does not work
 - Hyper-safe settings. Bigger rotors, more rotors, possibility of rotor bypassing through 'void' character.
-
+- Enigma encrypt using backspaces from 0 to 255 with one of the bytes to sign when the char is not possible. Or mark it in a different way (using the plaintext, we can skip that section while writing non-sense in that section, as it is not going to be used, it is just signalling to add a number of forward steps).
