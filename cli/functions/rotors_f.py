@@ -194,7 +194,7 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
         )
         characters = list(characters)
         if len(characters) == 2 and all(
-            character in rotor_ref._characters_in_use for character in characters
+            character in utils.get_character_list(rotor_ref) for character in characters
         ):
             pass
         elif not characters:
@@ -418,7 +418,7 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
     ).upper()
     while rotor_ref._is_position_invalid(new_position):
         utils_cli.printError("Input only allowed characters")
-        utils_cli.printOutput(rotor_ref._characters_in_use)
+        utils_cli.printOutput(utils.get_character_list(rotor_ref))
         new_position = utils_cli.askingInput(
             "Input a single allowed character to set the rotor to a new position"
         ).upper()
@@ -428,9 +428,7 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
 
 def _randomize_position_rt(rotor_ref: rotors.Rotor):
     seed = utils_cli.getSeedFromUser()
-    random.seed(seed)
-    new_position = random.sample(range(0, rotor_ref._characters_in_use), 1)
-    rotor_ref._define_position(new_position)
+    rotor_ref._randomize_position(seed)
     utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
 
 
