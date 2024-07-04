@@ -1,3 +1,12 @@
+# For current version
+- Re-write README.md in core folder
+- Re-write README.md in outer folder
+- MaxNoRotors can be changed in yaml config
+- Last machine folder/name is set in yaml
+- Folders with the pickled objects are set in set-up (ask the user?) and then those folders are kept in the yaml file
+- The folders can be changed in yaml
+- Look how to make yaml accessible to the script (file in the module? Preset folder?)
+
 # Planned changes
 ## v1.1 (Internal and quality of life update)
 - The creation of dictionaries should be part of the constructor (a function call, not the entire thing). That way the code only needs to care about the list of characters itself (where order would matter).

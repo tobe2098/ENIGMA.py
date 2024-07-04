@@ -14,7 +14,6 @@ Version: 1.0.1
 -pandas
 -platform
 -copy
--tkinter
 
 ## Instructions for use:
 -Obtain a brand new ENIGMA machine with just some simple lines! Ready for use in one go!
