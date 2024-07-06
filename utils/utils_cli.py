@@ -138,11 +138,15 @@ def checkIfFileExists(path, name, suffix):
     return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
 
 
-def checkInputValidity(_input: str, _type=str, rangein=None):
+def checkInputValidity(_input: str, _type=str, rangein=[]):
     if _type == int:
         if _input.isnumeric() and (
             (isinstance(rangein, list) and (not rangein or int(_input) in rangein))
-            or (int(_input) < rangein[1] and int(_input) >= rangein[0])
+            or (
+                isinstance(rangein, tuple)
+                and int(_input) < rangein[1]
+                and int(_input) >= rangein[0]
+            )
         ):
             return int(_input)
     elif _type == str:
