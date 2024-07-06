@@ -1,3 +1,4 @@
+from platform import machine
 from cli.functions.plugboards_f import _show_config_pb
 from cli.functions.reflectors_f import  _show_config_rf
 from cli.functions.rotors_f import _randomize_notches_rt, _randomize_position_rt, _reset_and_randomize_connections_rt, _show_config_rt
@@ -164,35 +165,32 @@ def _change_a_rotor_character_position(machine_ref:machines.Machine):
 def _swap_two_rotors(machine_ref:machines.Machine):
     printOutput("Rotors:")
     printListOfOptions(machine_ref.get_rotors_names_ordered())
-    rotor1=askingInput("Input first rotor index to ")
+    rotor1=askingInput("Input first rotor index to swap")
+    rotor2=askingInput("Input second rotor index to swap")
+    rotor1=checkInputValidity(rotor1,int, (0,machine_ref.get_no_rotors()))
+    rotor2=checkInputValidity(rotor2,int, (0,machine_ref.get_no_rotors()))
+    if not rotor1 or not rotor2:
+        returningToMenu("Wrong input",output_type='e')
+    machine_ref._swap_two_rotors_by_index(rotor1, rotor2)
+    returningToMenu("The two rotors were swapped")
 
 
-def _reorder_all_rotors():
-    pass
-
-
-def _rotor_order_change(machine_ref):
-    while True:
-        for i in range(len(machine_ref._rotors)):
-            print(">Rotor {}:".format(i + 1), machine_ref._rotors[i].get_name())
-        selec1 = input(
-            ">>>Select rotor to put in a placeholder to get swapped (-1 to exit):"
-        )
-        selec2 = input(
-            ">>>Select rotor to put placeholder's order position and complete swap:"
-        )
-
-        if selec1 == -1:
-            print(">Finished with swaps")
-            return
+def _reorder_all_rotors(machine_ref:machines.Machine):
+    printOutput("Rotors:")
+    printListOfOptions(machine_ref.get_rotors_names_ordered())
+    index_list=askingInput("Input the rotor indexes in the desired order, separated by commas")
+    index_list=index_list.split(",")
+    index_list_copy=[]
+    for i in index_list:
+        if i.isnumeric() and machine_ref.is_rotor_index_valid(int(i)):
+            index_list_copy.append(int(i))
         else:
-            selec1 -= 1
-            selec2 -= 1
-            machine_ref._rotors[selec1], machine_ref._rotors[selec2] = (
-                machine_ref._rotors[selec2],
-                machine_ref._rotors[selec1],
-            )
-
+            returningToMenu("Invalid index",output_type='e')
+    index_list=copy.copy(index_list_copy)
+    index_list_copy.sort()
+    if not index_list_copy==list(range(machine_ref.get_no_rotors())):
+        returningToMenu("Incomplete index list",output_type='e')
+    machine_ref._reorder_all_rotors(index_list=index_list)
 
 def _edit_a_rotors_config(machine_ref):  ## This is just a menu call
     for i in range(len(machine_ref._rotors)):
