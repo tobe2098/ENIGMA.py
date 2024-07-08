@@ -7,6 +7,7 @@
 - The folders can be changed in yaml
 - Look how to make yaml accessible to the script (file in the module? Preset folder?)
 - Change constructors to not have child and parent classes. The machines can be constructed using the available strings, and more stored by the user.
+- Need to take care of the imports
 
 # Planned changes
 ## v1.1 (Internal and quality of life update)
