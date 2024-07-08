@@ -1,9 +1,8 @@
-from platform import machine
-from cli.functions.plugboards_f import _show_config_pb
-from cli.functions.reflectors_f import  _show_config_rf
-from cli.functions.rotors_f import _randomize_notches_rt, _randomize_position_rt, _reset_and_randomize_connections_rt, _show_config_rt
-from utils.utils import Constants, get_character_list, is_valid_seed
-from utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, printWarning, returningToMenu
+from ...cli.functions.plugboards_f import _show_config_pb
+from ...cli.functions.reflectors_f import  _show_config_rf
+from ...cli.functions.rotors_f import _randomize_notches_rt, _randomize_position_rt, _reset_and_randomize_connections_rt, _show_config_rt
+from ...utils.utils import Constants, get_character_list, is_valid_seed
+from ...utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, printWarning, returningToMenu
 from ...core import machines
 import pandas as pd
 
