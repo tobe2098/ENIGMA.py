@@ -6,6 +6,7 @@
 - Folders with the pickled objects are set in set-up (ask the user?) and then those folders are kept in the yaml file
 - The folders can be changed in yaml
 - Look how to make yaml accessible to the script (file in the module? Preset folder?)
+- Change constructors to not have child and parent classes. The machines can be constructed using the available strings, and more stored by the user.
 
 # Planned changes
 ## v1.1 (Internal and quality of life update)
