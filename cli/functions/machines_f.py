@@ -1,8 +1,12 @@
 from ...cli.functions.plugboards_f import _show_config_pb
 from ...cli.functions.reflectors_f import  _show_config_rf
-from ...cli.functions.rotors_f import _randomize_notches_rt, _randomize_position_rt, _reset_and_randomize_connections_rt, _show_config_rt
+
+from ...cli.menus.rotors_m import _menu_rotor
+from ...cli.menus.reflectors_m import _menu_reflector
+from ...cli.menus.plugboards_m import _menu_plugboard
+
 from ...utils.utils import Constants, get_character_list, is_valid_seed
-from ...utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, printWarning, returningToMenu
+from ...utils.utils_cli import askingInput, checkInputValidity, getSeedFromUser, printListOfOptions, printOutput, printWarning, returningToMenu, runNodeMenu
 from ...core import machines
 import pandas as pd
 
@@ -191,11 +195,15 @@ def _reorder_all_rotors(machine_ref:machines.Machine):
         returningToMenu("Incomplete index list",output_type='e')
     machine_ref._reorder_all_rotors(index_list=index_list)
 
-def _edit_a_rotors_config(machine_ref):  ## This is just a menu call
-    for i in range(len(machine_ref._rotors)):
-        print(">Configurating rotor {} connections:".format(i))
-        machine_ref._rotors[i].customize_connections()
-
+def _edit_a_rotors_config(machine_ref:machines.Machine):  ## This is just a menu call
+    printOutput("Rotors:")
+    printListOfOptions(machine_ref.get_rotors_names_ordered())
+    index=askingInput("Choose a rotor to edit its configuration")
+    index=checkInputValidity(index, int ,(0,machine_ref.get_no_rotors()))
+    if not index:
+        returningToMenu("Invalid input",output_type='e')
+    runNodeMenu(machine_ref._rotors[index],_menu_rotor)
+    returningToMenu("Rotor has been edited")
 
 def _edit_reflector_config(machine_ref: machines.Machine):
     pass
