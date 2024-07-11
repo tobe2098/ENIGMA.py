@@ -223,14 +223,14 @@ class Machine:
     # Finally, the crypt function <<<HERE IS WHERE I WAS LEFT, I NEED TO FINISH CRYPT LETTER, TEXT
     ## Add text function and check for characters
 
-    def encrypt_decrypt(self, text):
+    def encrypt_decrypt_text(self, text):
         if not self._is_machine_set_up():
             raiseBadSetupException()
         # import copy as cp
         # print(
         # ">Every time you write a message, the machine will return to the configuration it is now. \n>WARNING: Do NOT use spaces, please.\n >>>If you want to stop, press Enter with no input."
         # )
-
+        previous_distance_from_origin = self._current_distance_from_original_state
         # self.simple_show_config()
         output_message = ""
         # print(self.rotor1._position)
@@ -258,7 +258,10 @@ class Machine:
 
             #     character_out = self._conversion_in_use[backward_output]
             output_message.append(character_out)
-            self.backspace_to_original_state()
+            self.backspace_to_original_state_or_destination(
+                previous_distance_from_origin
+                - self._current_distance_from_original_state
+            )
             return output_message
 
     def type_character(self, character):
@@ -287,6 +290,12 @@ class Machine:
         character_out = self._conversion_in_use[backward_output]
         return character_out
 
+    def set_new_original_state(self):
+        self._current_distance_from_original_state = 0
+
+    def get_char_distance(self):
+        return self._current_distance_from_original_state
+
     def backspace(self, no_times=1):
         # For erasing all the input box in GUI, I can keep track of the inputs with an internal variable
         # And call this with internal variable
@@ -298,18 +307,25 @@ class Machine:
                     break
         self._current_distance_from_original_state -= no_times
 
-    def backspace_to_original_state(self):
-        if self._current_distance_from_original_state < 0:
-            raiseBadInputException()
+    def backspace_to_original_state_or_destination(self, destination=None):
+        if not destination:
+            destination = self._current_distance_from_original_state
+        if destination > 0:
+            plc_char = self._characters_in_use[0]
+            for _ in range(destination):
+                self.type_character(plc_char)
         # For erasing all the input box in GUI, I can keep track of the inputs with an internal variable
         # And call this with internal variable
-        for _ in range(self._current_distance_from_original_state):
-            for i in range(
-                len(self._rotors)
-            ):  # We always move from first to last rotor
-                if not self._rotors[i].backspace():
-                    break
-        self._current_distance_from_original_state = 0
+        else:
+            for _ in range(-destination):
+                for i in range(
+                    len(self._rotors)
+                ):  # We always move from first to last rotor
+                    if not self._rotors[i].backspace():
+                        break
+                    self._current_distance_from_original_state -= 1
+            # self._current_distance_from_original_state = 0
+        # TESTING: RESULT MUST ALWAYS HAVE CURRENT DISTANCE EQUAL TO ZERO
 
 
 class MachineDash(Machine):

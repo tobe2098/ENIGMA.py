@@ -6,15 +6,16 @@ import pandas as pd
 class Constants:
     MAX_NO_ROTORS = 100
     MAX_SEED = 2**2**10
+    MAX_NO_BACKSPACES = 1000
     CHARACTERS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     CHARACTERS_dash = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ-")
     NUMBERS = list(range(0, len(CHARACTERS)))
     NUMBERS_dash = list(range(0, len(CHARACTERS_dash)))
     EQUIVALENCE_DICT = dict(zip(CHARACTERS, NUMBERS))
-    EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
+    # EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
     EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
     EQUIVALENCE_DICT_dash = dict(zip(CHARACTERS_dash, NUMBERS_dash))
-    EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
+    # EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
     EQUIVALENCE_DICT_dash.update(
         dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()])
     )

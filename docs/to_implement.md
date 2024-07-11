@@ -9,6 +9,10 @@
 - Change constructors to not have child and parent classes. The machines can be constructed using the available strings, and more stored by the user.
 - Need to take care of the imports
 
+## Testing
+- TESTING: RESULT MUST ALWAYS HAVE CURRENT DISTANCE EQUAL TO ZERO
+
+
 # Planned changes
 ## v1.1 (Internal and quality of life update)
 - The creation of dictionaries should be part of the constructor (a function call, not the entire thing). That way the code only needs to care about the list of characters itself (where order would matter).
