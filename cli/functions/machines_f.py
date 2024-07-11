@@ -203,14 +203,16 @@ def _edit_a_rotors_config(machine_ref:machines.Machine):  ## This is just a menu
     if not index:
         returningToMenu("Invalid input",output_type='e')
     runNodeMenu(machine_ref._rotors[index],_menu_rotor)
-    returningToMenu("Rotor has been edited")
+    returningToMenu()
 
 def _edit_reflector_config(machine_ref: machines.Machine):
-    pass
+    runNodeMenu(machine_ref._reflector,_menu_reflector)
+    returningToMenu()
 
 
 def _edit_plugboard_config(machine_ref: machines.Machine):
-    pass
+    runNodeMenu(machine_ref._plugboard,_menu_plugboard)
+    returningToMenu()
 
 
 def encrypt_decrypt(machine_ref):
