@@ -1,7 +1,6 @@
-from importlib import machinery
 from ...cli.functions.plugboards_f import _show_config_pb
-from ...cli.functions.rotors_f import _show_config_rt
-from ...cli.functions.reflectors_f import _show_config_rf
+from ...cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
+from ...cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
 
 from ...cli.menus.rotors_m import _menu_rotor
 from ...cli.menus.reflectors_m import _menu_reflector
@@ -12,6 +11,7 @@ from ...utils.utils_cli import (
     askingInput,
     checkInputValidity,
     getSeedFromUser,
+    printError,
     printListOfOptions,
     printOutput,
     printWarning,
@@ -19,8 +19,9 @@ from ...utils.utils_cli import (
     runNodeMenu,
 )
 from ...core import machines
-import pandas as pd
 
+import pandas as pd
+import os
 import copy
 
 
@@ -284,6 +285,14 @@ def _edit_reflector_config(machine_ref: machines.Machine):
     returningToMenu()
 
 
+def _load_reflector(machine_ref: machines.Machine):
+    loaded_reflector = _load_saved_reflector()
+    if not loaded_reflector:
+        returningToMenu("")
+    machine_ref._reflector = loaded_reflector
+    returningToMenu("Reflector is loaded")
+
+
 def _edit_plugboard_config(machine_ref: machines.Machine):
     runNodeMenu(machine_ref._plugboard, _menu_plugboard)
     returningToMenu()
@@ -315,18 +324,55 @@ def _encrypt_decrypt_text_nobackspace(machine_ref: machines.Machine):
     return output
 
 
-def _encrypt_decrypt_backspace(machine_ref: machines.Machine):
+def _encrypt_decrypt_text_backspace(machine_ref: machines.Machine):
     text = _machine_get_message(machine_ref=machine_ref)
     output = machine_ref.encrypt_decrypt_text(text)
     return output
 
 
 def _encrypt_decrypt_cliout(machine_ref: machines.Machine):
-    pass  # Ask for backspace, then output1
+    ans = ""
+    while ans != "y" and ans != "n":
+        ans = askingInput(
+            "Would you like to return to the current state once the message is passed?[y/n]"
+        ).lower()
+    if ans == "y":
+        message = _encrypt_decrypt_text_backspace(machine_ref=machine_ref)
+        returningToMenu("The machine's output is: ", message)
+    else:
+        message = _encrypt_decrypt_text_nobackspace(machine_ref=machine_ref)
+        returningToMenu("The machine's output is: ", message)
 
 
-def _encrypt_decrypt_fileout(machine_ref: machines.Machine):
-    pass  # ASk for backspace and file name (.txt always)
+def _encrypt_decrypt_fileout(machine_ref: machines.Machine, filepath=None):
+    if not filepath:
+        filepath = askingInput(
+            "Give a new filename to store your message as a text file"
+        )
+        if not all(i in Constants.FILESAFE_CHARS for i in filepath):
+            returningToMenu("Invalid filename", output_type="e")
+        filepath += ".txt"
+        filepath = os.path.join(os.getcwd(), filepath)
+    ans = ""
+    while ans != "y" and ans != "n":
+        ans = askingInput(
+            "Would you like to return to the current state once the message is passed?[y/n]"
+        ).lower()
+    message = ""
+    prev_state = machine_ref.get_char_distance()
+    if ans == "y":
+        message = _encrypt_decrypt_text_backspace(machine_ref=machine_ref)
+    else:
+        message = _encrypt_decrypt_text_nobackspace(machine_ref=machine_ref)
+    try:
+        with open(filepath, "w") as file:
+            file.write(message)
+    except Exception as e:
+        if ans == "n":
+            machine_ref.backspace_to_original_state_or_destination(prev_state)
+        printError(f"Failed to write to file: {e}")
+        returningToMenu(f"Message output is: {message}")
+    returningToMenu(f"Message stored in {filepath}")
 
 
 # def _backspace_machine(machine_ref: machines.Machine):
@@ -373,6 +419,10 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 
 # print id(foo) == id(bar.foo_ref) # True
 # print id(foo2) == id(bar2.foo_ref) # True
+
+
+def _save_machine_in_its_folder():
+    pass
 
 
 def load_machine(
