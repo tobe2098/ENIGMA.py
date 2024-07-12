@@ -270,16 +270,16 @@ def _randomize_name_rf(reflector_ref: reflectors.Reflector):
     utils_cli.returningToMenu("Reflector's new name:", reflector_ref.name)
 
 
-def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
+def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     name = reflector_ref.get_name()
     while not reflector_ref._is_name_valid(name):
         name = utils_cli.askingInput(
             "Please assign a new name to the reflector"
         ).strip()
     reflector_ref._change_name(name)
-    current_path = os.getcwd()
+    module_path = os.path.dirname(__file__)
     new_folder = utils.REFLECTORS_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
+    path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
         utils_cli.printOutput("Directory '% s' created" % path)
@@ -304,9 +304,9 @@ def _save_in_current_directory_rf(reflector_ref: reflectors.Reflector):
 
 
 def _load_saved_reflector():
-    current_path = os.path.dirname(__file__)
+    module_path = os.path.dirname(__file__)
     new_folder = utils.REFLECTORS_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
+    path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path))
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]

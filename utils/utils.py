@@ -1,9 +1,11 @@
 """Module that provides global functions and constants"""
 
 import pandas as pd
+import string
 
 
 class Constants:
+    FILESAFE_CHARS = string.letters + string.digits + "-_"
     MAX_NO_ROTORS = 100
     MAX_SEED = 2**2**10
     MAX_NO_BACKSPACES = 1000

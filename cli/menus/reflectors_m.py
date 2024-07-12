@@ -14,7 +14,7 @@ from ..functions.reflectors_f import (
     _reset_and_form_all_connections_by_pairs_rf,
     _reset_and_randomize_connections_rf,
     _reset_connections_rf,
-    _save_in_current_directory_rf,
+    _save_reflector_in_its_folder,
     _show_config_rf,
     # _print_name_rf,
     _load_saved_reflector,
@@ -67,7 +67,7 @@ def _load_saved_reflector_for_editing(
         reflector = _load_saved_reflector()
     utils_cli.runNodeMenu(reflector, _menu_reflector)
     try:
-        _save_in_current_directory_rf(reflector)
+        _save_reflector_in_its_folder(reflector)
         utils_cli.returningToMenu()
     except utils_cli.MenuExitException:
         current_path = os.getcwd()
@@ -89,7 +89,7 @@ def _load_saved_reflector_for_editing(
 
 _menu_reflector = {
     "1": ("Show current reflector setup", _show_config_rf),
-    "2": ("Save rotor", _save_in_current_directory_rf),
+    "2": ("Save rotor", _save_reflector_in_its_folder),
     "3": ("Naming menu", _menu_reflector_name_options),
     "4": ("Connections options menu", _menu_reflector_connections_options),
     "5": ("Resetting options menu", _menu_reflector_reset_options),

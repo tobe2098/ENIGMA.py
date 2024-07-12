@@ -432,7 +432,7 @@ def _randomize_position_rt(rotor_ref: rotors.Rotor):
     utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
 
 
-def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
+def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     new_name = rotor_ref.get_name()
     while not rotor_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
@@ -440,9 +440,9 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
         ).strip()
     rotor_ref._change_name(new_name)
 
-    current_path = os.getcwd()
+    module_path = os.path.dirname(__file__)
     new_folder = utils.ROTORS_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
+    path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
         utils_cli.printOutput("Directory '% s' created" % path)
@@ -465,9 +465,9 @@ def _save_in_current_directory_rt(rotor_ref: rotors.Rotor):
 
 
 def _load_saved_rotor():
-    current_path = os.path.dirname(__file__)
-    new_folder = utils.ROTORS_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
+    module_path = os.path.dirname(__file__)
+    new_folder = utils.Constants.ROTORS_FILE_HANDLE
+    path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]

@@ -16,7 +16,7 @@ from ..functions.rotors_f import (
     _exitMenu_rt,
     _form_all_connections_rt,
     _load_saved_rotor,
-    _save_in_current_directory_rt,
+    _save_rotor_in_its_folder,
     _show_config_rt,
     _swap_connections_rt,
 )
@@ -55,7 +55,7 @@ def _load_saved_rotor_for_editing(rotor: rotors.Rotor = None, recursive: bool = 
         rotor = _load_saved_rotor()
     utils_cli.runNodeMenu(rotor, _menu_rotor)
     try:
-        _save_in_current_directory_rt(rotor)
+        _save_rotor_in_its_folder(rotor)
         utils_cli.returningToMenu()
     except utils_cli.MenuExitException:
         current_path = os.getcwd()
@@ -78,7 +78,7 @@ def _load_saved_rotor_for_editing(rotor: rotors.Rotor = None, recursive: bool = 
 
 _menu_rotor = {
     "1": ("Show current rotor setup", _show_config_rt),
-    "2": ("Save rotor", _save_in_current_directory_rt),
+    "2": ("Save rotor", _save_rotor_in_its_folder),
     "3": ("Naming menu", _menu_rotor_name_options),
     "4": ("Connections options menu", _menu_rotor_connections_options),
     "5": (
