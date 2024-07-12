@@ -193,9 +193,12 @@ def runNodeMenu(object_for_call, menu: dict):
             elif callable(result):
                 result(object_for_call)
             else:  # Here we assume it is a dictionary
-                runNodeMenu(object_for_call, result)
-        except ReturnToMenuException:
-            print(ReturnToMenuException)
+                try:
+                    runNodeMenu(object_for_call, result)
+                except MenuExitException:
+                    pass
+        except ReturnToMenuException as e:
+            print(e)
         except MenuExitException:
             clearScreenConvenienceCli()
             exitMenu()
