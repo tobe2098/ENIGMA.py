@@ -4,7 +4,7 @@
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
-from utils.types_utils import isDashedObject
+from utils.types_utils import getLowerCaseName, isDashedObject
 from ...core import rotors
 from ...utils import utils
 from ...utils import utils_cli
@@ -436,7 +436,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     new_name = rotor_ref.get_name()
     while not rotor_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
-            "Please assign a new name to the rotor:"
+            f"Please assign a new name to the {getLowerCaseName(rotor_ref)}"
         ).strip()
     rotor_ref._change_name(new_name)
 
@@ -445,22 +445,26 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
-        utils_cli.printOutput("Directory '% s' created" % path)
-    if utils_cli.checkIfFileExists(path, rotor_ref._name, "rotor"):
-        utils_cli.printOutput("A rotor with this name already exists")
+        utils_cli.printOutput(f"Directory '{path}' created")
+    if utils_cli.checkIfFileExists(path, rotor_ref._name, getLowerCaseName(rotor_ref)):
+        utils_cli.printOutput(
+            f"A {getLowerCaseName(rotor_ref)} with this name already exists"
+        )
         accbool = ""
         while not accbool == "n" or not accbool == "y":
             accbool = input(
-                utils_cli.askingInput("Do you want to overwrite the saved rotor? [y/n]")
+                utils_cli.askingInput(
+                    f"Do you want to overwrite the saved {getLowerCaseName(rotor_ref)}? [y/n]"
+                )
             ).lower()
         if accbool == "n":
             utils_cli.returningToMenu()
-    save_file = open(r"{}\\{}.rotor".format(path, rotor_ref._name), "wb")
+    file_path = os.path.join(path, f"{rotor_ref._name}.{getLowerCaseName(rotor_ref)}")
+    save_file = open(file_path, "wb")
+
     pickle.dump(rotor_ref, save_file)
     utils_cli.returningToMenu(
-        "{} has been saved into {}.rotor in {}".format(
-            rotor_ref._name, rotor_ref._name, path
-        )
+        f"{rotor_ref._name} has been saved into {rotor_ref._name}.{getLowerCaseName(rotor_ref)} in {path}"
     )
 
 

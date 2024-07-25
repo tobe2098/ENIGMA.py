@@ -1,6 +1,8 @@
 # from ast import unparse
 # from ...core import machines
 import os
+
+from utils.types_utils import getLowerCaseName
 from ...core import reflectors
 from ...utils import utils
 from ...utils import utils_cli
@@ -274,7 +276,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     name = reflector_ref.get_name()
     while not reflector_ref._is_name_valid(name):
         name = utils_cli.askingInput(
-            "Please assign a new name to the reflector"
+            f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
         ).strip()
     reflector_ref._change_name(name)
     module_path = os.path.dirname(__file__)
@@ -282,24 +284,29 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
-        utils_cli.printOutput("Directory '% s' created" % path)
-    if utils_cli.checkIfFileExists(path, reflector_ref._name, "reflector"):
-        utils_cli.printOutput("A reflector with this name already exists")
+        utils_cli.printOutput(f"Directory '{path}' created")
+    if utils_cli.checkIfFileExists(
+        path, reflector_ref._name, getLowerCaseName(reflector_ref)
+    ):
+        utils_cli.printOutput(
+            f"A {getLowerCaseName(reflector_ref)} with this name already exists"
+        )
         accbool = ""
         while not accbool == "n" or not accbool == "y":
             accbool = input(
                 utils_cli.askingInput(
-                    "Do you want to overwrite the saved reflector? [y/n]"
+                    f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
                 )
             ).lower()
         if accbool == "n":
             utils_cli.returningToMenu()
-    save_file = open(r"{}\\{}.reflector".format(path, reflector_ref._name), "wb")
+    file_path = os.path.join(
+        path, f"{reflector_ref._name}.{getLowerCaseName(reflector_ref)}"
+    )
+    save_file = open(file_path, "wb")
     pickle.dump(reflector_ref, save_file)
     utils_cli.returningToMenu(
-        "{} has been saved into {}.reflector in {}".format(
-            reflector_ref.name, reflector_ref.name, path
-        )
+        f"{ reflector_ref.name} has been saved into { reflector_ref.name}.{getLowerCaseName(reflector_ref)} in {path}"
     )
 
 

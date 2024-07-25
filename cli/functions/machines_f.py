@@ -1,3 +1,4 @@
+from utils.types_utils import getLowerCaseName
 from ...cli.functions.plugboards_f import _show_config_pb
 from ...cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
 from ...cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
@@ -9,6 +10,7 @@ from ...cli.menus.plugboards_m import _menu_plugboard
 from ...utils.utils import Constants, get_character_list, is_valid_seed
 from ...utils.utils_cli import (
     askingInput,
+    checkIfFileExists,
     checkInputValidity,
     getSeedFromUser,
     printError,
@@ -164,6 +166,15 @@ def _append_rotors(machine_ref: machines.Machine):
         returningToMenu("Invalid input or input is zero", output_type="e")
     machine_ref._append_rotors(no_rotors_append)
     returningToMenu("Rotors appended")
+
+
+def _load_a_rotor_on_index(machine_ref:machines.Machine, idx):
+    if self.is_rotor_index_valid(idx):
+        self._rotors.insert(idx, _load_saved_rotor())
+    elif idx > len(self._rotors):
+        self._rotors.append(_load_saved_rotor())
+    else:
+        returningToMenu("Invalid input","e")
 
 
 def _load_rotors_at_index(machine_ref: machines.Machine):
@@ -430,7 +441,9 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 def _save_machine_in_its_folder(machine_ref: machines.Machine):
     new_name = machine_ref.get_name()
     while not machine_ref._is_name_valid(new_name):
-        new_name = askingInput("Please assign a new name to the rotor:").strip()
+        new_name = askingInput(
+            f"Please assign a new name to the {getLowerCaseName(machine_ref)}"
+        ).strip()
     machine_ref._change_name(new_name)
 
     module_path = os.path.dirname(__file__)
@@ -438,21 +451,26 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)
-        utils_cli.printOutput("Directory '% s' created" % path)
-    if utils_cli.checkIfFileExists(path, rotor_ref._name, "rotor"):
-        utils_cli.printOutput("A rotor with this name already exists")
+        printOutput("Directory '% s' created" % path)
+    if checkIfFileExists(path, machine_ref._name, getLowerCaseName(machine_ref)):
+        printOutput(f"A {getLowerCaseName(machine_ref)} with this name already exists")
         accbool = ""
         while not accbool == "n" or not accbool == "y":
             accbool = input(
-                utils_cli.askingInput("Do you want to overwrite the saved rotor? [y/n]")
+                askingInput(
+                    f"Do you want to overwrite the saved {getLowerCaseName(machine_ref)}? [y/n]"
+                )
             ).lower()
         if accbool == "n":
-            utils_cli.returningToMenu()
-    save_file = open(r"{}\\{}.rotor".format(path, rotor_ref._name), "wb")
-    pickle.dump(rotor_ref, save_file)
-    utils_cli.returningToMenu(
-        "{} has been saved into {}.rotor in {}".format(
-            rotor_ref._name, rotor_ref._name, path
+            returningToMenu()
+    file_path = os.path.join(
+        path, f"{machine_ref._name}.{getLowerCaseName(machine_ref)}"
+    )
+    save_file = open(file_path, "wb")
+    pickle.dump(machine_ref, save_file)
+    returningToMenu(
+        "{} has been saved into {}.{} in {}".format(
+            machine_ref._name, machine_ref._name, getLowerCaseName(machine_ref), path
         )
     )
 

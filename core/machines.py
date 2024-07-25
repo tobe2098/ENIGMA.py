@@ -4,7 +4,6 @@ import copy
 
 # import sys
 
-from cli.functions.rotors_f import _load_saved_rotor
 from utils.exceptions import raiseBadInputException, raiseBadSetupException
 
 from .rotors import Rotor, RotorDash
@@ -123,14 +122,6 @@ class Machine:
                 self._rotors[idx2],
                 self._rotors[idx1],
             )
-        else:
-            raiseBadInputException()
-
-    def _load_a_rotor_on_index(self, idx):
-        if self.is_rotor_index_valid(idx):
-            self._rotors.insert(idx, _load_saved_rotor())
-        elif idx > len(self._rotors):
-            self._rotors.append(_load_saved_rotor())
         else:
             raiseBadInputException()
 
