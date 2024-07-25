@@ -441,7 +441,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     rotor_ref._change_name(new_name)
 
     module_path = os.path.dirname(__file__)
-    new_folder = utils.ROTORS_FILE_HANDLE
+    new_folder = utils.Constants.ROTORS_FILE_HANDLE
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         os.mkdir(path)

@@ -28,11 +28,9 @@ class Machine:
         self._name = name
         # Include seed storages?
         # Write a default config
-        if not self._ref_rotor:
-            self._ref_rotor = Rotor()
+        self._ref_rotor = Rotor(characters=characters, conversion=conversion)
         self._set_new_no_rotors(3)
-        if not self._reflector:
-            self._reflector = Reflector()
+        self._reflector = Reflector(characters=characters, conversion=conversion)
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
         if not seed:
@@ -45,8 +43,7 @@ class Machine:
         else:
             self._seed = seed
         # For now, default is nothingness
-        if not self._plugboard:
-            self._plugboard = PlugBoard()
+        self._plugboard = PlugBoard(characters=characters, conversion=conversion)
         self._current_distance_from_original_state = 0
         # self.board_num_dict=transform_single_dict(self.board_dict)
         # print(

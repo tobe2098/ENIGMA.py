@@ -23,6 +23,7 @@ from ...core import machines
 import pandas as pd
 import os
 import copy
+import pickle
 
 
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
@@ -280,6 +281,11 @@ def _edit_a_rotors_config(machine_ref: machines.Machine):  ## This is just a men
     returningToMenu()
 
 
+def _edit_ref_rotor_config(machine_ref: machines.Machine):  ## This is just a menu call
+    runNodeMenu(machine_ref._ref_rotor, _menu_rotor)
+    returningToMenu()
+
+
 def _edit_reflector_config(machine_ref: machines.Machine):
     runNodeMenu(machine_ref._reflector, _menu_reflector)
     returningToMenu()
@@ -421,8 +427,34 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 # print id(foo2) == id(bar2.foo_ref) # True
 
 
-def _save_machine_in_its_folder():
-    pass
+def _save_machine_in_its_folder(machine_ref: machines.Machine):
+    new_name = machine_ref.get_name()
+    while not machine_ref._is_name_valid(new_name):
+        new_name = askingInput("Please assign a new name to the rotor:").strip()
+    machine_ref._change_name(new_name)
+
+    module_path = os.path.dirname(__file__)
+    new_folder = Constants.MACHINES_FILE_HANDLE
+    path = os.path.join(module_path, new_folder)
+    if not os.path.exists(path):
+        os.mkdir(path)
+        utils_cli.printOutput("Directory '% s' created" % path)
+    if utils_cli.checkIfFileExists(path, rotor_ref._name, "rotor"):
+        utils_cli.printOutput("A rotor with this name already exists")
+        accbool = ""
+        while not accbool == "n" or not accbool == "y":
+            accbool = input(
+                utils_cli.askingInput("Do you want to overwrite the saved rotor? [y/n]")
+            ).lower()
+        if accbool == "n":
+            utils_cli.returningToMenu()
+    save_file = open(r"{}\\{}.rotor".format(path, rotor_ref._name), "wb")
+    pickle.dump(rotor_ref, save_file)
+    utils_cli.returningToMenu(
+        "{} has been saved into {}.rotor in {}".format(
+            rotor_ref._name, rotor_ref._name, path
+        )
+    )
 
 
 def load_machine(

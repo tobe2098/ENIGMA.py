@@ -118,12 +118,6 @@ class Reflector:
         # Export
         # self.export_reflector()
 
-
-class ReflectorDash(Reflector):
-    def __init__(self):
-        super().__init__(Constants.CHARACTERS_dash, Constants.EQUIVALENCE_DICT_dash)
-        # self.reflector_dict={character:character for character in CHARACTERS_dash}
-
     # def _update_dicts(self, character_to_num=True):
     #     if character_to_num:
     #         self.reflector_num_dict = transform_single_dict_dash(self.reflector_dict)

@@ -7,6 +7,7 @@ from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
+    Constants,
     EQUIVALENCE_DICT_dash,
     is_valid_seed,
     transform_single_dict,
@@ -14,7 +15,9 @@ from ..utils.utils import (
 
 
 class PlugBoard:
-    def __init__(self, characters=CHARACTERS, conversion=EQUIVALENCE_DICT) -> None:
+    def __init__(
+        self, characters=Constants.CHARACTERS, conversion=Constants.EQUIVALENCE_DICT
+    ) -> None:
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)
         self._board_dict = dict(
@@ -62,14 +65,3 @@ class PlugBoard:
         self._update_dicts(False)
         # Show final configuration
         # print(">>>Board config:\n", simplify_board_dict(self.board_dict))
-
-
-class PlugBoardDash(PlugBoard):
-    """_summary_
-
-    Args:
-        PlugBoard (_type_): _description_
-    """
-
-    def __init__(self) -> None:
-        super().__init__(CHARACTERS_dash, EQUIVALENCE_DICT_dash)

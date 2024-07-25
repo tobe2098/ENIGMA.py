@@ -254,8 +254,3 @@ class Rotor:
             or self._is_jump_invalid(self._jump)
             or self._is_position_invalid(self._position)
         )
-
-
-class RotorDash(Rotor):
-    def __init__(self):
-        super().__init__(Constants.CHARACTERS_dash, Constants.EQUIVALENCE_DICT_dash)
