@@ -121,17 +121,13 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
         )
     utils_cli.printOutput("Unpaired character in front side:", front_unformed)
 
-    character1 = utils_cli.askingInput(
-        "Choose a character to pair from front side"
-    ).upper()
+    character1 = utils_cli.askingInput("Choose a character to pair from front side")
     character1 = utils_cli.checkInputValidity(character1, rangein=front_unformed)
     if not character1:
         # if character1 not in front_unformed:
         utils_cli.returningToMenu("Invalid input", output_type="e")
     utils_cli.printOutput("Unpaired characters in back side:", back_unformed)
-    character2 = utils_cli.askingInput(
-        "Choose the second character from the back side"
-    ).upper()
+    character2 = utils_cli.askingInput("Choose the second character from the back side")
     character2 = utils_cli.checkInputValidity(character2, rangein=back_unformed)
     if not character2:
         # if character2 not in back_unformed:
@@ -185,13 +181,9 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
         utils_cli.printOutput(
             "If you want to stop configurating the board, just press Enter"
         )
-        characters = (
-            utils_cli.askingInput(
-                "Input one character from front side, one from back side (in order)"
-            )
-            .strip()
-            .upper()
-        )
+        characters = utils_cli.askingInput(
+            "Input one character from front side, one from back side (in order)"
+        ).strip()
         characters = list(characters)
         if len(characters) == 2 and all(
             character in utils.get_character_list(rotor_ref) for character in characters
@@ -303,9 +295,9 @@ def _swap_connections_rt(rotor_ref: rotors.Rotor):
     """
     while True:
         accbool = utils_cli.askingInput(
-            "If you do not want to continue swapping, enter N"
-        ).upper()
-        if accbool == "N":
+            "If you do not want to continue swapping, enter n"
+        ).lower()
+        if accbool == "n":
             utils_cli.returningToMenu()
         _swap_two_connections_rt(rotor_ref=rotor_ref)
 
@@ -383,9 +375,7 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
         i
         for i in utils_cli.askingInput(
             "Input new notches separated by a space (empty to skip)"
-        )
-        .upper()
-        .split()
+        ).split()
     ]
     if not positions:
         utils_cli.returningToMenu()
@@ -395,9 +385,7 @@ def _change_notches_rt(rotor_ref: rotors.Rotor):
             i
             for i in utils_cli.askingInput(
                 "Input new notches separated by a space (empty to skip)"
-            )
-            .upper()
-            .split()
+            ).split()
         ]
         if not positions:
             utils_cli.returningToMenu()
@@ -415,13 +403,13 @@ def _randomize_notches_rt(rotor_ref: rotors.Rotor):
 def _change_position_rt(rotor_ref: rotors.Rotor):
     new_position = utils_cli.askingInput(
         "Input a single allowed character to set the rotor to a new position"
-    ).upper()
+    )
     while rotor_ref._is_position_invalid(new_position):
         utils_cli.printError("Input only allowed characters")
         utils_cli.printOutput(utils.get_character_list(rotor_ref))
         new_position = utils_cli.askingInput(
             "Input a single allowed character to set the rotor to a new position"
-        ).upper()
+        )
     rotor_ref._define_position(new_position)
     utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
 
@@ -463,6 +451,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     save_file = open(file_path, "wb")
 
     pickle.dump(rotor_ref, save_file)
+    save_file.close()
     utils_cli.returningToMenu(
         f"{rotor_ref._name} has been saved into {rotor_ref._name}.{getLowerCaseName(rotor_ref)} in {path}"
     )
@@ -475,7 +464,7 @@ def _load_saved_rotor():
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-    if len(list_of_files) == 0:
+    if not list_of_files:
         utils_cli.returningToMenu(f"There are no rotors saved at {path}", "e")
     utils_cli.printOutput("Your available rotors are:")
     utils_cli.printListOfOptions(list_of_files)
@@ -492,7 +481,9 @@ def _load_saved_rotor():
             rotor, int, rangein=(0, len(list_of_files))
         )
     filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[rotor]), "rb")
-    return pickle.load(filehandler)
+    rotor_ref = pickle.load(filehandler)
+    filehandler.close()
+    return rotor_ref
 
 
 def _exitMenu_rt(rotor_ref: rotors.Rotor):

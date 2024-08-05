@@ -89,7 +89,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
             "There are no characters left to pair (one or fewer left unconnected)"
         )
     utils_cli.printOutput("Unpaired characters:", unpaired_list)
-    character1 = utils_cli.askingInput("Choose a character to pair").upper()
+    character1 = utils_cli.askingInput("Choose a character to pair")
     character1 = utils_cli.checkInputValidity(character1, rangein=unpaired_list)
     if not character1:
         # if character1 not in unpaired_list:
@@ -99,7 +99,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     utils_cli.printOutput(
         "Remaining characters:", list(set(unpaired_list) - set(character1))
     )
-    character2 = utils_cli.askingInput("Choose the second character:").upper()
+    character2 = utils_cli.askingInput("Choose the second character:")
     character2 = utils_cli.checkInputValidity(
         character2, rangein=list(set(unpaired_list) - set(character1))
     )
@@ -145,9 +145,7 @@ def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
-        characters = (
-            utils_cli.askingInput("Input two characters to pair").strip().upper()
-        )
+        characters = utils_cli.askingInput("Input two characters to pair").strip()
         if characters.isalpha() and len(characters) == 2:
             pass
         elif not characters:
@@ -305,6 +303,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     )
     save_file = open(file_path, "wb")
     pickle.dump(reflector_ref, save_file)
+    save_file.close()
     utils_cli.returningToMenu(
         f"{ reflector_ref.name} has been saved into { reflector_ref.name}.{getLowerCaseName(reflector_ref)} in {path}"
     )
@@ -331,8 +330,12 @@ def _load_saved_reflector():
         reflector = utils_cli.checkInputValidity(
             reflector, int, rangein=(0, len(list_of_files))
         )
-    filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[reflector]), "rb")
-    return pickle.load(filehandler)
+    filehandler = open(
+        r"{}\\{}.reflector".format(path, list_of_files[reflector]), "rb"
+    )  # Change to os.path
+    reflector_ref = pickle.load(filehandler)
+    filehandler.close()
+    return reflector_ref
 
 
 def _exitMenu_rf(reflector_ref: reflectors.Reflector):
