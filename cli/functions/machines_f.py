@@ -168,13 +168,14 @@ def _append_rotors(machine_ref: machines.Machine):
     returningToMenu("Rotors appended")
 
 
-def _load_a_rotor_on_index(machine_ref:machines.Machine, idx):
-    if self.is_rotor_index_valid(idx):
-        self._rotors.insert(idx, _load_saved_rotor())
-    elif idx > len(self._rotors):
-        self._rotors.append(_load_saved_rotor())
+def _load_a_rotor_on_index(machine_ref: machines.Machine, idx):
+    # Review, I dont remember if I had to do something extra here
+    if machine_ref.is_rotor_index_valid(idx):
+        machine_ref._rotors.insert(idx, _load_saved_rotor())
+    elif idx > len(machine_ref._rotors):
+        machine_ref._rotors.append(_load_saved_rotor())
     else:
-        returningToMenu("Invalid input","e")
+        returningToMenu("Invalid input", "e")
 
 
 def _load_rotors_at_index(machine_ref: machines.Machine):
@@ -446,7 +447,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
         ).strip()
     machine_ref._change_name(new_name)
 
-    module_path = os.path.dirname(__file__)
+    module_path = Constants.MODULE_PATH
     new_folder = Constants.MACHINES_FILE_HANDLE
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
@@ -456,10 +457,8 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
         printOutput(f"A {getLowerCaseName(machine_ref)} with this name already exists")
         accbool = ""
         while not accbool == "n" or not accbool == "y":
-            accbool = input(
-                askingInput(
-                    f"Do you want to overwrite the saved {getLowerCaseName(machine_ref)}? [y/n]"
-                )
+            accbool = askingInput(
+                f"Do you want to overwrite the saved {getLowerCaseName(machine_ref)}? [y/n]"
             ).lower()
         if accbool == "n":
             returningToMenu()
@@ -468,6 +467,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     )
     save_file = open(file_path, "wb")
     pickle.dump(machine_ref, save_file)
+    save_file.close()
     returningToMenu(
         "{} has been saved into {}.{} in {}".format(
             machine_ref._name, machine_ref._name, getLowerCaseName(machine_ref), path
@@ -476,50 +476,37 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
 
 
 def load_machine(
-    machine_ref,
-):  # THIS LOAD FUNCTION IS DEPRECATED, IT DOES NOT WORK, USE THE ONE THAT IS NOT CLASS DEFINED
-    # THE FUNCTION MUST DEAL WITH THE STORED OBJECTS IN ORDER LOOK STACK OVERFLOW
-    current_path = os.path.dirname(__file__)
-    new_folder = utils.MACHINES_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
+    machine_ref: machines.Machine,
+):
+    module_path = Constants.MODULE_PATH
+    new_folder = Constants.MACHINES_FILE_HANDLE
+    path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
-        print("There is no {} folder".format(path))
-        return
+        returningToMenu(f"There is no {path} folder", output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-    if len(list_of_files) == 0:
-        print("There are no machines saved")
-        return
-    print("Your available machines are:")
-    for i in list_of_files:
-        print(i)
-    machine = int(input("Input machine's position in the list:"))
-    file = os.path.join(path, "{}.machine".format(list_of_files[machine - 1]))
-    filehandler = open(file, "rb")
+    if not list_of_files:
+        returningToMenu("There are no machines saved", output_type="e")
+    printOutput("Your available machines are:")
+    printListOfOptions(list_of_files)
+    machine = askingInput("Input machine's position in the list")
+    if not machine:
+        returningToMenu()
+    machine = checkInputValidity(machine, int, rangein=(0, len(list_of_files)))
+    while not machine:
+        # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
+        printError("Please input a valid index")
+        printListOfOptions(list_of_files)
+        machine = askingInput("Input rotor's position in the list:")
+        if not machine:
+            returningToMenu()
+        machine = checkInputValidity(machine, int, rangein=(0, len(list_of_files)))
+    file = os.path.join(path, f"{list_of_files[machine]}.machine")
+    filehandler = open(
+        file, "rb"
+    )  # Check that the open() can take os module paths (seems like because they return str)
     machine_ref = pickle.load(filehandler)
     filehandler.close()
-    # return machine_ref  # End
-
-
-def load_existing_machine():
-    current_path = os.path.dirname(__file__)
-    new_folder = utils.MACHINES_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
-    if not os.path.exists(path):
-        print(">There is no {} folder".format(path))
-        return
-    list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-    if len(list_of_files) == 0:
-        print(">There are no machines saved")
-        return
-    print(">Your available machines are:")
-    for i in list_of_files:
-        print(i)
-    machine = int(input(">>>Input machine's position in the list:"))
-    file = os.path.join(path, "{}.machine".format(list_of_files[machine - 1]))
-    filehandler = open(file, "rb")
-    machine = pickle.load(filehandler)
-    filehandler.close()
-    return machine
+    return machine_ref  # End
 
 
 def setup_random_machine(machine_ref):
