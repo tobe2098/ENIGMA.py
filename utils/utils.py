@@ -2,6 +2,7 @@
 
 import pandas as pd
 import string
+import os
 
 
 class Constants:
@@ -24,6 +25,7 @@ class Constants:
     ROTORS_FILE_HANDLE = "SAVED_ROTORS"
     REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
     MACHINES_FILE_HANDLE = "SAVED_MACHINES"
+    MODULE_PATH = os.dirname(os.dirname(os.path.abspath(__file__)))
 
 
 def my_quit_fn():  # This function should be in utils.py

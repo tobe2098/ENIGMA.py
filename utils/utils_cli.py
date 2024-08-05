@@ -1,4 +1,3 @@
-from curses.ascii import isalpha
 import os
 from subprocess import call
 
@@ -135,7 +134,8 @@ def clearScreenConvenienceCli():
 
 
 def checkIfFileExists(path, name, suffix):
-    return os.path.isfile(r"{}\\{}.{}".format(path, name, suffix))
+    # return os.path.isfile(rf"{path}\\{name}.{suffix}")
+    return os.path.isfile(os.path.join(path, f"{name}.{suffix}"))
 
 
 def checkInputValidity(_input: str, _type=str, rangein=[]):
