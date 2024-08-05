@@ -329,6 +329,7 @@ def _machine_get_message(machine_ref: machines.Machine):
     printOutput(
         "Allowed characters (others WILL be ignored):", get_character_list(machine_ref)
     )
+    DO YOU WANT TO READ FROM A TEXT FILE?
     text = askingInput("Write the desired message")
     return text
 
