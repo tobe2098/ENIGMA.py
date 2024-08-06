@@ -7,7 +7,7 @@ from ...cli.menus.rotors_m import _menu_rotor
 from ...cli.menus.reflectors_m import _menu_reflector
 from ...cli.menus.plugboards_m import _menu_plugboard
 
-from ...utils.utils import Constants, get_character_list, is_valid_seed
+from ...utils.utils import Constants, get_character_list, is_valid_filename, is_valid_seed
 from ...utils.utils_cli import (
     askingInput,
     checkIfFileExists,
@@ -26,6 +26,7 @@ import pandas as pd
 import os
 import copy
 import pickle
+import json
 
 
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
@@ -88,7 +89,7 @@ def _random_setup_reflector_machine(machine_ref: machines.Machine):
 
 
 def _random_setup_reflector_global_seed_machine(machine_ref: machines.Machine):
-    if machine_ref.get_seed() == 0:
+    if not machine_ref.seed_is_set():
         returningToMenu("No global seed has been set", output_type="e")
     machine_ref._reflector._randomize_dictionaries(machine_ref.get_seed())
     returningToMenu("Reflector has been randomized with the machine's global seed")
@@ -106,7 +107,7 @@ def _set_a_global_seed_machine(machine_ref: machines.Machine):
 
 
 def _random_setup_all_rotors_machine(machine_ref: machines.Machine):
-    if machine_ref.get_seed() == 0:
+    if machine_ref.get_seed() <= 0:
         returningToMenu("No global seed has been set", output_type="e")
     jump = getSeedFromUser("seed jump")
     machine_ref._random_setup_all_rotors(jump=jump)
@@ -125,7 +126,7 @@ def _randomize_entire_machine(machine_ref: machines.Machine):
 
 
 def _re_randomize_with_global_seed_machine(machine_ref: machines.Machine):
-    if machine_ref.get_seed() == 0:
+    if not machine_ref.seed_is_set():
         returningToMenu("No global seed has been set", output_type="e")
     machine_ref.setup_machine_randomly(
         machine_ref.get_seed(), machine_ref.get_no_rotors()
@@ -366,9 +367,9 @@ def _encrypt_decrypt_cliout(machine_ref: machines.Machine):
 def _encrypt_decrypt_fileout(machine_ref: machines.Machine, filepath=None):
     if not filepath:
         filepath = askingInput(
-            "Give a new filename to store your message as a text file"
+            "Give a new filename to store your message as a text file in the current directory"
         )
-        if not all(i in Constants.FILESAFE_CHARS for i in filepath):
+        if not is_valid_filename(filepath):
             returningToMenu("Invalid filename", output_type="e")
         filepath += ".txt"
         filepath = os.path.join(os.getcwd(), filepath)
@@ -466,9 +467,12 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     file_path = os.path.join(
         path, f"{machine_ref._name}.{getLowerCaseName(machine_ref)}"
     )
-    save_file = open(file_path, "wb")
-    pickle.dump(machine_ref, save_file)
-    save_file.close()
+    try:
+        save_file = open(file_path, "wb")
+        pickle.dump(machine_ref, save_file)
+        save_file.close()
+    except Exception as e:
+        returningToMenu(f"Failed to write on {file_path}:{e}")
     returningToMenu(
         "{} has been saved into {}.{} in {}".format(
             machine_ref._name, machine_ref._name, getLowerCaseName(machine_ref), path
@@ -476,9 +480,9 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     )
 
 
-def load_machine(
-    machine_ref: machines.Machine,
-):
+def _load_machine(machine_ref:machines.Machine=None):
+    if machine_ref:
+        _save_machine_in_its_folder(machine_ref=machine_ref)
     module_path = Constants.MODULE_PATH
     new_folder = Constants.MACHINES_FILE_HANDLE
     path = os.path.join(module_path, new_folder)
@@ -502,145 +506,34 @@ def load_machine(
             returningToMenu()
         machine = checkInputValidity(machine, int, rangein=(0, len(list_of_files)))
     file = os.path.join(path, f"{list_of_files[machine]}.machine")
-    filehandler = open(
-        file, "rb"
-    )  # Check that the open() can take os module paths (seems like because they return str)
-    machine_ref = pickle.load(filehandler)
-    filehandler.close()
-    return machine_ref  # End
-
-
-def setup_random_machine(machine_ref):
-    print(">Randomly generating your ENIGMA machine:")
-    noRotors = "a"
-    while not isinstance(noRotors, int):
-        noRotors = input(">>>Input the number of rotors:")
-        if noRotors > MAX_NO_ROTORS:
-            noRotors = ""
-            print(
-                "Maximum number of rotors allowed is {} (for your own good)".format(
-                    MAX_NO_ROTORS
-                )
-            )
-
-
-def save_machine(machine_ref):
-    # Research on how to pickle and unpickle member custom classes
-    while machine_ref._name.strip() == "name" or machine_ref._name.strip() == "":
-        machine_ref._name = input(">>>Please assign a new name to the machine:")
-    current_path = os.path.dirname(__file__)
-    new_folder = utils.MACHINES_FILE_HANDLE
-    path = os.path.join(current_path, new_folder)
-    if not os.path.exists(path):
-        os.mkdir(path)
-        print("Directory '% s' created" % path)
-    save_file = open(r"{}/{}.machine".format(path, machine_ref._name), "wb")
-    pickle.dump(machine_ref, save_file)
-    print(
-        "{} has been saved into {}.machine in {}".format(
-            machine_ref._name, machine_ref._name, path
-        )
-    )
-    save_file.close()
-    # return  # End
-
-    def manual_complete_config(machine_ref):
-        # MENU HERE TOO
-        raise Exception
-        # Board
-        print(">Configurating the connection board:")
-        machine_ref._plugboard.manual_board_setup()
-        # Rotors
-        print(">Configurating rotors:")
-        machine_ref._manual_rotor_setup()
-        # Reflector
-        print(">Configurating reflector:")
-        machine_ref._reflector.configure()
-        # Name. IMPORTANT: name is used to save as pickled object.
-        # Not changing the name will overwrite previous machine with same name
-        print(">Machine is ready to go. Changing name is advised")
-        name = input(
-            ">>>Input machine name (previous save with the same name will be overwritten):"
-        )
-        machine_ref.change_name(name)
-        machine_ref.save_machine()
-
-    def _all_rotor_setup(machine_ref):
-        machine_ref.show_rotor_config()
-        raise Exception
-        # Maybe client no-gui? Remove editors from here then, bc not compatible with GUI
-        # NEED A FULL MENU HERE, WITH ADD R/C/L, REMOVE, RESET AND RANDOMIZE, RESET AND CONFIGURE, LOAD ROTORS IN PLACE
-        print(">The machine currently has {} rotors".format(len(machine_ref._rotors)))
-        machine_ref._append_rotors(input(">>>Number of rotors to add? "))
-        # while True:
-        choose = input(">>>Do you want to use only the same rotors?[y/n]:")
-        if choose == "y":
-            machine_ref._tune_loaded_rotors()
-            machine_ref._rotor_order_change()
-            machine_ref._change_rotor_character_position()
-            machine_ref._change_rotor_notches()
-        elif choose == "n":
-            choose2 = input(
-                ">>>Do you want to import pre-existing rotors that are not in the machine?[y/n]:"
-            )
-            if choose2 == "y":
-                for i in range(input(">>>Input desired number of rotors: ")):
-                    print(">Choosing a rotor for position no. {}:".format(i))
-                    machine_ref._rotors[i].import_rotor()
-            elif choose2 == "n":
-                print(
-                    ">Rotors will be generated and saved randomly, you can edit them later."
-                )
-                machine_ref.generate_random_rotors()
-        print(">Setup of rotors finished, going back to selection")
-
-    def show_rotor_config(machine_ref):
-        print(">ROTORS START")
-        for i in range(len(machine_ref._rotors)):
-            print(">Rotor no. {}:".format(i + 1))
-            machine_ref._rotors[i].show_config()
-        print(">ROTORS END")
-
-    def import_rotor(machine_ref):
-        current_path = os.path.dirname(__file__)
-        new_folder = utils.ROTORS_FILE_HANDLE
-        path = os.path.join(current_path, new_folder)
-        if not os.path.exists(path):
-            print("There is no {} folder".format(path))
-            return
-        list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-        if len(list_of_files) == 0:
-            print("There are no rotors saved")
-            return
-        print("Your available rotors are: {}".format(list_of_files))
-        rotor = input("Input rotor's position in the list:")
-        filehandler = open(r"{}\\{}.rotor".format(path, list_of_files[rotor - 1]), "rb")
+    try:
+        filehandler = open(file, "rb")
         machine_ref = pickle.load(filehandler)
         filehandler.close()
+    except Exception as e:
+        returningToMenu(f"Failed to open file {file}:{e}") 
+    return machine_ref  # End
 
-    def import_reflector(machine_ref):
-        current_path = os.path.dirname(__file__)
-        new_folder = utils.REFLECTORS_FILE_HANDLE
-        path = os.path.join(current_path, new_folder)
-        if not os.path.exists(path):
-            print(">There is no {} folder".format(path))
-            return
-        list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-        if len(list_of_files) == 0:
-            print(">There are no reflectors saved")
-            return
-        print(">Your available reflectors are: {}".format(list_of_files))
-        reflector = input(">>>Input reflector's position in the list:")
-        filehandler = open(
-            r"{}\\{}.reflector".format(path, list_of_files[reflector - 1]), "rb"
-        )
-        machine_ref = pickle.load(filehandler)
+def _print_charlist():
+    pass
 
+def _create_and_store_a_new_charlist():
+    pass
 
-def generate_n_random_reflectors(n, seed: int):
-    # Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
-    for index in range(0, n):
-        reflector = reflector.Reflector()
-        reflector.random_name(seed + index)
-        reflector.random_setup(seed + index)
-    utils_cli.printOutput(f"Created and saved {n} rotors.")
+def _delete_a_charlist():
+    pass
+
+def _create_a_random_machine(machine_ref:machines.Machine=None):
+    if machine_ref:
+        _save_machine_in_its_folder(machine_ref=machine_ref)
+    create machine
+    ask for seed
+    ask for dict and list of char
+        
+# def generate_n_random_reflectors(n, seed: int):
+#     # Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
+#     for index in range(0, n):
+#         reflector = reflector.Reflector()
+#         reflector.random_name(seed + index)
+#         reflector.random_setup(seed + index)
+#     utils_cli.printOutput(f"Created and saved {n} rotors.")

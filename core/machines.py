@@ -81,6 +81,9 @@ class Machine:
     def get_seed(self):
         return self.seed
 
+    def seed_is_set(self):
+        return self.seed > 0
+
     def _change_seed(self, seed):
         if not is_valid_seed(seed):
             raiseBadInputException()
