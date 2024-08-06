@@ -4,7 +4,7 @@
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
-from utils.exceptions import SavingErrorException
+from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName, isDashedObject
 from ...core import rotors
 from ...utils import utils
@@ -452,7 +452,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
         pickle.dump(rotor_ref, save_file)
         save_file.close()
     except Exception as e:
-        raise SavingErrorException(
+        raise FileIOErrorException(
             f"Failed to save the {getLowerCaseName(rotor_ref)} at {file_path}:{e}"
         )
     utils_cli.returningToMenu(

@@ -2,7 +2,7 @@
 # from numpy import format_float_positional
 import os
 
-from utils.exceptions import SavingErrorException
+from utils.exceptions import FileIOErrorException
 from ...core import reflectors
 from ...utils import utils_cli
 from ...utils import utils
@@ -69,7 +69,7 @@ def _load_saved_reflector_for_editing():
         try:
             _save_reflector_in_its_folder(reflector)
             # utils_cli.returningToMenu() #Previous line has the exception inside
-        except SavingErrorException as e:
+        except FileIOErrorException as e:
             utils_cli.printOutput(e)
             flag = ""
             while flag != "n" and flag != "y":

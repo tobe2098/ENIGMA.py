@@ -2,7 +2,7 @@
 # from ...core import machines
 import os
 
-from utils.exceptions import SavingErrorException
+from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
 from ...core import reflectors
 from ...utils import utils
@@ -306,7 +306,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
         pickle.dump(reflector_ref, save_file)
         save_file.close()
     except Exception as e:
-        raise SavingErrorException(
+        raise FileIOErrorException(
             f"Failed to save the {getLowerCaseName(reflector_ref)} at {file_path}:{e}"
         )
     utils_cli.returningToMenu(

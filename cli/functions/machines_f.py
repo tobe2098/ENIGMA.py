@@ -1,3 +1,5 @@
+from importlib import machinery
+from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
 from ...cli.functions.plugboards_f import _show_config_pb
 from ...cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
@@ -7,7 +9,13 @@ from ...cli.menus.rotors_m import _menu_rotor
 from ...cli.menus.reflectors_m import _menu_reflector
 from ...cli.menus.plugboards_m import _menu_plugboard
 
-from ...utils.utils import Constants, get_character_list, is_valid_filename, is_valid_seed
+from ...utils.utils import (
+    Constants,
+    create_dictionary_from_charlist,
+    get_character_list,
+    is_valid_filename,
+    is_valid_seed,
+)
 from ...utils.utils_cli import (
     askingInput,
     checkIfFileExists,
@@ -327,11 +335,50 @@ def _machine_get_message(machine_ref: machines.Machine):
             "One or more of the machine's components is not properly set up",
             output_type="e",
         )
-    printOutput(
-        "Allowed characters (others WILL be ignored):", get_character_list(machine_ref)
-    )
-    DO YOU WANT TO READ FROM A TEXT FILE?
-    text = askingInput("Write the desired message")
+
+    ans = ""
+    while ans != "y" and ans != "n":
+        ans = askingInput(
+            "Would you like to read the message from a .txt file?[y/n]"
+        ).lower()
+    if ans == "y":
+        file = askingInput(
+            f"Introduce the file's name to be read (without .txt, from {os.getcwd()} only)"
+        )
+        while not is_valid_filename(file) or not checkIfFileExists(
+            os.getcwd(), file, ".txt"
+        ):
+            printError(f"The file {file}.txt does not exist")
+            file = askingInput(
+                f"Introduce the file's name to be read (without .txt, from {os.getcwd()} only)"
+            )
+        text = get_message_from_textfile(file)
+        return text
+    else:
+        printOutput(
+            "Allowed characters (others WILL be ignored):",
+            get_character_list(machine_ref),
+        )
+        text = askingInput("Write the desired message")
+        return text
+
+
+def get_message_from_textfile(filename: str):
+    text = ""
+    try:
+        with open(file, "r") as file:
+            while True:
+                chunk = file.read(1024)  # Read in chunks of 1024 bytes
+                if not chunk:
+                    break
+                # Process the chunk
+                text += chunk
+    except FileNotFoundError:
+        raise FileIOErrorException(f"The file {filename} was not found")
+    except IOError as e:
+        raise FileIOErrorException(
+            f"An error occurred while reading the file {filename}:{e}"
+        )
     return text
 
 
@@ -480,7 +527,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     )
 
 
-def _load_machine(machine_ref:machines.Machine=None):
+def _load_machine(machine_ref: machines.Machine = None):
     if machine_ref:
         _save_machine_in_its_folder(machine_ref=machine_ref)
     module_path = Constants.MODULE_PATH
@@ -511,25 +558,48 @@ def _load_machine(machine_ref:machines.Machine=None):
         machine_ref = pickle.load(filehandler)
         filehandler.close()
     except Exception as e:
-        returningToMenu(f"Failed to open file {file}:{e}") 
+        returningToMenu(f"Failed to open file {file}:{e}")
     return machine_ref  # End
 
-def _print_charlist():
+
+def _print_charlist_collection():
     pass
 
+
 def _create_and_store_a_new_charlist():
-    pass
+    charlist = []
+    return charlist  # Only to be used if called with that intention
+
 
 def _delete_a_charlist():
     pass
 
-def _create_a_random_machine(machine_ref:machines.Machine=None):
+
+def _retrieve_a_charlist():
+    pass
+
+
+def _get_a_charlist_from_user():
+    pass
+
+
+def _create_a_new_random_machine(machine_ref: machines.Machine = None):
     if machine_ref:
         _save_machine_in_its_folder(machine_ref=machine_ref)
-    create machine
-    ask for seed
-    ask for dict and list of char
-        
+    seed = getSeedFromUser()
+    charlist = _get_a_charlist_from_user()
+    machine_ref = machines.Machine(
+        seed=seed,
+        characters=charlist,
+        conversion=create_dictionary_from_charlist(charlist=charlist),
+    )
+    noRotors = askingInput(
+        f"Input the desired number of rotors for your machine (from 0 to {Constants.MAX_NO_ROTORS})"
+    )
+    machine_ref.setup_machine_randomly(noRotors=noRotors)
+    return machine_ref
+
+
 # def generate_n_random_reflectors(n, seed: int):
 #     # Create and save into pickle objects 20 randomly generated rotors. Use seed to generate new seed, or simply add numbers
 #     for index in range(0, n):

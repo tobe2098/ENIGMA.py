@@ -192,10 +192,11 @@ class Machine:
     # Pickled functions
 
     def setup_machine_randomly(self, seed=None, noRotors=3):
-        if not is_valid_seed(seed) or not self._is_valid_no_rotors(noRotors):
+        if (seed and not is_valid_seed(seed)) or not self._is_valid_no_rotors(noRotors):
             raiseBadInputException()
+        elif seed:
+            self._seed = seed
         self._rotors = [copy.deepcopy(self._ref_rotor) for _ in range(noRotors)]
-        self._seed = seed
         random.seed(self._seed)
         jump = random.randint(1, int(3e8))
         self._reflector._random_setup(self._seed * jump)
@@ -211,7 +212,6 @@ class Machine:
         # self.show_config()
         # self.save_machine()
 
-    # Finally, the crypt function <<<HERE IS WHERE I WAS LEFT, I NEED TO FINISH CRYPT LETTER, TEXT
     ## Add text function and check for characters
 
     def encrypt_decrypt_text(self, text):

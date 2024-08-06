@@ -13,7 +13,7 @@ class ExceptionOfExceptions(Exception):
         super().__init__(message)
 
 
-class SavingErrorException(Exception):
+class FileIOErrorException(Exception):
     def __init__(self, message=("Failed to save file")):
         super().__init__(formatAsError(message))
 

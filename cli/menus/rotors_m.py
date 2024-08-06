@@ -1,6 +1,6 @@
 import os
 
-from utils.exceptions import SavingErrorException
+from utils.exceptions import FileIOErrorException
 from ...core import rotors
 from ...utils import utils_cli
 from ...utils import utils
@@ -59,7 +59,7 @@ def _load_saved_rotor_for_editing():
         try:
             _save_rotor_in_its_folder(rotor)
             # utils_cli.returningToMenu() #Previous line has the exception inside
-        except SavingErrorException as e:
+        except FileIOErrorException as e:
             utils_cli.printOutput(e)
             flag = ""
             while flag != "n" and flag != "y":

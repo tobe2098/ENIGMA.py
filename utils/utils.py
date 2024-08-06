@@ -6,7 +6,12 @@ import os
 
 
 def create_dictionary_from_charlist(charlist: list):
-    pass
+    nums = list(range(len(charlist)))
+    equivalence_dictionary = dict(zip(charlist, nums))
+    equivalence_dictionary.update(
+        dict([reversed(i) for i in equivalence_dictionary.items()])
+    )
+    return equivalence_dictionary
 
 
 class Constants:
@@ -121,7 +126,7 @@ def is_valid_seed(seed):
 
 
 def is_valid_filename(filename):
-    return all(i in Constants.FILESAFE_CHARS for i in filename)
+    return all(i in Constants.FILESAFE_CHARS for i in filename) and filename
 
 
 # def transform_single_dict_dash(dictionary):
