@@ -1,6 +1,8 @@
 # from platform import machine
 # from numpy import format_float_positional
 import os
+
+from utils.exceptions import SavingErrorException
 from ...core import reflectors
 from ...utils import utils_cli
 from ...utils import utils
@@ -60,31 +62,22 @@ _menu_reflector_reset_options = {
 # }
 
 
-def _load_saved_reflector_for_editing(
-    reflector: reflectors.Reflector = None, recursive: bool = False
-):
-    if not recursive:
-        reflector = _load_saved_reflector()
+def _load_saved_reflector_for_editing():
+    reflector = _load_saved_reflector()
     utils_cli.runNodeMenu(reflector, _menu_reflector)
-    try:
-        _save_reflector_in_its_folder(reflector)
-        utils_cli.returningToMenu()
-    except utils_cli.MenuExitException:
-        current_path = os.getcwd()
-        new_folder = utils.REFLECTORS_FILE_HANDLE
-        path = os.path.join(current_path, new_folder)
-        if not utils_cli.checkIfFileExists(path, reflector._name, "reflector"):
-            utils_cli.printOutput("A file with the reflector's name was not detected")
-            accbool = ""
-            while not accbool == "n" or not accbool == "y":
-                accbool = input(
-                    utils_cli.askingInput("Do you want to exit anyway?[y/n]")
+    while True:
+        try:
+            _save_reflector_in_its_folder(reflector)
+            # utils_cli.returningToMenu() #Previous line has the exception inside
+        except SavingErrorException as e:
+            utils_cli.printOutput(e)
+            flag = ""
+            while flag != "n" and flag != "y":
+                flag = utils_cli.askingInput(
+                    "Do you want to discard the rotor and exit?[y/n]"
                 ).lower()
-            if accbool == "n":
-                _load_saved_reflector_for_editing(reflector=reflector, recursive=True)
-                # utils_cli.returningToMenu()
-            utils_cli.returningToMenu((f"Reflector {reflector.name} was discarded"))
-    # Conda activation: conda info --envs, conda activate {}
+            if flag == "y":
+                utils_cli.returningToMenu(f"Rotor {reflector.get_name()} was discarded")
 
 
 _menu_reflector = {

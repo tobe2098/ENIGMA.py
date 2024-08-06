@@ -13,6 +13,11 @@ class ExceptionOfExceptions(Exception):
         super().__init__(message)
 
 
+class SavingErrorException(Exception):
+    def __init__(self, message=("Failed to save file")):
+        super().__init__(formatAsError(message))
+
+
 class MenuExitException(Exception):
     def __init__(self, message=formatAsOutput("Exiting menu...")):
         super().__init__(message)

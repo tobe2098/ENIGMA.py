@@ -2,6 +2,7 @@
 # from ...core import machines
 import os
 
+from utils.exceptions import SavingErrorException
 from utils.types_utils import getLowerCaseName
 from ...core import reflectors
 from ...utils import utils
@@ -271,15 +272,14 @@ def _randomize_name_rf(reflector_ref: reflectors.Reflector):
 
 
 def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
-    name = reflector_ref.get_name()
-    while not reflector_ref._is_name_valid(name):
-        name = utils_cli.askingInput(
+    new_name = reflector_ref.get_name()
+    while not reflector_ref._is_name_valid(new_name):
+        new_name = utils_cli.askingInput(
             f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
         ).strip()
-    reflector_ref._change_name(name)
-    module_path = os.path.dirname(__file__)
-    new_folder = utils.REFLECTORS_FILE_HANDLE
-    path = os.path.join(module_path, new_folder)
+    reflector_ref._change_name(new_name)
+
+    path = utils.Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         os.mkdir(path)
         utils_cli.printOutput(f"Directory '{path}' created")
@@ -291,50 +291,65 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
         )
         accbool = ""
         while not accbool == "n" or not accbool == "y":
-            accbool = input(
-                utils_cli.askingInput(
-                    f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
-                )
+            accbool = utils_cli.askingInput(
+                f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
             ).lower()
         if accbool == "n":
-            utils_cli.returningToMenu()
+            utils_cli.returningToMenu(
+                f"You discarded changes to the {getLowerCaseName(reflector_ref)}"
+            )
     file_path = os.path.join(
         path, f"{reflector_ref._name}.{getLowerCaseName(reflector_ref)}"
     )
-    save_file = open(file_path, "wb")
-    pickle.dump(reflector_ref, save_file)
-    save_file.close()
+    try:
+        save_file = open(file_path, "wb")
+        pickle.dump(reflector_ref, save_file)
+        save_file.close()
+    except Exception as e:
+        raise SavingErrorException(
+            f"Failed to save the {getLowerCaseName(reflector_ref)} at {file_path}:{e}"
+        )
     utils_cli.returningToMenu(
-        f"{ reflector_ref.name} has been saved into { reflector_ref.name}.{getLowerCaseName(reflector_ref)} in {path}"
+        f"{reflector_ref._name} has been saved into {reflector_ref._name}.{getLowerCaseName(reflector_ref)} in {path}"
     )
 
 
 def _load_saved_reflector():
-    module_path = os.path.dirname(__file__)
-    new_folder = utils.REFLECTORS_FILE_HANDLE
-    path = os.path.join(module_path, new_folder)
+    path = utils.Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
-        utils_cli.returningToMenu("There is no {} folder".format(path))
+        utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
-    if len(list_of_files) == 0:
-        utils_cli.returningToMenu("There are no reflectors saved")
+    if not list_of_files:
+        utils_cli.returningToMenu(f"There are no reflectors saved at {path}", "e")
     utils_cli.printOutput("Your available reflectors are:")
     utils_cli.printListOfOptions(list_of_files)
-    reflector = utils_cli.askingInput("Input reflector's position in the list")
+    reflector = utils_cli.askingInput("Input reflector's position in the list:")
     reflector = utils_cli.checkInputValidity(
         reflector, int, rangein=(0, len(list_of_files))
     )
     while not reflector:
-        utils_cli.printOutput("Please input a valid index")
+        # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
+        utils_cli.printError("Please input a valid index")
+        utils_cli.printListOfOptions(list_of_files)
         reflector = utils_cli.askingInput("Input reflector's position in the list:")
+        if not reflector:
+            utils_cli.returningToMenu()
         reflector = utils_cli.checkInputValidity(
             reflector, int, rangein=(0, len(list_of_files))
         )
-    filehandler = open(
-        r"{}\\{}.reflector".format(path, list_of_files[reflector]), "rb"
-    )  # Change to os.path
-    reflector_ref = pickle.load(filehandler)
-    filehandler.close()
+    try:
+        filehandler = open(
+            os.path.join(path, f"{list_of_files[reflector]}.rotor")(
+                path, list_of_files[reflector]
+            ),
+            "rb",
+        )
+        reflector_ref = pickle.load(filehandler)
+        filehandler.close()
+    except Exception as e:
+        utils_cli.returningToMenu(
+            f"Failed to read the file at {filehandler}:{e}", output_type="e"
+        )
     return reflector_ref
 
 

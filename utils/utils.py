@@ -5,6 +5,10 @@ import string
 import os
 
 
+def create_dictionary_from_charlist(charlist: list):
+    pass
+
+
 class Constants:
     FILESAFE_CHARS = string.letters + string.digits + "-_"
     MAX_NO_ROTORS = 100
@@ -25,7 +29,12 @@ class Constants:
     ROTORS_FILE_HANDLE = "SAVED_ROTORS"
     REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
     MACHINES_FILE_HANDLE = "SAVED_MACHINES"
+    CHARLISTS_HANDLE = "charlists.json"
     MODULE_PATH = os.dirname(os.dirname(os.path.abspath(__file__)))
+    ROTOR_FILE_PATH = os.path.join(MODULE_PATH, ROTORS_FILE_HANDLE)
+    REFLECTOR_FILE_PATH = os.path.join(MODULE_PATH, REFLECTORS_FILE_HANDLE)
+    MACHINE_FILE_PATH = os.path.join(MODULE_PATH, MACHINES_FILE_HANDLE)
+    CHARLISTS_FILE_PATH = os.path.join(MODULE_PATH, CHARLISTS_HANDLE)
 
 
 def my_quit_fn():  # This function should be in utils.py
@@ -109,6 +118,10 @@ def transform_single_dict(dictionary, conversion: dict):
 
 def is_valid_seed(seed):
     return isinstance(seed, int) and seed >= 0 and seed < Constants.MAX_SEED
+
+
+def is_valid_filename(filename):
+    return all(i in Constants.FILESAFE_CHARS for i in filename)
 
 
 # def transform_single_dict_dash(dictionary):

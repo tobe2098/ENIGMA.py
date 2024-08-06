@@ -4,6 +4,7 @@
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
+from utils.exceptions import SavingErrorException
 from utils.types_utils import getLowerCaseName, isDashedObject
 from ...core import rotors
 from ...utils import utils
@@ -428,9 +429,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
         ).strip()
     rotor_ref._change_name(new_name)
 
-    module_path = os.path.dirname(__file__)
-    new_folder = utils.Constants.ROTORS_FILE_HANDLE
-    path = os.path.join(module_path, new_folder)
+    path = utils.Constants.ROTOR_FILE_PATH
     if not os.path.exists(path):
         os.mkdir(path)
         utils_cli.printOutput(f"Directory '{path}' created")
@@ -440,27 +439,29 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
         )
         accbool = ""
         while not accbool == "n" or not accbool == "y":
-            accbool = input(
-                utils_cli.askingInput(
-                    f"Do you want to overwrite the saved {getLowerCaseName(rotor_ref)}? [y/n]"
-                )
+            accbool = utils_cli.askingInput(
+                f"Do you want to overwrite the saved {getLowerCaseName(rotor_ref)}? [y/n]"
             ).lower()
         if accbool == "n":
-            utils_cli.returningToMenu()
+            utils_cli.returningToMenu(
+                f"You discarded changes to the {getLowerCaseName(rotor_ref)}"
+            )
     file_path = os.path.join(path, f"{rotor_ref._name}.{getLowerCaseName(rotor_ref)}")
-    save_file = open(file_path, "wb")
-
-    pickle.dump(rotor_ref, save_file)
-    save_file.close()
+    try:
+        save_file = open(file_path, "wb")
+        pickle.dump(rotor_ref, save_file)
+        save_file.close()
+    except Exception as e:
+        raise SavingErrorException(
+            f"Failed to save the {getLowerCaseName(rotor_ref)} at {file_path}:{e}"
+        )
     utils_cli.returningToMenu(
         f"{rotor_ref._name} has been saved into {rotor_ref._name}.{getLowerCaseName(rotor_ref)} in {path}"
     )
 
 
 def _load_saved_rotor():
-    module_path = os.path.dirname(__file__)
-    new_folder = utils.Constants.ROTORS_FILE_HANDLE
-    path = os.path.join(module_path, new_folder)
+    path = utils.Constants.ROTOR_FILE_PATH
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
@@ -468,7 +469,7 @@ def _load_saved_rotor():
         utils_cli.returningToMenu(f"There are no rotors saved at {path}", "e")
     utils_cli.printOutput("Your available rotors are:")
     utils_cli.printListOfOptions(list_of_files)
-    rotor = utils_cli.askingInput("Input reflector's position in the list:")
+    rotor = utils_cli.askingInput("Input rotor's position in the list:")
     rotor = utils_cli.checkInputValidity(rotor, int, rangein=(0, len(list_of_files)))
     while not rotor:
         # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
@@ -480,9 +481,19 @@ def _load_saved_rotor():
         rotor = utils_cli.checkInputValidity(
             rotor, int, rangein=(0, len(list_of_files))
         )
-    filehandler = open(r"{}\\{}.reflector".format(path, list_of_files[rotor]), "rb")
-    rotor_ref = pickle.load(filehandler)
-    filehandler.close()
+    try:
+        filehandler = open(
+            os.path.join(path, f"{list_of_files[rotor]}.rotor")(
+                path, list_of_files[rotor]
+            ),
+            "rb",
+        )
+        rotor_ref = pickle.load(filehandler)
+        filehandler.close()
+    except Exception as e:
+        utils_cli.returningToMenu(
+            f"Failed to read the file at {filehandler}:{e}", output_type="e"
+        )
     return rotor_ref
 
 

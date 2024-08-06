@@ -1,4 +1,6 @@
 import os
+
+from utils.exceptions import SavingErrorException
 from ...core import rotors
 from ...utils import utils_cli
 from ...utils import utils
@@ -50,30 +52,22 @@ _menu_rotor_connections_options = {
 }
 
 
-def _load_saved_rotor_for_editing(rotor: rotors.Rotor = None, recursive: bool = False):
-    if not recursive:
-        rotor = _load_saved_rotor()
+def _load_saved_rotor_for_editing():
+    rotor = _load_saved_rotor()
     utils_cli.runNodeMenu(rotor, _menu_rotor)
-    try:
-        _save_rotor_in_its_folder(rotor)
-        utils_cli.returningToMenu()
-    except utils_cli.MenuExitException:
-        current_path = os.getcwd()
-        new_folder = utils.ROTORS_FILE_HANDLE
-        path = os.path.join(current_path, new_folder)
-        if not utils_cli.checkIfFileExists(path, rotor._name, "rotor"):
-            utils_cli.printOutput("A file with the rotor's name was not detected")
-            accbool = ""
-            while not accbool == "n" or not accbool == "y":
-                accbool = input(
-                    utils_cli.askingInput("Do you want to exit anyway?[y/n]")
+    while True:
+        try:
+            _save_rotor_in_its_folder(rotor)
+            # utils_cli.returningToMenu() #Previous line has the exception inside
+        except SavingErrorException as e:
+            utils_cli.printOutput(e)
+            flag = ""
+            while flag != "n" and flag != "y":
+                flag = utils_cli.askingInput(
+                    "Do you want to discard the rotor and exit?[y/n]"
                 ).lower()
-            if accbool == "n":
-                _load_saved_rotor_for_editing(rotor, True)
-            utils_cli.returningToMenu(
-                utils_cli.formatAsWarning((f"rotor {rotor.name} was discarded"))
-            )
-    # Conda activation: conda info --envs, conda activate {}
+            if flag == "y":
+                utils_cli.returningToMenu(f"Rotor {rotor.get_name()} was discarded")
 
 
 _menu_rotor = {
