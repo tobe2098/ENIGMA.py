@@ -1,7 +1,8 @@
 import os
 from subprocess import call
+import json
 
-from ..utils.utils import is_valid_seed
+from ..utils.utils import Constants, is_valid_seed
 from ..utils.types_utils_cli import wrapperCall
 from exceptions import (
     BadInputExceptionCLI,
@@ -133,9 +134,12 @@ def clearScreenConvenienceCli():
     printOutput("Screen cleared for convenience")
 
 
-def checkIfFileExists(path, name, suffix):
+def checkIfFileExists(path, name=None, suffix=None):
     # return os.path.isfile(rf"{path}\\{name}.{suffix}")
-    return os.path.isfile(os.path.join(path, f"{name}.{suffix}"))
+    if name and suffix:
+        return os.path.isfile(os.path.join(path, f"{name}.{suffix}"))
+    else:
+        return os.path.isfile(path)
 
 
 def checkInputValidity(_input: str, _type=str, rangein=[]):
@@ -202,6 +206,10 @@ def runNodeMenu(object_for_call, menu: dict):
         except MenuExitException:
             clearScreenConvenienceCli()
             exitMenu()
+
+
+def get_a_charlist_and_name_from_user():
+    pass
 
 
 # def runLeafMenu(object_for_call, menu: dict):

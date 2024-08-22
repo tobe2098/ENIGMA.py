@@ -3,6 +3,7 @@
 import pandas as pd
 import string
 import os
+import json
 
 
 def create_dictionary_from_charlist(charlist: list):
@@ -15,18 +16,24 @@ def create_dictionary_from_charlist(charlist: list):
 
 
 class Constants:
-    FILESAFE_CHARS = string.letters + string.digits + "-_"
+    FILESAFE_CHARS = string.ascii_letters + string.digits + "-_"
     MAX_NO_ROTORS = 100
     MAX_SEED = 2**2**10
     MAX_NO_BACKSPACES = 1000
-    CHARACTERS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    CHARACTERS_dash = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ-")
-    NUMBERS = list(range(0, len(CHARACTERS)))
-    NUMBERS_dash = list(range(0, len(CHARACTERS_dash)))
-    EQUIVALENCE_DICT = dict(zip(CHARACTERS, NUMBERS))
+    UPP_LETTERS = list(string.ascii_uppercase)
+    UPP_LETTERS_key = "ABC"
+    UPP_LETTERS_dash = list(string.ascii_uppercase + "-")
+    UPP_LETTERS_dash_key = "ABC-"
+    ALL_LETTERS = list(string.ascii_letters)
+    ALL_LETTERS_key = "AaBbCc"
+    ALL_LETTERS_dash = list(string.ascii_letters + "-")
+    ALL_LETTERS_dash_key = "AaBbCc-"
+    NUMBERS = list(range(0, len(UPP_LETTERS)))
+    NUMBERS_dash = list(range(0, len(UPP_LETTERS_dash)))
+    EQUIVALENCE_DICT = dict(zip(UPP_LETTERS, NUMBERS))
     # EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
     EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
-    EQUIVALENCE_DICT_dash = dict(zip(CHARACTERS_dash, NUMBERS_dash))
+    EQUIVALENCE_DICT_dash = dict(zip(UPP_LETTERS_dash, NUMBERS_dash))
     # EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
     EQUIVALENCE_DICT_dash.update(
         dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()])
@@ -146,5 +153,28 @@ def areUsingSameDicts(obj1, obj2):
     return obj1._conversion_in_use == obj2._conversion_in_use
 
 
-def get_character_list(obj):
+def get_character_list_from_obj(obj):
     return obj._characters_in_use
+
+
+def _asign_defaults_to_json_dict(dictionary):
+    if Constants.UPP_LETTERS_key not in dictionary:
+        dictionary[Constants.UPP_LETTERS_key] = Constants.UPP_LETTERS
+    if Constants.UPP_LETTERS_dash_key not in dictionary:
+        dictionary[Constants.UPP_LETTERS_dash_key] = Constants.UPP_LETTERS_dash
+    if Constants.ALL_LETTERS_key not in dictionary:
+        dictionary[Constants.ALL_LETTERS_key] = Constants.ALL_LETTERS
+    if Constants.ALL_LETTERS_dash_key not in dictionary:
+        dictionary[Constants.ALL_LETTERS_dash_key] = Constants.ALL_LETTERS_dash
+
+
+def get_charlist_dict():
+    dictionary = {}
+    if os.path.isfile(Constants.CHARLISTS_FILE_PATH):
+        with open(Constants.CHARLISTS_FILE_PATH) as file:
+            dictionary = json.load(file)
+    if not dictionary:
+        _asign_defaults_to_json_dict(dictionary=dictionary)
+        with open(Constants.CHARLISTS_FILE_PATH, "w") as file:
+            json.dump(dictionary, file, indent=2)
+    return dictionary

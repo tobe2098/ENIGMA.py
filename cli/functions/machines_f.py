@@ -5,6 +5,8 @@ from ...cli.functions.plugboards_f import _show_config_pb
 from ...cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
 from ...cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
 
+from .cli_f import _get_a_charlist_from_storage
+
 from ...cli.menus.rotors_m import _menu_rotor
 from ...cli.menus.reflectors_m import _menu_reflector
 from ...cli.menus.plugboards_m import _menu_plugboard
@@ -12,7 +14,7 @@ from ...cli.menus.plugboards_m import _menu_plugboard
 from ...utils.utils import (
     Constants,
     create_dictionary_from_charlist,
-    get_character_list,
+    get_character_list_from_obj,
     is_valid_filename,
     is_valid_seed,
 )
@@ -48,7 +50,7 @@ def _show_full_config_machine(machine_ref: machines.Machine):
         _show_config_rt(machine_ref._rotors[i])
     printOutput("Reflector config:")
     _show_config_rf(machine_ref._reflector)
-    printOutput("Characters in use: ", get_character_list(machine_ref))
+    printOutput("Characters in use: ", get_character_list_from_obj(machine_ref))
     printOutput(
         f"The machine is {machine_ref.get_char_distance()} backspaces from its original state"
     )
@@ -216,12 +218,14 @@ def _change_all_rotors_character_position(machine_ref: machines.Machine):
         remaining = list(set(machine_ref) - set(new_positions))
         printOutput("Remaining positions are ", remaining)
         new_pos = askingInput(f"Input new position for rotor {i+1}")
-        new_pos = checkInputValidity(new_pos, rangein=get_character_list(machine_ref))
+        new_pos = checkInputValidity(
+            new_pos, rangein=get_character_list_from_obj(machine_ref)
+        )
         while new_pos not in remaining:
             printOutput("Remaining positions are ", remaining)
             new_pos = askingInput(f"Input new position for rotor {i+1}")
             new_pos = checkInputValidity(
-                new_pos, rangein=get_character_list(machine_ref)
+                new_pos, rangein=get_character_list_from_obj(machine_ref)
             )
         new_positions.append(new_pos)
     positions_copy = copy.copy(new_positions)
@@ -247,10 +251,12 @@ def _change_a_rotor_character_position(machine_ref: machines.Machine):
         "Current rotor character position is: ",
         machine_ref.get_rotor_char_pos(rotor_index),
     )
-    printOutput("Valid character positions are: ", get_character_list(machine_ref))
+    printOutput(
+        "Valid character positions are: ", get_character_list_from_obj(machine_ref)
+    )
     new_char_pos = askingInput("Input new character position")
     new_char_pos = checkInputValidity(
-        new_char_pos, rangein=get_character_list(machine_ref)
+        new_char_pos, rangein=get_character_list_from_obj(machine_ref)
     )
     if not new_char_pos:
         returningToMenu("Invalid input", output_type="e")
@@ -357,7 +363,7 @@ def _machine_get_message(machine_ref: machines.Machine):
     else:
         printOutput(
             "Allowed characters (others WILL be ignored):",
-            get_character_list(machine_ref),
+            get_character_list_from_obj(machine_ref),
         )
         text = askingInput("Write the desired message")
         return text
@@ -562,32 +568,11 @@ def _load_machine(machine_ref: machines.Machine = None):
     return machine_ref  # End
 
 
-def _print_charlist_collection():
-    pass
-
-
-def _create_and_store_a_new_charlist():
-    charlist = []
-    return charlist  # Only to be used if called with that intention
-
-
-def _delete_a_charlist():
-    pass
-
-
-def _retrieve_a_charlist():
-    pass
-
-
-def _get_a_charlist_from_user():
-    pass
-
-
 def _create_a_new_random_machine(machine_ref: machines.Machine = None):
     if machine_ref:
         _save_machine_in_its_folder(machine_ref=machine_ref)
     seed = getSeedFromUser()
-    charlist = _get_a_charlist_from_user()
+    charlist = _get_a_charlist_from_storage()
     machine_ref = machines.Machine(
         seed=seed,
         characters=charlist,

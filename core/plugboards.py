@@ -16,7 +16,7 @@ from ..utils.utils import (
 
 class PlugBoard:
     def __init__(
-        self, characters=Constants.CHARACTERS, conversion=Constants.EQUIVALENCE_DICT
+        self, characters=Constants.UPP_LETTERS, conversion=Constants.EQUIVALENCE_DICT
     ) -> None:
         self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = copy.copy(conversion)

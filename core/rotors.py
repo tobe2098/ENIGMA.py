@@ -15,7 +15,7 @@ from ..utils.exceptions import raiseBadInputException
 
 class Rotor:
     def __init__(
-        self, characters=Constants.CHARACTERS, conversion=Constants.EQUIVALENCE_DICT
+        self, characters=Constants.UPP_LETTERS, conversion=Constants.EQUIVALENCE_DICT
     ):
         # Note: variables can be defined on the fly
 

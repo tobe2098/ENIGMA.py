@@ -4,7 +4,7 @@ from ...core import plugboards
 from ...utils import utils
 from ...utils import utils_cli
 from ...utils.utils import (
-    get_character_list,
+    get_character_list_from_obj,
     simplify_simple_dictionary_paired_unpaired,
 )
 
@@ -23,7 +23,7 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     utils_cli.printOutput("Unpaired characters:", unpaired_list)
     utils_cli.printOutput(
         "Number of connections:",
-        (len(get_character_list(plugboard_ref)) - len(unpaired_list)) / 2,
+        (len(get_character_list_from_obj(plugboard_ref)) - len(unpaired_list)) / 2,
     )
     utils_cli.returningToMenu()
 

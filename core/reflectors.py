@@ -13,7 +13,7 @@ from ..utils.exceptions import raiseBadInputException
 
 class Reflector:
     def __init__(
-        self, characters=Constants.CHARACTERS, conversion=Constants.EQUIVALENCE_DICT
+        self, characters=Constants.UPP_LETTERS, conversion=Constants.EQUIVALENCE_DICT
     ):
         self._name = "name"
         self._characters_in_use = copy.copy(characters)
