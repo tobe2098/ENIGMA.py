@@ -14,6 +14,7 @@ from ..utils.utils import (
     EQUIVALENCE_DICT_dash,
     MAX_NO_ROTORS,
     MAX_SEED,
+    create_dictionary_from_charlist,
     is_valid_seed,
 )
 from .reflectors import Reflector, ReflectorDash
@@ -21,17 +22,15 @@ from .plugboards import PlugBoard, PlugBoardDash
 
 
 class Machine:
-    def __init__(
-        self, name="name", seed=None, characters=CHARACTERS, conversion=EQUIVALENCE_DICT
-    ):
+    def __init__(self, name="name", seed=None, characters=CHARACTERS):
         self._name = name
         # Include seed storages?
         # Write a default config
-        self._ref_rotor = Rotor(characters=characters, conversion=conversion)
+        self._ref_rotor = Rotor(characters=characters)
         self._set_new_no_rotors(3)
-        self._reflector = Reflector(characters=characters, conversion=conversion)
+        self._reflector = Reflector(characters=characters)
         self._characters_in_use = copy.copy(characters)
-        self._conversion_in_use = copy.copy(conversion)
+        self._conversion_in_use = create_dictionary_from_charlist(characters)
         if not seed:
             # Number has to be big, but how
             self._seed = random.randint(
@@ -42,7 +41,7 @@ class Machine:
         else:
             self._seed = seed
         # For now, default is nothingness
-        self._plugboard = PlugBoard(characters=characters, conversion=conversion)
+        self._plugboard = PlugBoard(characters=characters)
         self._current_distance_from_original_state = 0
         # self.board_num_dict=transform_single_dict(self.board_dict)
         # print(

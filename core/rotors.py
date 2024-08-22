@@ -5,6 +5,7 @@ import random
 import copy
 
 from ..utils.utils import (
+    create_dictionary_from_charlist,
     simplify_rotor_dictionary_paired_unpaired,
     transform_single_dict,
     Constants,
@@ -14,9 +15,7 @@ from ..utils.exceptions import raiseBadInputException
 
 
 class Rotor:
-    def __init__(
-        self, characters=Constants.UPP_LETTERS, conversion=Constants.EQUIVALENCE_DICT
-    ):
+    def __init__(self, characters=Constants.UPP_LETTERS):
         # Note: variables can be defined on the fly
 
         self._name = "name"  # randomly generating a name is going to happen I guess
@@ -25,7 +24,7 @@ class Rotor:
         self._jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
         # #Jump implementation will be done last. It can get complicated. Possible future feature
         self._characters_in_use = copy.copy(characters)
-        self._conversion_in_use = copy.copy(conversion)
+        self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._no_characters = len(characters)
         self._notches = [
             self._no_characters - 1

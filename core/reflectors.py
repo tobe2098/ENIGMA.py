@@ -5,6 +5,7 @@ import copy
 
 from ..utils.utils import (
     Constants,
+    create_dictionary_from_charlist,
     transform_single_dict,
     is_valid_seed,
 )
@@ -12,12 +13,10 @@ from ..utils.exceptions import raiseBadInputException
 
 
 class Reflector:
-    def __init__(
-        self, characters=Constants.UPP_LETTERS, conversion=Constants.EQUIVALENCE_DICT
-    ):
+    def __init__(self, characters=Constants.UPP_LETTERS):
         self._name = "name"
         self._characters_in_use = copy.copy(characters)
-        self._conversion_in_use = copy.copy(conversion)
+        self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._reflector_dict = dict(
             zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
         )

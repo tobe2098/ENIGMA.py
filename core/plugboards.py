@@ -9,17 +9,16 @@ from ..utils.utils import (
     EQUIVALENCE_DICT,
     Constants,
     EQUIVALENCE_DICT_dash,
+    create_dictionary_from_charlist,
     is_valid_seed,
     transform_single_dict,
 )
 
 
 class PlugBoard:
-    def __init__(
-        self, characters=Constants.UPP_LETTERS, conversion=Constants.EQUIVALENCE_DICT
-    ) -> None:
+    def __init__(self, characters=Constants.UPP_LETTERS) -> None:
         self._characters_in_use = copy.copy(characters)
-        self._conversion_in_use = copy.copy(conversion)
+        self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._board_dict = dict(
             zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
         )

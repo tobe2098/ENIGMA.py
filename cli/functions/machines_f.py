@@ -576,7 +576,6 @@ def _create_a_new_random_machine(machine_ref: machines.Machine = None):
     machine_ref = machines.Machine(
         seed=seed,
         characters=charlist,
-        conversion=create_dictionary_from_charlist(charlist=charlist),
     )
     noRotors = askingInput(
         f"Input the desired number of rotors for your machine (from 0 to {Constants.MAX_NO_ROTORS})"

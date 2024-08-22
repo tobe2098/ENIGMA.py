@@ -28,16 +28,16 @@ class Constants:
     ALL_LETTERS_key = "AaBbCc"
     ALL_LETTERS_dash = list(string.ascii_letters + "-")
     ALL_LETTERS_dash_key = "AaBbCc-"
-    NUMBERS = list(range(0, len(UPP_LETTERS)))
-    NUMBERS_dash = list(range(0, len(UPP_LETTERS_dash)))
-    EQUIVALENCE_DICT = dict(zip(UPP_LETTERS, NUMBERS))
-    # EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
-    EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
-    EQUIVALENCE_DICT_dash = dict(zip(UPP_LETTERS_dash, NUMBERS_dash))
-    # EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
-    EQUIVALENCE_DICT_dash.update(
-        dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()])
-    )
+    # NUMBERS = list(range(0, len(UPP_LETTERS)))
+    # NUMBERS_dash = list(range(0, len(UPP_LETTERS_dash)))
+    # EQUIVALENCE_DICT = dict(zip(UPP_LETTERS, NUMBERS))
+    # # EQUIVALENCE_DICT[""] = -1  # To manage non-existant connections
+    # EQUIVALENCE_DICT.update(dict([reversed(i) for i in EQUIVALENCE_DICT.items()]))
+    # EQUIVALENCE_DICT_dash = dict(zip(UPP_LETTERS_dash, NUMBERS_dash))
+    # # EQUIVALENCE_DICT_dash[""] = -1  # To manage non-existant connections
+    # EQUIVALENCE_DICT_dash.update(
+    #     dict([reversed(i) for i in EQUIVALENCE_DICT_dash.items()])
+    # )
     ROTORS_FILE_HANDLE = "SAVED_ROTORS"
     REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
     MACHINES_FILE_HANDLE = "SAVED_MACHINES"
