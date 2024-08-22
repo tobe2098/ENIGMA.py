@@ -1,6 +1,7 @@
 # from ast import unparse
 # from ...core import machines
 import os
+import string
 
 from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
@@ -146,7 +147,9 @@ def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
         utils_cli.printOutput(
             "If you want to stop configurating the board, press Enter"
         )
-        characters = utils_cli.askingInput("Input two characters to pair").strip()
+        characters = utils_cli.askingInput("Input two characters to pair").strip(
+            chars=string.whitespace
+        )
         if characters.isalpha() and len(characters) == 2:
             pass
         elif not characters:
@@ -276,7 +279,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     while not reflector_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
             f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
-        ).strip()
+        ).strip(chars=string.whitespace)
     reflector_ref._change_name(new_name)
 
     path = utils.Constants.REFLECTOR_FILE_PATH

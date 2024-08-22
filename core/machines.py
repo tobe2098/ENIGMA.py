@@ -1,6 +1,7 @@
 # from platform import machine
 import random
 import copy
+import string
 
 # import sys
 
@@ -71,7 +72,7 @@ class Machine:
             Exception: _description_
         """
 
-        new_name = new_name.strip()
+        new_name = new_name.strip(chars=string.whitespace)
         if not self._is_name_valid(new_name):
             raiseBadInputException()
         self._name = new_name

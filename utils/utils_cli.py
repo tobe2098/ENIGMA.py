@@ -1,8 +1,8 @@
 import os
 from subprocess import call
-import json
+import string
 
-from ..utils.utils import Constants, is_valid_seed
+from ..utils.utils import is_valid_seed
 from ..utils.types_utils_cli import wrapperCall
 from exceptions import (
     BadInputExceptionCLI,
@@ -209,7 +209,17 @@ def runNodeMenu(object_for_call, menu: dict):
 
 
 def get_a_charlist_and_name_from_user():
-    pass
+    name = askingInput("Write a name for your character list")
+    charlist = list(
+        askingInput(
+            "Write a string of characters to create your list (only unique characters will be considered)"
+        ).strip(chars=string.whitespace)
+    )
+    unique_charlist = []
+    for i in charlist:
+        if i not in unique_charlist:
+            unique_charlist.append(i)
+    return charlist, name
 
 
 # def runLeafMenu(object_for_call, menu: dict):

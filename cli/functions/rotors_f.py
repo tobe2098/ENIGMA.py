@@ -9,7 +9,7 @@ from utils.types_utils import getLowerCaseName, isDashedObject
 from ...core import rotors
 from ...utils import utils
 from ...utils import utils_cli
-import random
+import string
 import os
 import pickle
 
@@ -184,7 +184,7 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
         )
         characters = utils_cli.askingInput(
             "Input one character from front side, one from back side (in order)"
-        ).strip()
+        ).strip(chars=string.whitespace)
         characters = list(characters)
         if len(characters) == 2 and all(
             character in utils.get_character_list_from_obj(rotor_ref)
@@ -427,7 +427,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     while not rotor_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
             f"Please assign a new name to the {getLowerCaseName(rotor_ref)}"
-        ).strip()
+        ).strip(chars=string.whitespace)
     rotor_ref._change_name(new_name)
 
     path = utils.Constants.ROTOR_FILE_PATH

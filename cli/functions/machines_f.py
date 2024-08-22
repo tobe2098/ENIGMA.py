@@ -1,4 +1,4 @@
-from importlib import machinery
+import string
 from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
 from ...cli.functions.plugboards_f import _show_config_pb
@@ -499,7 +499,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     while not machine_ref._is_name_valid(new_name):
         new_name = askingInput(
             f"Please assign a new name to the {getLowerCaseName(machine_ref)}"
-        ).strip()
+        ).strip(chars=string.whitespace)
     machine_ref._change_name(new_name)
 
     module_path = Constants.MODULE_PATH

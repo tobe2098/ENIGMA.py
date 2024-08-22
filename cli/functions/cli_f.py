@@ -43,7 +43,7 @@ def _print_charlist_collection(dictionary=None):
 
 
 def _store_and_return_a_new_charlist():
-    name, charlist = get_a_charlist_and_name_from_user()
+    charlist, name = get_a_charlist_and_name_from_user()
     dictionary = get_charlist_dict()
     dictionary[name] = charlist
     with open(Constants.CHARLISTS_FILE_PATH) as file:

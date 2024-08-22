@@ -28,6 +28,10 @@ class Constants:
     ALL_LETTERS_key = "AaBbCc"
     ALL_LETTERS_dash = list(string.ascii_letters + "-")
     ALL_LETTERS_dash_key = "AaBbCc-"
+    ALPHANUM_dash = list(string.ascii_letters + string.digits + "-")
+    ALPHANUM_dash_key = "AaBbCc123-"
+    ALPHANUM = list(string.ascii_letters + string.digits + "-")
+    ALPHANUM_key = "AaBbCc123-"
     # NUMBERS = list(range(0, len(UPP_LETTERS)))
     # NUMBERS_dash = list(range(0, len(UPP_LETTERS_dash)))
     # EQUIVALENCE_DICT = dict(zip(UPP_LETTERS, NUMBERS))
@@ -158,14 +162,12 @@ def get_character_list_from_obj(obj):
 
 
 def _asign_defaults_to_json_dict(dictionary):
-    if Constants.UPP_LETTERS_key not in dictionary:
-        dictionary[Constants.UPP_LETTERS_key] = Constants.UPP_LETTERS
-    if Constants.UPP_LETTERS_dash_key not in dictionary:
-        dictionary[Constants.UPP_LETTERS_dash_key] = Constants.UPP_LETTERS_dash
-    if Constants.ALL_LETTERS_key not in dictionary:
-        dictionary[Constants.ALL_LETTERS_key] = Constants.ALL_LETTERS
-    if Constants.ALL_LETTERS_dash_key not in dictionary:
-        dictionary[Constants.ALL_LETTERS_dash_key] = Constants.ALL_LETTERS_dash
+    dictionary[Constants.UPP_LETTERS_key] = Constants.UPP_LETTERS
+    dictionary[Constants.UPP_LETTERS_dash_key] = Constants.UPP_LETTERS_dash
+    dictionary[Constants.ALL_LETTERS_key] = Constants.ALL_LETTERS
+    dictionary[Constants.ALL_LETTERS_dash_key] = Constants.ALL_LETTERS_dash
+    dictionary[Constants.ALPHANUM_key] = Constants.ALPHANUM
+    dictionary[Constants.ALPHANUM_dash_key] = Constants.ALPHANUM_dash
 
 
 def get_charlist_dict():
@@ -173,8 +175,17 @@ def get_charlist_dict():
     if os.path.isfile(Constants.CHARLISTS_FILE_PATH):
         with open(Constants.CHARLISTS_FILE_PATH) as file:
             dictionary = json.load(file)
-    if not dictionary:
+        _asign_defaults_to_json_dict(dictionary=dictionary)
+    else:
         _asign_defaults_to_json_dict(dictionary=dictionary)
         with open(Constants.CHARLISTS_FILE_PATH, "w") as file:
             json.dump(dictionary, file, indent=2)
     return dictionary
+
+
+def save_charlist_dict(dictionary=None):
+    if not dictionary:
+        dictionary = {}
+        _asign_defaults_to_json_dict(dictionary=dictionary)
+    with open(Constants.CHARLISTS_FILE_PATH, "w") as file:
+        json.dump(dictionary, file, indent=2)
