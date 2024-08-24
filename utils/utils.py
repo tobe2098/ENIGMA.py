@@ -161,7 +161,7 @@ def get_character_list_from_obj(obj):
     return obj._characters_in_use
 
 
-def _asign_defaults_to_json_dict(dictionary):
+def _asign_defaults_to_json_dict(dictionary: dict):
     dictionary[Constants.UPP_LETTERS_key] = Constants.UPP_LETTERS
     dictionary[Constants.UPP_LETTERS_dash_key] = Constants.UPP_LETTERS_dash
     dictionary[Constants.ALL_LETTERS_key] = Constants.ALL_LETTERS
@@ -183,9 +183,10 @@ def get_charlist_dict():
     return dictionary
 
 
-def save_charlist_dict(dictionary=None):
-    if not dictionary:
+def save_charlist_dict(dictionary: dict = None):
+    if not os.path.isfile(Constants.CHARLISTS_FILE_PATH) and not dictionary:
         dictionary = {}
         _asign_defaults_to_json_dict(dictionary=dictionary)
+
     with open(Constants.CHARLISTS_FILE_PATH, "w") as file:
         json.dump(dictionary, file, indent=2)
