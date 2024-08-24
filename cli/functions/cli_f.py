@@ -33,10 +33,6 @@ def edit_an_existing_reflector():
     pass
 
 
-def edit_an_existing_plugboard():
-    pass
-
-
 ###
 
 

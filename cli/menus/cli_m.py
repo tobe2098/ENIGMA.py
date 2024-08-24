@@ -4,7 +4,6 @@ from ..functions.cli_f import (
     _print_a_particular_character_list,
     _store_and_return_a_new_charlist,
     _print_charlist_collection,
-    edit_an_existing_plugboard,
     edit_an_existing_reflector,
     edit_an_existing_rotor,
     load_a_machine,
@@ -30,9 +29,11 @@ _charlist_dict_menu = {
 _outer_cli_menu = {
     "1": (
         "Access character list menu",
-        _print_charlist_collection,
+        _charlist_dict_menu,
     ),
-    "2": ("Print out a particular character list", _print_a_particular_character_list),
+    "2": ("Edit an existing reflector", _print_a_particular_character_list),
+    "2": ("Edit an existing rotor", _print_a_particular_character_list),
+    "2": ("Edit an existing", _print_a_particular_character_list),
     "3": ("Delete a character list", _delete_a_charlist),
     "4": (
         "Store a custom character list",

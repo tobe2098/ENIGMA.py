@@ -5,7 +5,7 @@
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
 from utils.exceptions import FileIOErrorException
-from utils.types_utils import getLowerCaseName, isDashedObject
+from utils.types_utils import getLowerCaseName
 from ...core import rotors
 from ...utils import utils
 from ...utils import utils_cli
