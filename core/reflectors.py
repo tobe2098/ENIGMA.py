@@ -4,6 +4,8 @@ import random
 import copy
 import string
 
+from core.abstract import AbstractBaseClass
+
 from ..utils.utils import (
     Constants,
     create_dictionary_from_charlist,
@@ -13,10 +15,10 @@ from ..utils.utils import (
 from ..utils.exceptions import raiseBadInputException
 
 
-class Reflector:
+class Reflector(AbstractBaseClass):
     def __init__(self, characters=Constants.UPP_LETTERS):
+        super().__init__(charlist=characters)
         self._name = "name"
-        self._characters_in_use = copy.copy(characters)
         self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._reflector_dict = dict(
             zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
