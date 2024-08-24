@@ -1,5 +1,6 @@
 import json
 
+from cli.functions.machines_f import _load_machine
 from utils.utils import Constants, get_charlist_dict, save_charlist_dict
 from ...utils.utils_cli import (
     askingInput,
@@ -10,11 +11,13 @@ from ...utils.utils_cli import (
     printOutput,
     printWarning,
     returningToMenu,
+    runNodeMenu,
 )
 
 
 def load_a_machine():
-    pass
+    machine_ref = _load_machine()
+    runNodeMenu(machine_ref, machine_menu)
 
 
 def create_a_new_machine_from_scratch():

@@ -41,3 +41,5 @@ _outer_cli_menu = {
     ),
     "0": ("Exit menu", exitMenu),
 }
+
+_menu_cli_options = {}

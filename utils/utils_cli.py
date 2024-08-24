@@ -2,6 +2,8 @@ import os
 from subprocess import call
 import string
 
+from core.abstract import AbstractBaseClass
+
 from ..utils.utils import is_valid_seed
 from ..utils.types_utils_cli import wrapperCall
 from exceptions import (
@@ -72,6 +74,7 @@ def printMenuOption(*args):
 
 
 def exitMenu(*args):
+    REVIEW THE MENU EXIT PARADIGM
     raise MenuExitException()
 
 
@@ -182,7 +185,7 @@ def getSeedFromUser(ask="seed"):
 # In development
 
 
-def runNodeMenu(object_for_call, menu: dict):
+def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
     while True:
         try:
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work

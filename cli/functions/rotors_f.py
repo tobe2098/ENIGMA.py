@@ -461,7 +461,9 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     )
 
 
-def _load_saved_rotor():
+def _load_saved_rotor(rotor: rotors.Rotor | None = None):
+    if rotor and rotor.is_set_up():
+        _save_rotor_in_its_folder(rotor_ref=rotor)
     path = utils.Constants.ROTOR_FILE_PATH
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")

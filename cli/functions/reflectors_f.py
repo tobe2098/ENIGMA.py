@@ -317,7 +317,9 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     )
 
 
-def _load_saved_reflector():
+def _load_saved_reflector(reflector: reflectors.Reflector | None = None):
+    if reflector and reflector.is_set_up():
+        _save_reflector_in_its_folder(reflector_ref=reflector)
     path = utils.Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")

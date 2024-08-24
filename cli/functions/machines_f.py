@@ -494,6 +494,10 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 
 
 def _save_machine_in_its_folder(machine_ref: machines.Machine):
+    if not machine_ref._do_objects_have_identical_charlists():
+        returningToMenu(
+            "Not all parts of the machine share the same character list", "e"
+        )
     new_name = machine_ref.get_name()
     while not machine_ref._is_name_valid(new_name):
         new_name = askingInput(
@@ -532,8 +536,8 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     )
 
 
-def _load_machine(machine_ref: machines.Machine = None):
-    if machine_ref:
+def _load_machine(machine_ref: machines.Machine | None = None):
+    if machine_ref and machine_ref._do_objects_have_identical_charlists():
         _save_machine_in_its_folder(machine_ref=machine_ref)
     module_path = Constants.MODULE_PATH
     new_folder = Constants.MACHINES_FILE_HANDLE
@@ -567,8 +571,8 @@ def _load_machine(machine_ref: machines.Machine = None):
     return machine_ref  # End
 
 
-def _create_a_new_random_machine(machine_ref: machines.Machine = None):
-    if machine_ref:
+def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
+    if machine_ref and machine_ref._do_objects_have_identical_charlists():
         _save_machine_in_its_folder(machine_ref=machine_ref)
     seed = getSeedFromUser()
     charlist = _get_a_charlist_from_storage()
@@ -580,6 +584,13 @@ def _create_a_new_random_machine(machine_ref: machines.Machine = None):
         f"Input the desired number of rotors for your machine (from 0 to {Constants.MAX_NO_ROTORS})"
     )
     machine_ref.setup_machine_randomly(noRotors=noRotors)
+    return machine_ref
+
+
+def _create_a_new_machine_from_scratch(machine_ref: machines.Machine | None = None):
+    if machine_ref and machine_ref._do_objects_have_identical_charlists():
+        _save_machine_in_its_folder(machine_ref=machine_ref)
+    machine_ref = machines.Machine()
     return machine_ref
 
 
