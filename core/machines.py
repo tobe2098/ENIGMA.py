@@ -101,14 +101,17 @@ class Machine(AbstractBaseClass):
             and len(self._rotors) > 0
         )
 
-    def _do_objects_have_identical_charlists(self, obj=None):
+    def _do_objects_have_identical_charlists(
+        self, obj: AbstractBaseClass | None = None
+    ):
         if obj:
-            return get_character_list_from_obj(self) == get_character_list_from_obj(obj)
-        return get_character_list_from_obj(self) == get_character_list_from_obj(
-            self._reflector
-        ) and all(
-            get_character_list_from_obj(rotor) == get_character_list_from_obj(self)
-            for rotor in self._rotors
+            return self.get_charlist() == obj.get_charlist()
+        return (
+            self.get_charlist == self._reflector.get_charlist()
+            and self.get_charlist() == self._plugboard.get_charlist()
+            and all(
+                rotor.get_charlist() == self.get_charlistt() for rotor in self._rotors
+            )
         )
 
     def _is_valid_no_rotors(self, noRotors):
