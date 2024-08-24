@@ -1,10 +1,15 @@
 import json
 
-from utils.utils import Constants, get_charlist_dict
+from utils.utils import Constants, get_charlist_dict, save_charlist_dict
 from ...utils.utils_cli import (
+    askingInput,
+    checkInputValidity,
     get_a_charlist_and_name_from_user,
     printError,
     printListOfOptions,
+    printOutput,
+    printWarning,
+    returningToMenu,
 )
 
 
@@ -40,6 +45,7 @@ def _print_charlist_collection(dictionary=None):
         dictionary = get_charlist_dict()
     name_list = list(dictionary.keys())
     printListOfOptions(name_list)
+    return name_list
 
 
 def _store_and_return_a_new_charlist():
@@ -52,16 +58,37 @@ def _store_and_return_a_new_charlist():
 
 
 def _delete_a_charlist():
-    # Make sure the default ones are not deleted or are added every time you ask for a charlist
-    pass
+    dictionary = get_charlist_dict()
+    name_list = _print_charlist_collection(dictionary=dictionary)
+    printWarning("Default character lists cannot be deleted")
+    name_index = askingInput("Input the index of the character list to be deleted")
+    if not name_index:
+        returningToMenu()
+    name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+    while not name_list:
+        name_index = askingInput("Input a valid index")
+        if not name_index:
+            returningToMenu()
+        name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+    dictionary.pop(name_list[name_index])
+    save_charlist_dict(dictionary=dictionary)
+    returningToMenu("Character list was deleted")
 
 
-def _retrieve_a_charlist():
-    pass
+def _print_a_particular_character_list():
+    printOutput(_get_a_charlist_from_storage())
 
 
 def _get_a_charlist_from_storage():
     dictionary = get_charlist_dict()
-    if not dictionary:
-        printError("There are no stored charlists, json file was removed ")
-    _print_charlist_collection(dictionary=dictionary)
+    name_list = _print_charlist_collection(dictionary=dictionary)
+    name_index = askingInput("Input the index of the desired character list")
+    if not name_index:
+        returningToMenu()
+    name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+    while not name_list:
+        name_index = askingInput("Input a valid index")
+        if not name_index:
+            returningToMenu()
+        name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+    return dictionary[name_list[name_index]]
