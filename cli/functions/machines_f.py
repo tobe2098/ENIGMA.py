@@ -13,7 +13,6 @@ from ...cli.menus.plugboards_m import _menu_plugboard
 
 from ...utils.utils import (
     Constants,
-    create_dictionary_from_charlist,
     get_character_list_from_obj,
     is_valid_filename,
     is_valid_seed,
@@ -575,7 +574,7 @@ def _create_a_new_random_machine(machine_ref: machines.Machine = None):
     charlist = _get_a_charlist_from_storage()
     machine_ref = machines.Machine(
         seed=seed,
-        characters=charlist,
+        charlist=charlist,
     )
     noRotors = askingInput(
         f"Input the desired number of rotors for your machine (from 0 to {Constants.MAX_NO_ROTORS})"

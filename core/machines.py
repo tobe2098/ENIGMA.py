@@ -5,6 +5,7 @@ import string
 
 # import sys
 
+from core.abstract import AbstractBaseClass
 from utils.exceptions import raiseBadInputException, raiseBadSetupException
 
 from .rotors import Rotor, RotorDash
@@ -12,26 +13,29 @@ from ..utils.utils import (
     CHARACTERS,
     CHARACTERS_dash,
     EQUIVALENCE_DICT,
+    Constants,
     EQUIVALENCE_DICT_dash,
     MAX_NO_ROTORS,
     MAX_SEED,
     create_dictionary_from_charlist,
+    get_character_list_from_obj,
     is_valid_seed,
 )
 from .reflectors import Reflector, ReflectorDash
 from .plugboards import PlugBoard, PlugBoardDash
 
 
-class Machine:
-    def __init__(self, name="name", seed=None, characters=CHARACTERS):
+class Machine(AbstractBaseClass):
+
+    def __init__(self, name="name", seed=None, charlist=Constants.UPP_LETTERS):
+        super().__init__(charlist)
         self._name = name
         # Include seed storages?
         # Write a default config
-        self._ref_rotor = Rotor(characters=characters)
+        self._ref_rotor = Rotor(characters=charlist)
         self._set_new_no_rotors(3)
-        self._reflector = Reflector(characters=characters)
-        self._characters_in_use = copy.copy(characters)
-        self._conversion_in_use = create_dictionary_from_charlist(characters)
+        self._reflector = Reflector(characters=charlist)
+        self._conversion_in_use = create_dictionary_from_charlist(charlist)
         if not seed:
             # Number has to be big, but how
             self._seed = random.randint(
@@ -42,17 +46,17 @@ class Machine:
         else:
             self._seed = seed
         # For now, default is nothingness
-        self._plugboard = PlugBoard(characters=characters)
+        self._plugboard = PlugBoard(characters=charlist)
         self._current_distance_from_original_state = 0
         # self.board_num_dict=transform_single_dict(self.board_dict)
         # print(
         # ">WARNING:Machine was just created, but it is NOT recommended for use until further configuration is done"
         # )
 
-    # Basic functions
+    # # Basic functions
 
-    # def get_character_list(self):
-    #     return self._characters_in_use
+    # # def get_character_list(self):
+    # #     return self._characters_in_use
 
     def get_name(self):
         return self._name
@@ -95,6 +99,16 @@ class Machine:
             self._reflector.is_set_up()
             and all([rotor.is_set_up() for rotor in self._rotors])
             and len(self._rotors) > 0
+        )
+
+    def _do_objects_have_identical_charlists(self, obj=None):
+        if obj:
+            return get_character_list_from_obj(self) == get_character_list_from_obj(obj)
+        return get_character_list_from_obj(self) == get_character_list_from_obj(
+            self._reflector
+        ) and all(
+            get_character_list_from_obj(rotor) == get_character_list_from_obj(self)
+            for rotor in self._rotors
         )
 
     def _is_valid_no_rotors(self, noRotors):

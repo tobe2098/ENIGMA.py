@@ -153,14 +153,6 @@ def is_valid_filename(filename):
 #     }
 
 
-def areUsingSameDicts(obj1, obj2):
-    return obj1._conversion_in_use == obj2._conversion_in_use
-
-
-def get_character_list_from_obj(obj):
-    return obj._characters_in_use
-
-
 def _asign_defaults_to_json_dict(dictionary: dict):
     dictionary[Constants.UPP_LETTERS_key] = Constants.UPP_LETTERS
     dictionary[Constants.UPP_LETTERS_dash_key] = Constants.UPP_LETTERS_dash
