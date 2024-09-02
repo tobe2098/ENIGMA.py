@@ -6,7 +6,6 @@ from ...utils.utils_cli import (
     askingInput,
     checkInputValidity,
     get_a_charlist_and_name_from_user,
-    printError,
     printListOfOptions,
     printOutput,
     printWarning,
