@@ -187,8 +187,7 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
         ).strip(chars=string.whitespace)
         characters = list(characters)
         if len(characters) == 2 and all(
-            character in utils.get_character_list_from_obj(rotor_ref)
-            for character in characters
+            character in rotor_ref.get_charlist() for character in characters
         ):
             pass
         elif not characters:
@@ -408,7 +407,7 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
     )
     while rotor_ref._is_position_invalid(new_position):
         utils_cli.printError("Input only allowed characters")
-        utils_cli.printOutput(utils.get_character_list_from_obj(rotor_ref))
+        utils_cli.printOutput(rotor_ref.get_charlist())
         new_position = utils_cli.askingInput(
             "Input a single allowed character to set the rotor to a new position"
         )

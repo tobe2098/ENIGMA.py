@@ -13,7 +13,6 @@ from ...cli.menus.plugboards_m import _menu_plugboard
 
 from ...utils.utils import (
     Constants,
-    get_character_list_from_obj,
     is_valid_filename,
     is_valid_seed,
 )
@@ -35,7 +34,6 @@ import pandas as pd
 import os
 import copy
 import pickle
-import json
 
 
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY
@@ -49,7 +47,7 @@ def _show_full_config_machine(machine_ref: machines.Machine):
         _show_config_rt(machine_ref._rotors[i])
     printOutput("Reflector config:")
     _show_config_rf(machine_ref._reflector)
-    printOutput("Characters in use: ", get_character_list_from_obj(machine_ref))
+    printOutput("Characters in use: ", machine_ref.get_charlist())
     printOutput(
         f"The machine is {machine_ref.get_char_distance()} backspaces from its original state"
     )
@@ -217,15 +215,11 @@ def _change_all_rotors_character_position(machine_ref: machines.Machine):
         remaining = list(set(machine_ref) - set(new_positions))
         printOutput("Remaining positions are ", remaining)
         new_pos = askingInput(f"Input new position for rotor {i+1}")
-        new_pos = checkInputValidity(
-            new_pos, rangein=get_character_list_from_obj(machine_ref)
-        )
+        new_pos = checkInputValidity(new_pos, rangein=machine_ref.get_charlist())
         while new_pos not in remaining:
             printOutput("Remaining positions are ", remaining)
             new_pos = askingInput(f"Input new position for rotor {i+1}")
-            new_pos = checkInputValidity(
-                new_pos, rangein=get_character_list_from_obj(machine_ref)
-            )
+            new_pos = checkInputValidity(new_pos, rangein=machine_ref.get_charlist())
         new_positions.append(new_pos)
     positions_copy = copy.copy(new_positions)
     positions_copy.sort()
@@ -250,13 +244,9 @@ def _change_a_rotor_character_position(machine_ref: machines.Machine):
         "Current rotor character position is: ",
         machine_ref.get_rotor_char_pos(rotor_index),
     )
-    printOutput(
-        "Valid character positions are: ", get_character_list_from_obj(machine_ref)
-    )
+    printOutput("Valid character positions are: ", machine_ref.get_charlist())
     new_char_pos = askingInput("Input new character position")
-    new_char_pos = checkInputValidity(
-        new_char_pos, rangein=get_character_list_from_obj(machine_ref)
-    )
+    new_char_pos = checkInputValidity(new_char_pos, rangein=machine_ref.get_charlist())
     if not new_char_pos:
         returningToMenu("Invalid input", output_type="e")
     machine_ref.change_rotor_char_position(rotor_index, new_char_pos)
@@ -362,7 +352,7 @@ def _machine_get_message(machine_ref: machines.Machine):
     else:
         printOutput(
             "Allowed characters (others WILL be ignored):",
-            get_character_list_from_obj(machine_ref),
+            machine_ref.get_charlist(),
         )
         text = askingInput("Write the desired message")
         return text

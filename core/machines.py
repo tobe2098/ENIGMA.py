@@ -18,7 +18,6 @@ from ..utils.utils import (
     MAX_NO_ROTORS,
     MAX_SEED,
     create_dictionary_from_charlist,
-    get_character_list_from_obj,
     is_valid_seed,
 )
 from .reflectors import Reflector, ReflectorDash
