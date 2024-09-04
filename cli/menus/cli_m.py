@@ -26,7 +26,7 @@ _charlist_dict_menu = {
     "0": ("Exit menu", exitMenu),
 }
 
-_outer_cli_menu = {
+_outer_cli_menu = {  # Here we have to be able to delete saved machines
     "1": (
         "Access character list menu",
         _charlist_dict_menu,

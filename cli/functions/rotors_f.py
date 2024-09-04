@@ -412,13 +412,13 @@ def _change_position_rt(rotor_ref: rotors.Rotor):
             "Input a single allowed character to set the rotor to a new position"
         )
     rotor_ref._define_position(new_position)
-    utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
+    utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_charposition())
 
 
 def _randomize_position_rt(rotor_ref: rotors.Rotor):
     seed = utils_cli.getSeedFromUser()
     rotor_ref._randomize_position(seed)
-    utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_position())
+    utils_cli.returningToMenu("Rotor position set to:", rotor_ref.get_charposition())
 
 
 def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):

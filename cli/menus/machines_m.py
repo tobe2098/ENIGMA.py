@@ -15,9 +15,6 @@ from ..functions.machines_f import (
     _edit_reflector_config,
     _encrypt_decrypt_cliout,
     _encrypt_decrypt_fileout,
-    _encrypt_decrypt_text_backspace,
-    _encrypt_decrypt_text_nobackspace,
-    _load_a_rotor_on_index,
     _load_rotors_at_index,
     _load_saved_reflector,
     _set_new_no_blank_rotors_machine,
@@ -25,7 +22,6 @@ from ..functions.machines_f import (
     _get_a_charlist_from_storage,
     _load_machine,
     _load_reflector,
-    _load_saved_rotor,
     _machine_get_message,
     _random_setup_all_rotors_machine,
     _random_setup_reflector_global_seed_machine,
@@ -49,4 +45,6 @@ _menu_miscellaneous = {}
 _menu_encrypt_decrypt = {}
 
 _menu_saving_and_loading_machines = {}
-_outer_menu_machine = {}
+_outer_menu_machine = (
+    {}
+)  # Here we have a 1. Use machine, 2. Create a new one, etc, 9. discard (exit without saving).

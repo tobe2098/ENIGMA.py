@@ -8,14 +8,14 @@ import string
 from core.abstract import AbstractBaseClass
 from utils.exceptions import raiseBadInputException, raiseBadSetupException
 
-from .rotors import Rotor, RotorDash
+from .rotors import Rotor
 from ..utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     is_valid_seed,
 )
-from .reflectors import Reflector, ReflectorDash
-from .plugboards import PlugBoard, PlugBoardDash
+from .reflectors import Reflector
+from .plugboards import PlugBoard
 
 
 class Machine(AbstractBaseClass):
@@ -141,24 +141,27 @@ class Machine(AbstractBaseClass):
     def get_rotors_names_ordered(self):
         return [rotor.get_name() for rotor in self._rotors]
 
+    def get_rotors_and_charpos(self):
+        return [(rotor.get_name(), rotor.get_charposition()) for rotor in self._rotors]
+
     def get_rotor_char_pos(self, rotor_index: int):
         if self.is_rotor_index_valid(rotor_index):
-            return self._rotors[rotor_index].get_position()
+            return self._rotors[rotor_index].get_charposition()
         else:
             raiseBadInputException()
 
     def change_rotor_char_position(self, index: int, position: str):
         if (
             index not in range(self.get_no_rotors())
-            or position not in self._characters_in_use
+            or position not in self.get_charlist()
         ):
             raiseBadInputException()
         self._rotors[index]._define_position(position)
 
     def _are_char_positions_valid(self, string_positions):
-        return all(
-            [char in self._characters_in_use for char in string_positions]
-        ) and len(string_positions) == len(self._rotors)
+        return all([char in self.get_charlist() for char in string_positions]) and len(
+            string_positions
+        ) == len(self._rotors)
 
     def change_all_rotors_character_positions(self, positions_string: str):
         # Here we get a string of positions to set to the rotors in the list of rotors (all of them)

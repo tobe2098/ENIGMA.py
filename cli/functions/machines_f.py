@@ -1,5 +1,5 @@
 import string
-from utils.exceptions import FileIOErrorException
+from utils.exceptions import FileIOErrorException, ReturnToMenuException
 from utils.types_utils import getLowerCaseName
 from ...cli.functions.plugboards_f import _show_config_pb
 from ...cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
@@ -187,21 +187,28 @@ def _load_a_rotor_on_index(machine_ref: machines.Machine, idx):
 
 
 def _load_rotors_at_index(machine_ref: machines.Machine):
-    if machine_ref.get_no_rotors() == Constants.MAX_NO_ROTORS:
-        returningToMenu(
-            "You reached the maximum number of rotors. Why would you do such a thing?",
-            "e",
+    # if machine_ref.get_no_rotors() == Constants.MAX_NO_ROTORS:
+    #     returningToMenu(
+    #         "You reached the maximum number of rotors. Why would you do such a thing?",
+    #         "e",
+    #     )
+    index = 1
+    while index:
+        index = askingInput(
+            f"Choose a valid index where to insert new rotors (0 to {machine_ref.get_no_rotors()-1}) or empty input to return to menu"
         )
-    index = askingInput(
-        f"Choose a valid index where to insert new rotors (0 to {machine_ref.get_no_rotors()-1})"
-    )
-    index = checkInputValidity(index, int, rangein=(0, machine_ref.get_no_rotors()))
-    # no_rotors_insert=askingInput(f"Enter number of new rotors to append to the machine (1 to {Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()})")
-    # no_rotors_insert=checkInputValidity(no_rotors_insert, int, range(1, Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()+1))
-    if not index:
-        returningToMenu("Invalid index input", output_type="e")
-    machine_ref._load_a_rotor_on_index(index)
-    returningToMenu(f"Rotor loaded at index {index}")
+        if not index:
+            returningToMenu()
+        index = checkInputValidity(index, int, rangein=(0, machine_ref.get_no_rotors()))
+        # no_rotors_insert=askingInput(f"Enter number of new rotors to append to the machine (1 to {Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()})")
+        # no_rotors_insert=checkInputValidity(no_rotors_insert, int, range(1, Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()+1))
+        if not index:
+            returningToMenu("Invalid index input", output_type="e")
+        if machine_ref.get_no_rotors() == Constants.MAX_NO_ROTORS:
+            returningToMenu("Max number of rotors has been reached", output_type="e")
+        machine_ref._load_a_rotor_on_index(index)
+        printOutput(f"Rotor loaded at index {index}")
+    # returningToMenu(f"Rotor loaded at index {index}")
 
 
 def _change_all_rotors_character_position(machine_ref: machines.Machine):
@@ -210,30 +217,33 @@ def _change_all_rotors_character_position(machine_ref: machines.Machine):
         "You can skip the change of character of a rotor by giving any invalid input"
     )
     new_positions = []
-    printListOfOptions(machine_ref.get_rotors_names_ordered())
+    printListOfOptions(machine_ref.get_rotors_and_charpos())
     for i in range(machine_ref.get_no_rotors()):
-        remaining = list(set(machine_ref) - set(new_positions))
-        printOutput("Remaining positions are ", remaining)
-        new_pos = askingInput(f"Input new position for rotor {i+1}")
+        # remaining = list(set(range(machine_ref.get_no_rotors())) - set(new_positions))
+        # printOutput("Remaining positions are ", remaining)
+        new_pos = askingInput(f"Input new character position for rotor {i+1}")
         new_pos = checkInputValidity(new_pos, rangein=machine_ref.get_charlist())
-        while new_pos not in remaining:
-            printOutput("Remaining positions are ", remaining)
-            new_pos = askingInput(f"Input new position for rotor {i+1}")
-            new_pos = checkInputValidity(new_pos, rangein=machine_ref.get_charlist())
+        # while new_pos not in remaining:
+        #     printOutput("Remaining positions are ", remaining)
+        #     new_pos = askingInput(f"Input new position for rotor {i+1}")
+        #     new_pos = checkInputValidity(new_pos, rangein=machine_ref.get_charlist())
         new_positions.append(new_pos)
-    positions_copy = copy.copy(new_positions)
-    positions_copy.sort()
-    if not all(
-        [machine_ref.is_rotor_index_valid(idx) for idx in new_positions]
-    ) and positions_copy == list(range(machine_ref.get_no_rotors())):
-        returningToMenu("The positions you provided were not valid", output_type="e")
-    machine_ref._reorder_all_rotors(index_list=new_positions)
-    returningToMenu("Rotors reordered")
+    # positions_copy = copy.copy(new_positions)
+    # positions_copy.sort()
+    # if not all(
+    #     [machine_ref.is_rotor_index_valid(idx) for idx in new_positions]
+    # ) and positions_copy == list(range(machine_ref.get_no_rotors())):
+    #     returningToMenu("The positions you provided were not valid", output_type="e")
+    # machine_ref._reorder_all_rotors(index_list=new_positions)
+    for i in range(new_positions):
+        if new_positions[i] in machine_ref.get_charlist():
+            machine_ref.change_rotor_char_position(index=i, position=new_positions[i])
+    returningToMenu("Rotors positions changed")
 
 
 def _change_a_rotor_character_position(machine_ref: machines.Machine):
     printOutput("Rotors:")
-    printListOfOptions(machine_ref.get_rotors_names_ordered())
+    printListOfOptions(machine_ref.get_rotors_and_charpos())
     rotor_index = askingInput("Input rotor index to change character position")
     rotor_index = checkInputValidity(
         rotor_index, int, rangein=(0, machine_ref.get_no_rotors())
@@ -484,6 +494,14 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 
 
 def _save_machine_in_its_folder(machine_ref: machines.Machine):
+    accbool = ""
+    while not accbool == "n" or not accbool == "y":
+        accbool = askingInput(
+            f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
+        ).lower()
+    if accbool == "n":
+        returningToMenu()
+
     if not machine_ref._do_objects_have_identical_charlists():
         returningToMenu(
             "Not all parts of the machine share the same character list", "e"
@@ -528,7 +546,10 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
 
 def _load_machine(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
-        _save_machine_in_its_folder(machine_ref=machine_ref)
+        try:
+            _save_machine_in_its_folder(machine_ref=machine_ref)
+        except ReturnToMenuException as e:
+            pass
     module_path = Constants.MODULE_PATH
     new_folder = Constants.MACHINES_FILE_HANDLE
     path = os.path.join(module_path, new_folder)
@@ -563,7 +584,10 @@ def _load_machine(machine_ref: machines.Machine | None = None):
 
 def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
-        _save_machine_in_its_folder(machine_ref=machine_ref)
+        try:
+            _save_machine_in_its_folder(machine_ref=machine_ref)
+        except ReturnToMenuException as e:
+            pass
     seed = getSeedFromUser()
     charlist = _get_a_charlist_from_storage()
     machine_ref = machines.Machine(
@@ -579,7 +603,10 @@ def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
 
 def _create_a_new_machine_from_scratch(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
-        _save_machine_in_its_folder(machine_ref=machine_ref)
+        try:
+            _save_machine_in_its_folder(machine_ref=machine_ref)
+        except ReturnToMenuException as e:
+            pass
     machine_ref = machines.Machine()
     return machine_ref
 

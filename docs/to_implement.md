@@ -4,6 +4,8 @@
 - Look how to make yaml accessible to the script: file in the module.
 - Change constructors to not have child and parent classes. The machines can be constructed using the available strings, and more stored by the user. Done
 - Pathing has to be standardized to os module Done
+- Reference return for loading, creating different machines requires that runNode assigns the return from the function, at least in cli and machine menus. Review.
+- Review the exitMenu functionality
 
 ## Testing
 - TESTING: RESULT MUST ALWAYS HAVE CURRENT DISTANCE EQUAL TO ZERO

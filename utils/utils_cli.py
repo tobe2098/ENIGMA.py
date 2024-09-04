@@ -193,7 +193,7 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
             for key in sorted(menu.keys()):
                 printMenuOption(key, ":", menu[key][0])
 
-            answer = input(askForMenuOption())
+            answer = askForMenuOption()
             result = menu.get(answer, (None, None))[1]
             if not result:
                 invalidChoice()

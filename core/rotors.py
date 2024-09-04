@@ -41,7 +41,7 @@ class Rotor(AbstractBaseClass):
     def get_name(self):
         return self._name
 
-    def get_position(self):
+    def get_charposition(self):
         return self._conversion_in_use[self._position]
 
     def get_notchlist_characters(self):
