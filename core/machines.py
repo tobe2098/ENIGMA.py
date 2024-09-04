@@ -10,13 +10,7 @@ from utils.exceptions import raiseBadInputException, raiseBadSetupException
 
 from .rotors import Rotor, RotorDash
 from ..utils.utils import (
-    CHARACTERS,
-    CHARACTERS_dash,
-    EQUIVALENCE_DICT,
     Constants,
-    EQUIVALENCE_DICT_dash,
-    MAX_NO_ROTORS,
-    MAX_SEED,
     create_dictionary_from_charlist,
     is_valid_seed,
 )
@@ -39,7 +33,7 @@ class Machine(AbstractBaseClass):
             # Number has to be big, but how
             self._seed = random.randint(
                 0,
-                MAX_SEED,
+                Constants.MAX_SEED,
             )
             # print("Seed has been randomly generated, and is now:", self._seed)
         else:
@@ -114,7 +108,7 @@ class Machine(AbstractBaseClass):
         )
 
     def _is_valid_no_rotors(self, noRotors):
-        return noRotors > 0 and noRotors < MAX_NO_ROTORS
+        return noRotors > 0 and noRotors < Constants.MAX_NO_ROTORS
 
     def get_no_rotors(self):
         return len(self._rotors)
@@ -333,12 +327,3 @@ class Machine(AbstractBaseClass):
                     self._current_distance_from_original_state -= 1
             # self._current_distance_from_original_state = 0
         # TESTING: RESULT MUST ALWAYS HAVE CURRENT DISTANCE EQUAL TO ZERO
-
-
-class MachineDash(Machine):
-    def __init__(self, name="name", seed=None):
-        self._ref_rotor = RotorDash()
-        self._reflector = ReflectorDash()
-        self._plugboard = PlugBoardDash()
-        super().__init__(name, seed, CHARACTERS_dash, EQUIVALENCE_DICT_dash)
-        # self._set_new_no_rotors(3)
