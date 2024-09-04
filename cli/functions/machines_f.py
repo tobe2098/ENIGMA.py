@@ -20,6 +20,7 @@ from ...utils.utils_cli import (
     askingInput,
     checkIfFileExists,
     checkInputValidity,
+    exitMenu,
     getSeedFromUser,
     printError,
     printListOfOptions,
@@ -121,27 +122,7 @@ def _random_setup_all_rotors_machine(machine_ref: machines.Machine):
     returningToMenu("All rotors have been randomized")
 
 
-def _randomize_entire_machine(machine_ref: machines.Machine):
-    printWarning("The previous global seed will be replaced by the seed you input")
-    seed = getSeedFromUser()
-    no_rotors = askingInput("Input desired number of rotors (invalid for same number)")
-    no_rotors = checkInputValidity(no_rotors, int, (1, Constants.MAX_NO_ROTORS + 1))
-    machine_ref.setup_machine_randomly(seed, no_rotors or machine_ref.get_no_rotors())
-    returningToMenu(
-        f"The machine's seed has been replaced and its settings have been set according to that seed, with {no_rotors or machine_ref.get_no_rotors()} rotors"
-    )
-
-
-def _re_randomize_with_global_seed_machine(machine_ref: machines.Machine):
-    if not machine_ref.seed_is_set():
-        returningToMenu("No global seed has been set", output_type="e")
-    machine_ref.setup_machine_randomly(
-        machine_ref.get_seed(), machine_ref.get_no_rotors()
-    )
-    returningToMenu("The machine's settings have been set according to the global seed")
-
-
-def _set_new_no_blank_rotors_machine(machine_ref: machines.Machine):
+def _set_new_no_ref_rotors_machine(machine_ref: machines.Machine):
     new_no_rotors = askingInput(
         f"Enter number of new rotors to set in the machine (0 to {Constants.MAX_NO_ROTORS})"
     )
@@ -157,11 +138,11 @@ def _set_new_no_blank_rotors_machine(machine_ref: machines.Machine):
 
 
 def _append_rotors(machine_ref: machines.Machine):
-    if machine_ref.get_no_rotors() == Constants.MAX_NO_ROTORS:
-        returningToMenu(
-            "You reached the maximum number of rotors. Why would you do such a thing?",
-            "e",
-        )
+    # if machine_ref.get_no_rotors() == Constants.MAX_NO_ROTORS:
+    #     returningToMenu(
+    #         "You reached the maximum number of rotors. Why would you do such a thing?",
+    #         "e",
+    #     )
     no_rotors_append = askingInput(
         f"Enter number of new rotors to append to the machine (0 to {Constants.MAX_NO_ROTORS-machine_ref.get_no_rotors()})"
     )
@@ -279,6 +260,9 @@ def _swap_two_rotors(machine_ref: machines.Machine):
 def _reorder_all_rotors(machine_ref: machines.Machine):
     printOutput("Rotors:")
     printListOfOptions(machine_ref.get_rotors_names_ordered())
+    printOutput(
+        "Remember: smaller indexes are closer to the plugboard, bigger ones closer to the reflector. Last rotor's notches are irrelevant"
+    )
     index_list = askingInput(
         "Input the rotor indexes in the desired order, separated by commas"
     )
@@ -358,14 +342,13 @@ def _machine_get_message(machine_ref: machines.Machine):
                 f"Introduce the file's name to be read (without .txt, from {os.getcwd()} only)"
             )
         text = get_message_from_textfile(file)
-        return text
     else:
         printOutput(
             "Allowed characters (others WILL be ignored):",
             machine_ref.get_charlist(),
         )
         text = askingInput("Write the desired message")
-        return text
+    return text
 
 
 def get_message_from_textfile(filename: str):
@@ -544,6 +527,36 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     )
 
 
+def _randomize_entire_machine(machine_ref: machines.Machine):
+    if machine_ref and machine_ref._do_objects_have_identical_charlists():
+        try:
+            _save_machine_in_its_folder(machine_ref=machine_ref)
+        except ReturnToMenuException as e:
+            pass
+    printWarning("The previous global seed will be replaced by the seed you input")
+    seed = getSeedFromUser()
+    no_rotors = askingInput("Input desired number of rotors (empty for same number)")
+    no_rotors = checkInputValidity(no_rotors, int, (1, Constants.MAX_NO_ROTORS + 1))
+    machine_ref.setup_machine_randomly(seed, no_rotors or machine_ref.get_no_rotors())
+    returningToMenu(
+        f"The machine's seed has been replaced and its settings have been set according to that seed, with {no_rotors or machine_ref.get_no_rotors()} rotors"
+    )
+
+
+def _re_randomize_with_global_seed_machine(machine_ref: machines.Machine):
+    if machine_ref and machine_ref._do_objects_have_identical_charlists():
+        try:
+            _save_machine_in_its_folder(machine_ref=machine_ref)
+        except ReturnToMenuException as e:
+            pass
+    if not machine_ref.seed_is_set():
+        returningToMenu("No global seed has been set", output_type="e")
+    machine_ref.setup_machine_randomly(
+        machine_ref.get_seed(), machine_ref.get_no_rotors()
+    )
+    returningToMenu("The machine's settings have been set according to the global seed")
+
+
 def _load_machine(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
@@ -618,3 +631,12 @@ def _create_a_new_machine_from_scratch(machine_ref: machines.Machine | None = No
 #         reflector.random_name(seed + index)
 #         reflector.random_setup(seed + index)
 #     utils_cli.printOutput(f"Created and saved {n} rotors.")
+
+
+def exitMenu_machine(machine_ref: machines.Machine):
+    if machine_ref and machine_ref._do_objects_have_identical_charlists():
+        try:
+            _save_machine_in_its_folder(machine_ref=machine_ref)
+        except ReturnToMenuException as e:
+            pass
+    exitMenu()
