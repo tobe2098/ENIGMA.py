@@ -27,11 +27,19 @@ def create_a_new_random_machine():
     pass
 
 
-def edit_an_existing_rotor():
+def export_an_existing_rotor():
     pass
 
 
-def edit_an_existing_reflector():
+def export_an_existing_reflector():
+    pass
+
+
+def export_an_existing_machine():
+    pass
+
+
+def export_an_existing_charlist():
     pass
 
 
