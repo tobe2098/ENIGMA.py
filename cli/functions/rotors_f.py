@@ -422,6 +422,13 @@ def _randomize_position_rt(rotor_ref: rotors.Rotor):
 
 
 def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
+    accbool = ""
+    while not accbool == "n" or not accbool == "y":
+        accbool = utils_cli.askingInput(
+            f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
+        ).lower()
+    if accbool == "n":
+        utils_cli.returningToMenu()
     new_name = rotor_ref.get_name()
     while not rotor_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(

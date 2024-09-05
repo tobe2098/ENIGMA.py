@@ -484,7 +484,6 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
         ).lower()
     if accbool == "n":
         returningToMenu()
-
     if not machine_ref._do_objects_have_identical_charlists():
         returningToMenu(
             "Not all parts of the machine share the same character list", "e"
@@ -496,9 +495,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
         ).strip(chars=string.whitespace)
     machine_ref._change_name(new_name)
 
-    module_path = Constants.MODULE_PATH
-    new_folder = Constants.MACHINES_FILE_HANDLE
-    path = os.path.join(module_path, new_folder)
+    path = Constants.MACHINE_FILE_PATH
     if not os.path.exists(path):
         os.mkdir(path)
         printOutput("Directory '% s' created" % path)
@@ -521,9 +518,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     except Exception as e:
         returningToMenu(f"Failed to write on {file_path}:{e}")
     returningToMenu(
-        "{} has been saved into {}.{} in {}".format(
-            machine_ref._name, machine_ref._name, getLowerCaseName(machine_ref), path
-        )
+        f"{machine_ref.get_name()} has been saved into {machine_ref.get_name()}.{getLowerCaseName(machine_ref)} in {path_to_export,}"
     )
 
 
@@ -557,7 +552,7 @@ def _re_randomize_with_global_seed_machine(machine_ref: machines.Machine):
     returningToMenu("The machine's settings have been set according to the global seed")
 
 
-def _load_machine(machine_ref: machines.Machine | None = None):
+def _load_saved_machine(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
             _save_machine_in_its_folder(machine_ref=machine_ref)
@@ -639,4 +634,5 @@ def exitMenu_machine(machine_ref: machines.Machine):
             _save_machine_in_its_folder(machine_ref=machine_ref)
         except ReturnToMenuException as e:
             pass
+    if CONFIG.SETUP
     exitMenu()

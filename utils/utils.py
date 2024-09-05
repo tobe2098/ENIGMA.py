@@ -46,11 +46,13 @@ class Constants:
     REFLECTORS_FILE_HANDLE = "SAVED_REFLECTORS"
     MACHINES_FILE_HANDLE = "SAVED_MACHINES"
     CHARLISTS_HANDLE = "charlists.json"
+    CONFIG_HANDLE = "config.json"
     MODULE_PATH = os.dirname(os.dirname(os.path.abspath(__file__)))
     ROTOR_FILE_PATH = os.path.join(MODULE_PATH, ROTORS_FILE_HANDLE)
     REFLECTOR_FILE_PATH = os.path.join(MODULE_PATH, REFLECTORS_FILE_HANDLE)
     MACHINE_FILE_PATH = os.path.join(MODULE_PATH, MACHINES_FILE_HANDLE)
     CHARLISTS_FILE_PATH = os.path.join(MODULE_PATH, CHARLISTS_HANDLE)
+    CONFIG_FILE_PATH = os.path.join(MODULE_PATH, CONFIG_HANDLE)
 
 
 def my_quit_fn():  # This function should be in utils.py

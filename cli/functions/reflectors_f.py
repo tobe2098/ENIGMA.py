@@ -275,6 +275,13 @@ def _randomize_name_rf(reflector_ref: reflectors.Reflector):
 
 
 def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
+    accbool = ""
+    while not accbool == "n" or not accbool == "y":
+        accbool = utils_cli.askingInput(
+            f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
+        ).lower()
+    if accbool == "n":
+        utils_cli.returningToMenu()
     new_name = reflector_ref.get_name()
     while not reflector_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
