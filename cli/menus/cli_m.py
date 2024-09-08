@@ -1,4 +1,4 @@
-from utils.utils_cli import exitMenu
+from utils.utils_cli import exitMenu, exitProgram
 from ..menus.rotors_m import _load_saved_rotor_for_editing
 from ..menus.reflectors_m import _load_saved_reflector_for_editing
 from ..functions.cli_f import (
@@ -31,15 +31,12 @@ _outer_cli_menu = {  # Here we have to be able to delete saved machines
         "Access character list menu",
         _charlist_dict_menu,
     ),
-    "2": ("Edit an existing reflector", _print_a_particular_character_list),
-    "2": ("Edit an existing rotor", _print_a_particular_character_list),
-    "2": ("Edit an existing", _print_a_particular_character_list),
-    "3": ("Delete a character list", _delete_a_charlist),
-    "4": (
-        "Store a custom character list",
-        _store_and_return_a_new_charlist,
-    ),
-    "0": ("Exit menu", exitMenu),
+    "2": ("Load an existing machine", load_a_machine),
+    "2": ("Create a new machine from scratch", create_a_new_machine_from_scratch),
+    "2": ("Create a new random machine", create_a_new_random_machine),
+    "2": ("Load a saved rotor for editing", _load_saved_rotor_for_editing),
+    "2": ("Load a saved reflector for editing", _load_saved_reflector_for_editing),
+    "0": ("Exit", exitProgram),
 }
 
 _menu_cli_options = {}

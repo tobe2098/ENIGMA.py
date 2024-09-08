@@ -3,6 +3,8 @@
 import os
 import string
 
+from numpy import isin
+
 from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
 from ...core import reflectors
@@ -324,35 +326,39 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     )
 
 
-def _load_saved_reflector(reflector: reflectors.Reflector | None = None):
-    if reflector and reflector.is_set_up():
-        _save_reflector_in_its_folder(reflector_ref=reflector)
+def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
+    if reflector_id and reflector_id.is_set_up():
+        _save_reflector_in_its_folder(reflector_ref=reflector_id)
     path = utils.Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
-    list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
+    list_of_files = [
+        element.rsplit(".", 1)[0]
+        for element in os.listdir(path)
+        # if element.rsplit(".", 1)[1] == "reflector"
+    ]
     if not list_of_files:
         utils_cli.returningToMenu(f"There are no reflectors saved at {path}", "e")
     utils_cli.printOutput("Your available reflectors are:")
     utils_cli.printListOfOptions(list_of_files)
-    reflector = utils_cli.askingInput("Input reflector's position in the list:")
-    reflector = utils_cli.checkInputValidity(
-        reflector, int, rangein=(0, len(list_of_files))
+    reflector_id = utils_cli.askingInput("Input reflector's position in the list:")
+    reflector_id = utils_cli.checkInputValidity(
+        reflector_id, int, rangein=(0, len(list_of_files))
     )
-    while not reflector:
+    while not reflector_id:
         # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
         utils_cli.printError("Please input a valid index")
         utils_cli.printListOfOptions(list_of_files)
-        reflector = utils_cli.askingInput("Input reflector's position in the list:")
-        if not reflector:
+        reflector_id = utils_cli.askingInput("Input reflector's position in the list:")
+        if not reflector_id:
             utils_cli.returningToMenu()
-        reflector = utils_cli.checkInputValidity(
-            reflector, int, rangein=(0, len(list_of_files))
+        reflector_id = utils_cli.checkInputValidity(
+            reflector_id, int, rangein=(0, len(list_of_files))
         )
     try:
         filehandler = open(
-            os.path.join(path, f"{list_of_files[reflector]}.rotor")(
-                path, list_of_files[reflector]
+            os.path.join(path, f"{list_of_files[reflector_id]}.rotor")(
+                path, list_of_files[reflector_id]
             ),
             "rb",
         )
@@ -362,7 +368,12 @@ def _load_saved_reflector(reflector: reflectors.Reflector | None = None):
         utils_cli.returningToMenu(
             f"Failed to read the file at {filehandler}:{e}", output_type="e"
         )
-    return reflector_ref
+    if isinstance(reflector_ref, reflectors.Reflector):
+        return reflector_ref
+    else:
+        utils_cli.returningToMenu(
+            f"A non-reflector type was loaded:{type(reflector_ref)}", output_type="e"
+        )
 
 
 def _exitMenu_rf(reflector_ref: reflectors.Reflector):
