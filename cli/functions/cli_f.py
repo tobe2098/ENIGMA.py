@@ -45,124 +45,124 @@ def create_a_new_random_machine():
     returningToMenu()
 
 
-def export_an_existing_reflector():
-    path_to_export = os.getcwd()
-    reflector_ref = _load_saved_reflector()
-    new_name = reflector_ref.get_name()
-    while not reflector_ref._is_name_valid(new_name):
-        new_name = askingInput(
-            f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
-        ).strip(chars=string.whitespace)
-    reflector_ref._change_name(new_name)
+# def export_an_existing_reflector():
+#     path_to_export = os.getcwd()
+#     reflector_ref = _load_saved_reflector()
+#     new_name = reflector_ref.get_name()
+#     while not reflector_ref._is_name_valid(new_name):
+#         new_name = askingInput(
+#             f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
+#         ).strip(chars=string.whitespace)
+#     reflector_ref._change_name(new_name)
 
-    if checkIfFileExists(
-        path_to_export, reflector_ref._name, getLowerCaseName(reflector_ref)
-    ):
-        printOutput(
-            f"A {getLowerCaseName(reflector_ref)} with this name already exists"
-        )
-        accbool = ""
-        while not accbool == "n" or not accbool == "y":
-            accbool = askingInput(
-                f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
-            ).lower()
-        if accbool == "n":
-            returningToMenu(
-                f"You did not overwrite the {getLowerCaseName(reflector_ref)}"
-            )
-    file_path = os.path.join(
-        path_to_export, f"{reflector_ref._name}.{getLowerCaseName(reflector_ref)}"
-    )
-    try:
-        save_file = open(file_path, "wb")
-        pickle.dump(reflector_ref, save_file)
-        save_file.close()
-    except Exception as e:
-        raise FileIOErrorException(
-            f"Failed to export the {getLowerCaseName(reflector_ref)} at {file_path}:{e}"
-        )
-    returningToMenu(
-        f"{reflector_ref._name} has been exported into {reflector_ref._name}.{getLowerCaseName(reflector_ref)} in {path_to_export}"
-    )
-
-
-def export_an_existing_rotor():
-    path_to_export = os.getcwd()
-    rotor_ref = _load_saved_rotor()
-    new_name = rotor_ref.get_name()
-    while not rotor_ref._is_name_valid(new_name):
-        new_name = askingInput(
-            f"Please assign a new name to the {getLowerCaseName(rotor_ref)}"
-        ).strip(chars=string.whitespace)
-    rotor_ref._change_name(new_name)
-
-    if not os.path.exists(path_to_export):
-        os.mkdir(path_to_export)
-        printOutput(f"Directory '{path_to_export}' created")
-    if checkIfFileExists(path_to_export, rotor_ref._name, getLowerCaseName(rotor_ref)):
-        printOutput(f"A {getLowerCaseName(rotor_ref)} with this name already exists")
-        accbool = ""
-        while not accbool == "n" or not accbool == "y":
-            accbool = askingInput(
-                f"Do you want to overwrite the saved {getLowerCaseName(rotor_ref)}? [y/n]"
-            ).lower()
-        if accbool == "n":
-            returningToMenu(
-                f"You discarded changes to the {getLowerCaseName(rotor_ref)}"
-            )
-    file_path = os.path.join(
-        path_to_export, f"{rotor_ref._name}.{getLowerCaseName(rotor_ref)}"
-    )
-    try:
-        save_file = open(file_path, "wb")
-        pickle.dump(rotor_ref, save_file)
-        save_file.close()
-    except Exception as e:
-        raise FileIOErrorException(
-            f"Failed to save the {getLowerCaseName(rotor_ref)} at {file_path}:{e}"
-        )
-    returningToMenu(
-        f"{rotor_ref._name} has been saved into {rotor_ref._name}.{getLowerCaseName(rotor_ref)} in {path_to_export}"
-    )
+#     if checkIfFileExists(
+#         path_to_export, reflector_ref._name, getLowerCaseName(reflector_ref)
+#     ):
+#         printOutput(
+#             f"A {getLowerCaseName(reflector_ref)} with this name already exists"
+#         )
+#         accbool = ""
+#         while not accbool == "n" or not accbool == "y":
+#             accbool = askingInput(
+#                 f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
+#             ).lower()
+#         if accbool == "n":
+#             returningToMenu(
+#                 f"You did not overwrite the {getLowerCaseName(reflector_ref)}"
+#             )
+#     file_path = os.path.join(
+#         path_to_export, f"{reflector_ref._name}.{getLowerCaseName(reflector_ref)}"
+#     )
+#     try:
+#         save_file = open(file_path, "wb")
+#         pickle.dump(reflector_ref, save_file)
+#         save_file.close()
+#     except Exception as e:
+#         raise FileIOErrorException(
+#             f"Failed to export the {getLowerCaseName(reflector_ref)} at {file_path}:{e}"
+#         )
+#     returningToMenu(
+#         f"{reflector_ref._name} has been exported into {reflector_ref._name}.{getLowerCaseName(reflector_ref)} in {path_to_export}"
+#     )
 
 
-def export_an_existing_machine():
-    path_to_export = os.getcwd()
-    machine_ref = _load_saved_machine()
-    if not machine_ref._do_objects_have_identical_charlists():
-        returningToMenu(
-            "Not all parts of the machine share the same character list", "e"
-        )
-    new_name = machine_ref.get_name()
-    while not machine_ref._is_name_valid(new_name):
-        new_name = askingInput(
-            f"Please assign a new name to the {getLowerCaseName(machine_ref)}"
-        ).strip(chars=string.whitespace)
-    machine_ref._change_name(new_name)
+# def export_an_existing_rotor():
+#     path_to_export = os.getcwd()
+#     rotor_ref = _load_saved_rotor()
+#     new_name = rotor_ref.get_name()
+#     while not rotor_ref._is_name_valid(new_name):
+#         new_name = askingInput(
+#             f"Please assign a new name to the {getLowerCaseName(rotor_ref)}"
+#         ).strip(chars=string.whitespace)
+#     rotor_ref._change_name(new_name)
 
-    if checkIfFileExists(
-        path_to_export, machine_ref._name, getLowerCaseName(machine_ref)
-    ):
-        printOutput(f"A {getLowerCaseName(machine_ref)} with this name already exists")
-        accbool = ""
-        while not accbool == "n" or not accbool == "y":
-            accbool = askingInput(
-                f"Do you want to overwrite the exported {getLowerCaseName(machine_ref)}? [y/n]"
-            ).lower()
-        if accbool == "n":
-            returningToMenu()
-    file_path = os.path.join(
-        path_to_export, f"{machine_ref._name}.{getLowerCaseName(machine_ref)}"
-    )
-    try:
-        save_file = open(file_path, "wb")
-        pickle.dump(machine_ref, save_file)
-        save_file.close()
-    except Exception as e:
-        returningToMenu(f"Failed to write on {file_path}:{e}")
-    returningToMenu(
-        f"{machine_ref.get_name()} has been saved into {machine_ref.get_name()}.{getLowerCaseName(machine_ref)} in {path_to_export,}"
-    )
+#     if not os.path.exists(path_to_export):
+#         os.mkdir(path_to_export)
+#         printOutput(f"Directory '{path_to_export}' created")
+#     if checkIfFileExists(path_to_export, rotor_ref._name, getLowerCaseName(rotor_ref)):
+#         printOutput(f"A {getLowerCaseName(rotor_ref)} with this name already exists")
+#         accbool = ""
+#         while not accbool == "n" or not accbool == "y":
+#             accbool = askingInput(
+#                 f"Do you want to overwrite the saved {getLowerCaseName(rotor_ref)}? [y/n]"
+#             ).lower()
+#         if accbool == "n":
+#             returningToMenu(
+#                 f"You discarded changes to the {getLowerCaseName(rotor_ref)}"
+#             )
+#     file_path = os.path.join(
+#         path_to_export, f"{rotor_ref._name}.{getLowerCaseName(rotor_ref)}"
+#     )
+#     try:
+#         save_file = open(file_path, "wb")
+#         pickle.dump(rotor_ref, save_file)
+#         save_file.close()
+#     except Exception as e:
+#         raise FileIOErrorException(
+#             f"Failed to save the {getLowerCaseName(rotor_ref)} at {file_path}:{e}"
+#         )
+#     returningToMenu(
+#         f"{rotor_ref._name} has been saved into {rotor_ref._name}.{getLowerCaseName(rotor_ref)} in {path_to_export}"
+#     )
+
+
+# def export_an_existing_machine():
+#     path_to_export = os.getcwd()
+#     machine_ref = _load_saved_machine()
+#     if not machine_ref._do_objects_have_identical_charlists():
+#         returningToMenu(
+#             "Not all parts of the machine share the same character list", "e"
+#         )
+#     new_name = machine_ref.get_name()
+#     while not machine_ref._is_name_valid(new_name):
+#         new_name = askingInput(
+#             f"Please assign a new name to the {getLowerCaseName(machine_ref)}"
+#         ).strip(chars=string.whitespace)
+#     machine_ref._change_name(new_name)
+
+#     if checkIfFileExists(
+#         path_to_export, machine_ref._name, getLowerCaseName(machine_ref)
+#     ):
+#         printOutput(f"A {getLowerCaseName(machine_ref)} with this name already exists")
+#         accbool = ""
+#         while not accbool == "n" or not accbool == "y":
+#             accbool = askingInput(
+#                 f"Do you want to overwrite the exported {getLowerCaseName(machine_ref)}? [y/n]"
+#             ).lower()
+#         if accbool == "n":
+#             returningToMenu()
+#     file_path = os.path.join(
+#         path_to_export, f"{machine_ref._name}.{getLowerCaseName(machine_ref)}"
+#     )
+#     try:
+#         save_file = open(file_path, "wb")
+#         pickle.dump(machine_ref, save_file)
+#         save_file.close()
+#     except Exception as e:
+#         returningToMenu(f"Failed to write on {file_path}:{e}")
+#     returningToMenu(
+#         f"{machine_ref.get_name()} has been saved into {machine_ref.get_name()}.{getLowerCaseName(machine_ref)} in {path_to_export,}"
+#     )
 
 
 # def export_an_existing_charlist():
