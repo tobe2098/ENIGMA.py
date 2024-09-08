@@ -25,6 +25,7 @@ _charlist_dict_menu = {
     ),
     "0": ("Exit menu", exitMenu),
 }
+_menu_cli_options = {}
 
 _outer_cli_menu = {  # Here we have to be able to delete saved machines
     "1": (
@@ -32,11 +33,10 @@ _outer_cli_menu = {  # Here we have to be able to delete saved machines
         _charlist_dict_menu,
     ),
     "2": ("Load an existing machine", load_a_machine),
-    "2": ("Create a new machine from scratch", create_a_new_machine_from_scratch),
-    "2": ("Create a new random machine", create_a_new_random_machine),
-    "2": ("Load a saved rotor for editing", _load_saved_rotor_for_editing),
-    "2": ("Load a saved reflector for editing", _load_saved_reflector_for_editing),
+    "3": ("Create a new machine from scratch", create_a_new_machine_from_scratch),
+    "4": ("Create a new random machine", create_a_new_random_machine),
+    "5": ("Load a saved rotor for editing", _load_saved_rotor_for_editing),
+    "6": ("Load a saved reflector for editing", _load_saved_reflector_for_editing),
+    "7": ("Configuration menu", _menu_cli_options),
     "0": ("Exit", exitProgram),
 }
-
-_menu_cli_options = {}
