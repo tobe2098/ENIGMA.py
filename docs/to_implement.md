@@ -1,11 +1,19 @@
+# Working on
+- Separate machine, rotor, reflector menus
+- Blank and random rotor and reflector in outer_cli_menu
+- Review the exitMenu functionality
+
+## JSON
+- Change, set, unset options for machine. 
+- Loading, saving and creating the config
+- Last machine folder/name is set in json. If not there, the auto-encrypt does not work. 
+- Look how to make json accessible to the script: file in the module.
 # For current version
-- Last machine folder/name is set in yaml. If not there, the auto-encrypt does not work. 
-- Folders with the pickled objects are in the module folder, fixed path. Allow the user to save a machine/component in current folder (export).
-- Look how to make yaml accessible to the script: file in the module.
+- Folders with the pickled objects are in the module folder, fixed path. Done
 - Change constructors to not have child and parent classes. The machines can be constructed using the available strings, and more stored by the user. Done
 - Pathing has to be standardized to os module Done
-- Reference return for loading, creating different machines requires that runNode assigns the return from the function, at least in cli and machine menus. Review.
-- Review the exitMenu functionality
+- Reference return for loading, creating different machines requires that runNode assigns the return from the function, at least in cli and machine menus. Review. Done
+
 
 ## Testing
 - TESTING: RESULT MUST ALWAYS HAVE CURRENT DISTANCE EQUAL TO ZERO
@@ -28,6 +36,7 @@
 - Add configuration of bools for safety and clarity screen clearance, MAX NOTCHES (configuration.something?)
 - Add waiting when clearing the screen
 - Enigma message when deleting screen, countdown
+- Cleaning up types.py and types_cli.py
 
 ## v2.0 (Great feature addition)
 - I can add the posibility of customizing the character table. Because it is all dictionaries and relative positions in the rotors, it should not spell any trouble. Requires checks on loading that depend on the character lists, requires a new class of every object for Custom, or changing current paradigm so that the base class admits any character list. Make sure there is no arithmetic on the characters.
