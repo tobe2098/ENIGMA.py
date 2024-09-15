@@ -33,6 +33,7 @@
 - The creation of dictionaries should be part of the constructor (a function call, not the entire thing). That way the code only needs to care about the list of characters itself (where order would matter).
 - Program should store and load the last used machine.
 - export_an_existing_charlist and import_a_charlist_from_file, also rotors, reflectors and machines
+- Proper exception handling for getcharlist and config in FileIO will require separate functions.
 
 ## v1.2 (Feature addition and safety update)
 - MaxNoRotors can be changed in yaml config (with limits itself)

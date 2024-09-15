@@ -1,7 +1,6 @@
+from logging import config
 import os
 import json
-import pickle
-import string
 
 from cli.menus.machines_m import _outer_menu_machine
 from cli.functions.reflectors_f import _load_saved_reflector
@@ -11,12 +10,16 @@ from cli.functions.machines_f import (
     _create_a_new_machine_from_scratch,
     _create_a_new_random_machine,
 )
-from utils.exceptions import FileIOErrorException
-from utils.types_utils import getLowerCaseName
-from utils.utils import Constants, get_charlist_json, save_charlist_json
+from utils.utils import (
+    Constants,
+    get_charlist_json,
+    get_config_json,
+    save_charlist_json,
+    _asign_defaults_to_config_json,
+    save_config_json,
+)
 from ...utils.utils_cli import (
     askingInput,
-    checkIfFileExists,
     checkInputValidity,
     get_a_charlist_and_name_from_user,
     printListOfOptions,
@@ -106,34 +109,47 @@ def _print_help():
 
 
 def _set_defaults_config():
-    pass
-
-
-def _load_config():
-    pass
+    config = get_config_json()
+    _asign_defaults_to_config_json(dictionary=config)
+    save_config_json(dictionary=config)
+    returningToMenu("Configuration was reset to the defaults")
 
 
 def _set_cli_machine():
-    pass
+    config = get_config_json()
+    # Get list of saved machines, and offer choice
+    # If success, set machine and set =true
+    # If not, just return
 
 
 def _unset_cli_machine():
+    config = get_config_json()
+    # Easy, unset the machine so that it changes to the last used machine
+
+
+def _set_machine_unset_case(machine_ref):
+    config = get_config_json()
+    # Check if the machine is saved in its current state, then set that name for later retrieval.
     pass
 
 
 def _encrypt_decrypt_text_to_cli():
+    # Always return to original position
     pass
 
 
 def _encrypt_decrypt_text_to_file_cli():
+    # Always return to original position
     pass
 
 
 def _encrypt_decrypt_file_to_cli():
+    # Always return to original position
     pass
 
 
 def _encrypt_decrypt_file_to_file_cli():
+    # Always return to original position
     pass
 
 

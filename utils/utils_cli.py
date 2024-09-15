@@ -213,6 +213,30 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
             clearScreenConvenienceCli()
             exitMenu()
 
+def runNodeMenuObjectless(menu: dict):
+    while True:
+        try:
+            # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
+            for key in sorted(menu.keys()):
+                printMenuOption(key, ":", menu[key][0])
+
+            answer = askForMenuOption()
+            result = menu.get(answer, (None, None))[1]
+            if not result:
+                invalidChoice()
+            elif callable(result):
+                result()
+            else:  # Here we assume it is a dictionary
+                try:
+                    runNodeMenuObjectless(result)
+                except MenuExitException:
+                    pass
+        except ReturnToMenuException as e:
+            print(e)
+        except MenuExitException:
+            clearScreenConvenienceCli()
+            exitMenu()
+
 
 def get_a_charlist_and_name_from_user():
     name = askingInput("Write a name for your character list")
