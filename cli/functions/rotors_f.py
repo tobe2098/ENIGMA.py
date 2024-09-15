@@ -467,33 +467,39 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     )
 
 
-def _load_saved_rotor(rotor: rotors.Rotor | None = None):
-    if rotor and rotor.is_set_up():
-        _save_rotor_in_its_folder(rotor_ref=rotor)
+def _load_saved_rotor(rotor_id: rotors.Rotor | None = None):
+    if rotor_id and rotor_id.is_set_up():
+        _save_rotor_in_its_folder(rotor_ref=rotor_id)
     path = utils.Constants.ROTOR_FILE_PATH
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
-    list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
+    list_of_files = [
+        element.rsplit(".", 1)[0]
+        for element in os.listdir(path)
+        # if element.rsplit(".", 1)[1] == "rotor"
+    ]
     if not list_of_files:
         utils_cli.returningToMenu(f"There are no rotors saved at {path}", "e")
     utils_cli.printOutput("Your available rotors are:")
     utils_cli.printListOfOptions(list_of_files)
-    rotor = utils_cli.askingInput("Input rotor's position in the list:")
-    rotor = utils_cli.checkInputValidity(rotor, int, rangein=(0, len(list_of_files)))
-    while not rotor:
+    rotor_id = utils_cli.askingInput("Input rotor's position in the list:")
+    rotor_id = utils_cli.checkInputValidity(
+        rotor_id, int, rangein=(0, len(list_of_files))
+    )
+    while not rotor_id:
         # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
         utils_cli.printError("Please input a valid index")
         utils_cli.printListOfOptions(list_of_files)
-        rotor = utils_cli.askingInput("Input rotor's position in the list:")
-        if not rotor:
+        rotor_id = utils_cli.askingInput("Input rotor's position in the list:")
+        if not rotor_id:
             utils_cli.returningToMenu()
-        rotor = utils_cli.checkInputValidity(
-            rotor, int, rangein=(0, len(list_of_files))
+        rotor_id = utils_cli.checkInputValidity(
+            rotor_id, int, rangein=(0, len(list_of_files))
         )
     try:
         filehandler = open(
-            os.path.join(path, f"{list_of_files[rotor]}.rotor")(
-                path, list_of_files[rotor]
+            os.path.join(path, f"{list_of_files[rotor_id]}.rotor")(
+                path, list_of_files[rotor_id]
             ),
             "rb",
         )
@@ -503,7 +509,13 @@ def _load_saved_rotor(rotor: rotors.Rotor | None = None):
         utils_cli.returningToMenu(
             f"Failed to read the file at {filehandler}:{e}", output_type="e"
         )
-    return rotor_ref
+
+    if isinstance(rotor_ref, rotors.Rotor):
+        return rotor_ref
+    else:
+        utils_cli.returningToMenu(
+            f"A non-rotor type was loaded:{type(rotor_ref)}", output_type="e"
+        )
 
 
 def _exitMenu_rt(rotor_ref: rotors.Rotor):

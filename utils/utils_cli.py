@@ -1,6 +1,7 @@
 import os
 from subprocess import call
 import string
+import sys
 
 from core.abstract import AbstractBaseClass
 
@@ -77,6 +78,8 @@ def exitMenu(*args):
     REVIEW THE MENU EXIT PARADIGM
     raise MenuExitException()
 
+def exitProgram():
+    sys.exit(0)
 
 def returningToMenu(*args, output_type="o"):
     if args:

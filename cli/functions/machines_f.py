@@ -191,6 +191,9 @@ def _load_rotors_at_index(machine_ref: machines.Machine):
         printOutput(f"Rotor loaded at index {index}")
     # returningToMenu(f"Rotor loaded at index {index}")
 
+def _load_rotor_for_reference(machine_ref:machines.Machine):
+    machine_ref._ref_rotor=_load_saved_rotor()
+    returningToMenu("Rotor has been loaded as the reference rotor")
 
 def _change_all_rotors_character_position(machine_ref: machines.Machine):
     # MENU in machine!!! LETTERS HAVE TO BE FROM THE LIST!!!
@@ -303,8 +306,8 @@ def _edit_reflector_config(machine_ref: machines.Machine):
 
 def _load_reflector(machine_ref: machines.Machine):
     loaded_reflector = _load_saved_reflector()
-    if not loaded_reflector:
-        returningToMenu("")
+    # if not loaded_reflector:
+    #     returningToMenu("There was an unexpected error") Not possible, either exception or actual reflector
     machine_ref._reflector = loaded_reflector
     returningToMenu("Reflector is loaded")
 
@@ -563,7 +566,7 @@ def _load_saved_machine(machine_ref: machines.Machine | None = None):
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         returningToMenu(f"There is no {path} folder", output_type="e")
-    list_of_files = [element.rsplit((".", 1)[0])[0] for element in os.listdir(path)]
+    list_of_files = [element.rsplit(".", 1)[0] for element in os.listdir(path)]#if element.rsplit(".", 1)[1] == "machine"]
     if not list_of_files:
         returningToMenu("There are no machines saved", output_type="e")
     printOutput("Your available machines are:")
@@ -587,7 +590,10 @@ def _load_saved_machine(machine_ref: machines.Machine | None = None):
         filehandler.close()
     except Exception as e:
         returningToMenu(f"Failed to open file {file}:{e}")
-    return machine_ref  # End
+    if isinstance(machine_ref, machines.Machine):
+        return machine_ref  # End
+    else:
+        returningToMenu(f"A non-machine type was loaded:{type(machine_ref)}",output_type='e')
 
 
 def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
