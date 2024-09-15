@@ -1,6 +1,3 @@
-import core
-import utils
-
 # Tasks
 # Exit from every menu option (universal)
 # Review that all menus are ste according to utils_cli.py standards
@@ -39,6 +36,7 @@ import utils
 # Code the other encryption method, using character for character (no backspace<=26) and bitwise too.
 
 ##FLOW: in all inits, there should be the code related to loading default/saved setups/preferences
+print(
     """>RECOMMENDATIONS FOR USE:
 -No writing down the seed, no sending it over unsecured channels. Preferably agree on a modification of the seed-generated machine.
 -Read README.md
@@ -52,23 +50,7 @@ import utils
 -As far as I am aware, unless you commit predictable mistakes, your channel should not be cracked in any realistic framework.
 -Communicate safely!
 """
-
-
-def save_n_random_rotors(n, seed):
-    for i in range(0, n):
-        rotor = rotors.Rotor()
-        rotor._random_setup(seed + i)
-    return ">Done"
-
-
-def tune_existing_rotor():
-    rotor = rotors.Rotor()
-    rotor.import_rotor()
-    rotor.configure()
-    rotor.export_rotor()
-    return ">Rotor was edited and saved"
-    # Extract args
-    # Run client or gui
+)
 
 
 # Creating a Python library involves organizing your code into a package or module that can be easily distributed and used by others. Here's a step-by-step guide to creating a Python library:
@@ -145,3 +127,26 @@ def tune_existing_rotor():
 # By following these steps, you can create a Python library that can be easily installed, used, and shared by others.
 
 __all__ = ["core", "utils"]
+# from ..core import *
+__version__ = "1.0.0"
+from utils.utils import (
+    get_charlist_json,
+    get_config_json,
+    save_charlist_json,
+    save_config_json,
+)
+
+## Put here all imports
+## This is mainly oriented to imports and that is it.
+# import sys
+
+# # from tkinter import Y
+# import os
+
+# path = os.path.dirname(os.path.dirname((__file__)))
+# sys.path.append(path)
+# from ENIGMA_py.ENIGMA import *
+
+## Set-up functions (only if running as a script!)
+save_charlist_json(dictionary=get_charlist_json())
+save_config_json(dictionary=get_config_json())

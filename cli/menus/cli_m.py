@@ -6,11 +6,8 @@ from ..functions.cli_f import (
     _print_a_particular_character_list,
     _store_and_return_a_new_charlist,
     _print_charlist_collection,
-    export_an_existing_machine,
-    export_an_existing_reflector,
-    export_an_existing_rotor,
     load_a_machine,
-    create_a_new_machine_from_scratch,
+    create_a_new_machine_from_scratch_and_use,
     create_a_new_random_machine,
 )
 
@@ -26,6 +23,23 @@ _charlist_dict_menu = {
         "Store a custom character list",
         _store_and_return_a_new_charlist,
     ),
+    "0": ("Exit menu", exitMenu),
+}
+_denigma_menu = {
+    "1": (
+        "Print the names of currently saved character lists",
+        _print_charlist_collection,
+    ),
+    "2": ("Print out a particular character list", _print_a_particular_character_list),
+    "3": ("Delete a character list", _delete_a_charlist),
+    "4": (
+        "Store a custom character list",
+        _store_and_return_a_new_charlist,
+    ),
+    "0": ("Exit menu", exitMenu),
+}
+_menu_cli_misc = {
+    # Unset and set machine
     "0": ("Exit menu", exitMenu),
 }
 
@@ -44,5 +58,3 @@ _outer_cli_menu = {  # Here we have to be able to delete saved machines
     ),
     "0": ("Exit menu", exitMenu),
 }
-
-_menu_cli_options = {}

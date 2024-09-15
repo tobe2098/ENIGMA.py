@@ -1,7 +1,7 @@
 # For current version
-- Last machine folder/name is set in yaml. If not there, the auto-encrypt does not work. 
+- Last machine folder/name is set in json. If not there, the auto-encrypt does not work. 
 - Folders with the pickled objects are in the module folder, fixed path. Allow the user to save a machine/component in current folder (export).
-- Look how to make yaml accessible to the script: file in the module.
+- Look how to make json accessible to the script: file in the module.
 - Change constructors to not have child and parent classes. The machines can be constructed using the available strings, and more stored by the user. Done
 - Pathing has to be standardized to os module Done
 - Reference return for loading, creating different machines requires that runNode assigns the return from the function, at least in cli and machine menus. Review.

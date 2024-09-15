@@ -155,7 +155,7 @@ def is_valid_filename(filename):
 #     }
 
 
-def _asign_defaults_to_json_dict(dictionary: dict):
+def _asign_defaults_to_charlist_json(dictionary: dict):
     dictionary[Constants.UPP_LETTERS_key] = Constants.UPP_LETTERS
     dictionary[Constants.UPP_LETTERS_dash_key] = Constants.UPP_LETTERS_dash
     dictionary[Constants.ALL_LETTERS_key] = Constants.ALL_LETTERS
@@ -164,23 +164,49 @@ def _asign_defaults_to_json_dict(dictionary: dict):
     dictionary[Constants.ALPHANUM_dash_key] = Constants.ALPHANUM_dash
 
 
-def get_charlist_dict():
+def get_charlist_json():
     dictionary = {}
     if os.path.isfile(Constants.CHARLISTS_FILE_PATH):
         with open(Constants.CHARLISTS_FILE_PATH) as file:
             dictionary = json.load(file)
-        _asign_defaults_to_json_dict(dictionary=dictionary)
+        _asign_defaults_to_charlist_json(dictionary=dictionary)
     else:
-        _asign_defaults_to_json_dict(dictionary=dictionary)
+        _asign_defaults_to_charlist_json(dictionary=dictionary)
         with open(Constants.CHARLISTS_FILE_PATH, "w") as file:
             json.dump(dictionary, file, indent=2)
     return dictionary
 
 
-def save_charlist_dict(dictionary: dict = None):
+def save_charlist_json(dictionary: dict = None):
     if not os.path.isfile(Constants.CHARLISTS_FILE_PATH) and not dictionary:
         dictionary = {}
-        _asign_defaults_to_json_dict(dictionary=dictionary)
+        _asign_defaults_to_charlist_json(dictionary=dictionary)
 
     with open(Constants.CHARLISTS_FILE_PATH, "w") as file:
+        json.dump(dictionary, file, indent=2)
+
+
+def _asign_defaults_to_config_json(dictionary: dict):
+    dictionary["is_machine_set"] = False
+    dictionary["set_machine"] = None
+
+
+def get_config_json():
+    dictionary = {}
+    if os.path.isfile(Constants.CONFIG_FILE_PATH):
+        with open(Constants.CONFIG_FILE_PATH) as file:
+            dictionary = json.load(file)
+    else:
+        _asign_defaults_to_config_json(dictionary=dictionary)
+        with open(Constants.CONFIG_FILE_PATH, "w") as file:
+            json.dump(dictionary, file, indent=2)
+    return dictionary
+
+
+def save_config_json(dictionary: dict = None):
+    if not os.path.isfile(Constants.CONFIG_FILE_PATH) and not dictionary:
+        dictionary = {}
+        _asign_defaults_to_charlist_json(dictionary=dictionary)
+
+    with open(Constants.CONFIG_FILE_PATH, "w") as file:
         json.dump(dictionary, file, indent=2)

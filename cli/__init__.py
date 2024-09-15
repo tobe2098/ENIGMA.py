@@ -1,21 +1,5 @@
 # from ..core import *
 __version__ = "1.0.0"
-from utils.utils import get_charlist_dict
-from .functions.cli_f import save_charlist_dict
-
-## Put here all imports
-## This is mainly oriented to imports and that is it.
-# import sys
-
-# # from tkinter import Y
-# import os
-
-# path = os.path.dirname(os.path.dirname((__file__)))
-# sys.path.append(path)
-# from ENIGMA_py.ENIGMA import *
-
-## Set-up functions
-save_charlist_dict(get_charlist_dict())
 
 
 machine = Machine()
