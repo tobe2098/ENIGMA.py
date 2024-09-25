@@ -10,6 +10,7 @@ from cli.functions.machines_f import (
     _create_a_new_machine_from_scratch,
     _create_a_new_random_machine,
 )
+from core.machines import Machine
 from utils.utils import (
     Constants,
     get_charlist_json,
@@ -22,6 +23,7 @@ from ...utils.utils_cli import (
     askingInput,
     checkInputValidity,
     get_a_charlist_and_name_from_user,
+    printError,
     printListOfOptions,
     printOutput,
     printWarning,
@@ -127,10 +129,17 @@ def _unset_cli_machine():
     # Easy, unset the machine so that it changes to the last used machine
 
 
-def _set_machine_unset_case(machine_ref):
+def _set_machine_unset_case(machine_ref: Machine):
     config = get_config_json()
     # Check if the machine is saved in its current state, then set that name for later retrieval.
-    pass
+    if not config["is_machine_set"]:
+        config["set_machine"] = machine_ref.get_name()
+
+
+def _load_set_machine():
+    config = get_config_json()
+    if not config["set_machine"]:
+        printError("There is no machine set")
 
 
 def _encrypt_decrypt_text_to_cli():
