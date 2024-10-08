@@ -1,5 +1,3 @@
-from logging import config
-import os
 import json
 
 from cli.menus.machines_m import _outer_menu_machine
