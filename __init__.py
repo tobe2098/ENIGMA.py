@@ -147,6 +147,6 @@ from utils.utils import (
 # sys.path.append(path)
 # from ENIGMA_py.ENIGMA import *
 
-## Set-up functions (only if running as a script!)
+## Set-up functions (only if running as a script!), not necessary
 save_charlist_json(dictionary=get_charlist_json())
 save_config_json(dictionary=get_config_json())
