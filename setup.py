@@ -16,6 +16,16 @@ setup(
     version=Constants.VERSION,
     packages=find_packages(),  # This finds cli/, core/, etc.
     install_requires=[
+        "json",
+        "pandas",
+        "os",
+        "copy",
+        "pickle",
+        "string",
+        "random",
+        "sys",
+        "traceback",
+        "subprocess",
         # Add any external dependencies your project needs
     ],
     entry_points={
@@ -23,13 +33,10 @@ setup(
             "denigma=denigma.main:main",  # This creates the 'denigma' command
         ],
     },
-    author="Your Name",
-    author_email="your@email.com",
-    url="https://github.com/your_username/your_library_repo",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        # Add other classifiers as needed
-    ],
+    author="Antoni Bertolin Monferrer",
+    author_email="tonibm1220@gmail.com",
+    url="https://github.com/tobe2098/denigma",
+    classifiers=[],
 )
 
 save_charlist_json(dictionary=get_charlist_json())

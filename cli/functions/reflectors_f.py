@@ -3,7 +3,6 @@
 import os
 import string
 
-from numpy import isin
 
 from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
