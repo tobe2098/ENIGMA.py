@@ -75,11 +75,12 @@ def printMenuOption(*args):
 
 
 def exitMenu(*args):
-    REVIEW THE MENU EXIT PARADIGM
     raise MenuExitException()
+
 
 def exitProgram():
     sys.exit(0)
+
 
 def returningToMenu(*args, output_type="o"):
     if args:
@@ -211,7 +212,8 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
             print(e)
         except MenuExitException:
             clearScreenConvenienceCli()
-            exitMenu()
+            returningToMenu()
+
 
 def runNodeMenuObjectless(menu: dict):
     while True:
@@ -235,7 +237,7 @@ def runNodeMenuObjectless(menu: dict):
             print(e)
         except MenuExitException:
             clearScreenConvenienceCli()
-            exitMenu()
+            returningToMenu()
 
 
 def get_a_charlist_and_name_from_user():

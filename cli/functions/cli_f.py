@@ -134,6 +134,7 @@ def _set_machine_unset_case(machine_ref: Machine):
     printError("Unimplemented function, sorry")
     config = get_config_json()
     # Check if the machine is saved in its current state, then set that name for later retrieval.
+    # Should be called on exiting the machine menu?
     if not config["is_machine_set"]:
         config["set_machine"] = machine_ref.get_name()
 

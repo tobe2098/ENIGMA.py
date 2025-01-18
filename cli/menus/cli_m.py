@@ -9,6 +9,9 @@ from ..functions.cli_f import (
     load_a_machine,
     create_a_new_machine_from_scratch_and_use,
     create_a_new_random_machine,
+    _set_cli_machine,
+    _set_defaults_config,
+    _unset_cli_machine,
 )
 
 
@@ -25,7 +28,15 @@ _charlist_dict_menu = {
     ),
     "0": ("Exit menu", exitMenu),
 }
-_menu_cli_options = {}
+_menu_cli_set_machine = {
+    "1": ("Return all configuration to its default", _set_defaults_config),
+    "2": ("Set a machine for CLI usage", _set_cli_machine),
+    "3": (
+        "Unset the fixed machine for CLI usage (will use last set or saved machine)",
+        _unset_cli_machine,
+    ),
+    "0": ("Exit menu", exitMenu),
+}
 
 _outer_cli_menu = {  # Here we have to be able to delete saved machines
     "1": (
@@ -40,6 +51,6 @@ _outer_cli_menu = {  # Here we have to be able to delete saved machines
     "4": ("Create a new random machine", create_a_new_random_machine),
     "5": ("Load a saved rotor for editing", _load_saved_rotor_for_editing),
     "6": ("Load a saved reflector for editing", _load_saved_reflector_for_editing),
-    "7": ("Configuration menu", _menu_cli_options),
+    "7": ("Configuration menu", _menu_cli_set_machine),
     "0": ("Exit", exitProgram),
 }
