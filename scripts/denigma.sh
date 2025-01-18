@@ -17,14 +17,14 @@ get_python_cmd() {
 # Get the directory of the script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Use python -m to run the module
+# Use python to run main.py
 PYTHON_CMD=$(get_python_cmd)
 if [ $? -eq 0 ]; then
     if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
         # Windows - use py launcher
-        py -m denigma "$@"
+        py "${SCRIPT_DIR}/main.py" "$@"
     else
         # Linux/Unix
-        $PYTHON_CMD -m denigma "$@"
+        $PYTHON_CMD "${SCRIPT_DIR}/main.py" "$@"
     fi
 fi
