@@ -191,9 +191,11 @@ def _load_rotors_at_index(machine_ref: machines.Machine):
         printOutput(f"Rotor loaded at index {index}")
     # returningToMenu(f"Rotor loaded at index {index}")
 
-def _load_rotor_for_reference(machine_ref:machines.Machine):
-    machine_ref._ref_rotor=_load_saved_rotor()
+
+def _load_rotor_for_reference(machine_ref: machines.Machine):
+    machine_ref._ref_rotor = _load_saved_rotor()
     returningToMenu("Rotor has been loaded as the reference rotor")
+
 
 def _change_all_rotors_character_position(machine_ref: machines.Machine):
     # MENU in machine!!! LETTERS HAVE TO BE FROM THE LIST!!!
@@ -521,7 +523,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     except Exception as e:
         returningToMenu(f"Failed to write on {file_path}:{e}")
     returningToMenu(
-        f"{machine_ref.get_name()} has been saved into {machine_ref.get_name()}.{getLowerCaseName(machine_ref)} in {path_to_export,}"
+        f"{machine_ref.get_name()} has been saved into {machine_ref.get_name()}.{getLowerCaseName(machine_ref)} in {path}"
     )
 
 
@@ -566,7 +568,9 @@ def _load_saved_machine(machine_ref: machines.Machine | None = None):
     path = os.path.join(module_path, new_folder)
     if not os.path.exists(path):
         returningToMenu(f"There is no {path} folder", output_type="e")
-    list_of_files = [element.rsplit(".", 1)[0] for element in os.listdir(path)]#if element.rsplit(".", 1)[1] == "machine"]
+    list_of_files = [
+        element.rsplit(".", 1)[0] for element in os.listdir(path)
+    ]  # if element.rsplit(".", 1)[1] == "machine"]
     if not list_of_files:
         returningToMenu("There are no machines saved", output_type="e")
     printOutput("Your available machines are:")
@@ -593,7 +597,9 @@ def _load_saved_machine(machine_ref: machines.Machine | None = None):
     if isinstance(machine_ref, machines.Machine):
         return machine_ref  # End
     else:
-        returningToMenu(f"A non-machine type was loaded:{type(machine_ref)}",output_type='e')
+        returningToMenu(
+            f"A non-machine type was loaded:{type(machine_ref)}", output_type="e"
+        )
 
 
 def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
@@ -640,5 +646,5 @@ def exitMenu_machine(machine_ref: machines.Machine):
             _save_machine_in_its_folder(machine_ref=machine_ref)
         except ReturnToMenuException as e:
             pass
-    if CONFIG.SETUP
+    # if CONFIG.SETUP
     exitMenu()

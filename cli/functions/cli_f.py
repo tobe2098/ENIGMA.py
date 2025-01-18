@@ -106,6 +106,7 @@ def _print_help():
     print("Help")
     print("Args for file/text in/out, and defaults")
     print("-f from file, -c from cli, then -tf + destination file or -tc")
+    printError("Unimplemented function, sorry")
 
 
 def _set_defaults_config():
@@ -117,6 +118,7 @@ def _set_defaults_config():
 
 def _set_cli_machine():
     config = get_config_json()
+    printError("Unimplemented function, sorry")
     # Get list of saved machines, and offer choice
     # If success, set machine and set =true
     # If not, just return
@@ -124,10 +126,12 @@ def _set_cli_machine():
 
 def _unset_cli_machine():
     config = get_config_json()
+    printError("Unimplemented function, sorry")
     # Easy, unset the machine so that it changes to the last used machine
 
 
 def _set_machine_unset_case(machine_ref: Machine):
+    printError("Unimplemented function, sorry")
     config = get_config_json()
     # Check if the machine is saved in its current state, then set that name for later retrieval.
     if not config["is_machine_set"]:
@@ -135,27 +139,32 @@ def _set_machine_unset_case(machine_ref: Machine):
 
 
 def _load_set_machine():
+    printError("Unimplemented function, sorry")
     config = get_config_json()
     if not config["set_machine"]:
         printError("There is no machine set")
 
 
 def _encrypt_decrypt_text_to_cli():
+    printError("Unimplemented function, sorry")
     # Always return to original position
     pass
 
 
 def _encrypt_decrypt_text_to_file_cli():
+    printError("Unimplemented function, sorry")
     # Always return to original position
     pass
 
 
 def _encrypt_decrypt_file_to_cli():
+    printError("Unimplemented function, sorry")
     # Always return to original position
     pass
 
 
 def _encrypt_decrypt_file_to_file_cli():
+    printError("Unimplemented function, sorry")
     # Always return to original position
     pass
 
