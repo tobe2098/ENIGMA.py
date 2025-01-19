@@ -27,6 +27,17 @@ def formatAsError(args_tuple):
     return prompt
 
 
+def formatAsMenuOption(args_tuple):
+    args_list = list(args_tuple)
+    args_list.insert(0, "|")
+    args_list.insert(2, "|")
+    # args_list.insert(3, " ")
+    prompt = ""
+    for i in args_list:
+        prompt += str(i)
+    return prompt
+
+
 def printOutput(*args):
     print(formatAsOutput(args))
 
@@ -40,4 +51,4 @@ def printError(*args):
 
 
 def printMenuOption(*args):
-    print(">$ ", args)
+    print(formatAsMenuOption(args))

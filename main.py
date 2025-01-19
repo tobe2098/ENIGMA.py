@@ -6,6 +6,7 @@ from utils.utils_cli import exitProgram, printOutput
 
 
 def main():
+
     parser = argparse.ArgumentParser(
         description="Your freedom-inspired ENIGMA machine emulator"
     )

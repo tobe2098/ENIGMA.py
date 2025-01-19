@@ -16,7 +16,7 @@ from .formatting import printOutput, printError, printWarning, printMenuOption
 
 
 def askForMenuOption():
-    return askingInput("Choose a menu option: ")
+    return askingInput("Choose a menu option")
 
 
 def askingInput(*args):
@@ -24,7 +24,7 @@ def askingInput(*args):
     for arg in args:
         prompt += arg
     prompt += ": "
-    return input(prompt)
+    return str(input(prompt))
 
 
 def exitProgram():
@@ -67,12 +67,14 @@ def _get_a_charlist_from_storage():
     name_index = askingInput("Input the index of the desired character list")
     if not name_index:
         returningToMenu()
-    name_list = checkInputValidity(name_index, int, (0, len(name_list)))
-    while not name_list:
+    print(name_index)
+    print(name_list)
+    name_index = checkInputValidity(name_index, int, (0, len(name_list)))
+    while not name_index:
         name_index = askingInput("Input a valid index")
         if not name_index:
             returningToMenu()
-        name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+        name_index = checkInputValidity(name_index, int, (0, len(name_list)))
     return dictionary[name_list[name_index]]
 
 
@@ -106,14 +108,16 @@ def returningToMenu(*args, output_type="o"):
 def clearScreenSafetyCLI():
     if not Constants.SCREEN_CLEAR_SAFETY:
         return
-    _ = call("clear" if os.name == "posix" else "cls")
+    command = "clear" if os.name == "posix" else "cls"
+    _ = call([command], shell=True)
     printOutput("Screen cleared for safety purposes")
 
 
 def clearScreenConvenienceCli():
     if not Constants.SCREEN_CLEAR_CONVENIENCE:
         return
-    _ = call("clear" if os.name == "posix" else "cls")
+    command = "clear" if os.name == "posix" else "cls"
+    _ = call([command], shell=True)
     printOutput("Screen cleared for convenience")
 
 
@@ -169,7 +173,7 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
     while True:
         try:
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
-            wrapperCall(object_for_call)
+            # wrapperCall(object_for_call)
             for key in sorted(menu.keys()):
                 printMenuOption(key, ":", menu[key][0])
 
