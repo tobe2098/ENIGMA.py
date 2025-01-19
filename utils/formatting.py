@@ -1,6 +1,6 @@
 def formatAsOutput(args_tuple):
     args_list = list(args_tuple)
-    args_list.insert(0, ">")
+    args_list.insert(0, "--> ")
     args_list.append(".")
     prompt = ""
     for i in args_list:
@@ -20,7 +20,7 @@ def formatAsWarning(args_tuple):
 def formatAsError(args_tuple):
     args_list = list(args_tuple)
 
-    args_list.insert(0, "$ERROR$: ")
+    args_list.insert(0, "$>ERROR<$: ")
     prompt = ""
     for i in args_list:
         prompt += str(i)

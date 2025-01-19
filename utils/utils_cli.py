@@ -20,7 +20,7 @@ def askForMenuOption():
 
 
 def askingInput(*args):
-    prompt = ">>>"
+    prompt = "\n<¿?> "
     for arg in args:
         prompt += arg
     prompt += ": "
@@ -28,6 +28,7 @@ def askingInput(*args):
 
 
 def exitProgram():
+    clearScreen()
     sys.exit(0)
 
 
@@ -105,19 +106,22 @@ def returningToMenu(*args, output_type="o"):
     raise ReturnToMenuException()
 
 
+def clearScreen():
+    command = "clear" if os.name == "posix" else "cls"
+    _ = call([command], shell=True)
+
+
 def clearScreenSafetyCLI():
     if not Constants.SCREEN_CLEAR_SAFETY:
         return
-    command = "clear" if os.name == "posix" else "cls"
-    _ = call([command], shell=True)
+    clearScreen()
     printOutput("Screen cleared for safety purposes")
 
 
 def clearScreenConvenienceCli():
     if not Constants.SCREEN_CLEAR_CONVENIENCE:
         return
-    command = "clear" if os.name == "posix" else "cls"
-    _ = call([command], shell=True)
+    clearScreen()
     printOutput("Screen cleared for convenience")
 
 
