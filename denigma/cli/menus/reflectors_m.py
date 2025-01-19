@@ -4,7 +4,7 @@ import os
 
 from utils.exceptions import FileIOErrorException
 from utils import utils_cli
-from cli.functions.reflectors_f import (
+from denigma.cli.functions.reflectors_f import (
     _change_reflector_name_rf,
     _randomize_name_rf,
     _choose_connection_to_delete_rf,

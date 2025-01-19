@@ -5,3 +5,19 @@
 - Try to not be repetitive in your plaintext, and do not include greetings or goodbyes in them, you can expect those to be used in plaintext attacks. If your character list is odd, the plaintext attacks are less effective, but it is better to be safe than sorry.
 - If you have the option, never set the rotors to jump a divisor of the number of characters the rotor presents. That would reduce the  amount of positions the rotor can be in.
 - 
+
+print(
+    """>RECOMMENDATIONS FOR USE:
+-No writing down the seed, no sending it over unsecured channels. Preferably agree on a modification of the seed-generated machine.
+-Read README.md
+-Always keep a security copy of the machine.
+-Short messages are more secure. Changing the machine periodically, or its settings is recommended. Once you have an open comm channel that should not be a problem.
+-Passing the pickled machine on a USB is possibly the safest way to do it.
+-Save the module and the pickled objects in a separate folder if possible.
+-Do NOT write repeated sequences of words or predictable things like calling by name, saying "Hi", or "Goodbye".
+-Remember that using simple or small seeds is going to make your channel more easy to crack, as a simple programme iterating this code could do it.
+-Read the rest of the python files! I wrote a ton of functions to alter and personalize your machine, as well as tools to make it harder to crack.
+-As far as I am aware, unless you commit predictable mistakes, your channel should not be cracked in any realistic framework.
+-Communicate safely!
+"""
+)

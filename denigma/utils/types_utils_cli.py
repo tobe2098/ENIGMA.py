@@ -4,7 +4,7 @@ from core.rotors import Rotor
 from core.reflectors import Reflector
 from core.plugboards import PlugBoard
 
-from cli.functions.rotors_f import _print_name_rt
+from denigma.cli.functions.rotors_f import _print_name_rt
 
 
 def wrapperCall(obj_ref):

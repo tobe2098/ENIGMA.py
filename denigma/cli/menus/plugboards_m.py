@@ -1,6 +1,6 @@
 # from tkinter import Menubutton
 from utils import utils_cli
-from cli.functions.plugboards_f import (
+from denigma.cli.functions.plugboards_f import (
     _show_config_pb,
     _choose_connection_to_delete_pb,
     _create_a_single_connection_pb,

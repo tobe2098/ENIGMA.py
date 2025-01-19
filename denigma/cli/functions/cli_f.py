@@ -1,9 +1,9 @@
 import json
 
-from cli.menus.machines_m import _outer_menu_machine
-from cli.functions.reflectors_f import _load_saved_reflector
-from cli.functions.rotors_f import _load_saved_rotor
-from cli.functions.machines_f import (
+from denigma.cli.menus.machines_m import _outer_menu_machine
+from denigma.cli.functions.reflectors_f import _load_saved_reflector
+from denigma.cli.functions.rotors_f import _load_saved_rotor
+from denigma.cli.functions.machines_f import (
     _load_saved_machine,
     _create_a_new_machine_from_scratch,
     _create_a_new_random_machine,

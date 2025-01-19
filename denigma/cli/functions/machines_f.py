@@ -1,13 +1,13 @@
 import string
 from utils.exceptions import FileIOErrorException, ReturnToMenuException
 from utils.types_utils import getLowerCaseName
-from cli.functions.plugboards_f import _show_config_pb
-from cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
-from cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
+from denigma.cli.functions.plugboards_f import _show_config_pb
+from denigma.cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
+from denigma.cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
 
-from cli.menus.rotors_m import _menu_rotor
-from cli.menus.reflectors_m import _menu_reflector
-from cli.menus.plugboards_m import _menu_plugboard
+from denigma.cli.menus.rotors_m import _menu_rotor
+from denigma.cli.menus.reflectors_m import _menu_reflector
+from denigma.cli.menus.plugboards_m import _menu_plugboard
 
 from utils.utils import (
     Constants,

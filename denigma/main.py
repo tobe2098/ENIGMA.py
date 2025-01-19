@@ -1,6 +1,6 @@
 # main.py
 import argparse
-from cli.cli import start_cl_interface
+from denigma.cli.cli import start_cl_interface
 from utils.utils import my_quit_fn, Constants
 from utils.utils_cli import exitProgram, printOutput
 

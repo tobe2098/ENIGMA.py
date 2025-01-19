@@ -1,7 +1,7 @@
 from utils.utils_cli import exitMenu, exitProgram, _print_charlist_collection
-from cli.menus.rotors_m import _load_saved_rotor_for_editing
-from cli.menus.reflectors_m import _load_saved_reflector_for_editing
-from cli.functions.cli_f import (
+from denigma.cli.menus.rotors_m import _load_saved_rotor_for_editing
+from denigma.cli.menus.reflectors_m import _load_saved_reflector_for_editing
+from denigma.cli.functions.cli_f import (
     _delete_a_charlist,
     _print_a_particular_character_list,
     _store_and_return_a_new_charlist,
