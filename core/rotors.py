@@ -3,13 +3,13 @@ import string
 
 from core.abstract import AbstractBaseClass
 
-from ..utils.utils import (
+from utils.utils import (
     create_dictionary_from_charlist,
     transform_single_dict,
     Constants,
     is_valid_seed,
 )
-from ..utils.exceptions import raiseBadInputException
+from utils.exceptions import raiseBadInputException
 
 
 class Rotor(AbstractBaseClass):

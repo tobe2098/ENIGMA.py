@@ -5,11 +5,11 @@ import string
 
 # import sys
 
-from core.abstract import AbstractBaseClass
+from .abstract import AbstractBaseClass
 from utils.exceptions import raiseBadInputException, raiseBadSetupException
 
 from .rotors import Rotor
-from ..utils.utils import (
+from utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     is_valid_seed,

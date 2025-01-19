@@ -1,8 +1,8 @@
-from ..utils.exceptions import raiseBadInputException
-from ..core.machines import Machine
-from ..core.rotors import Rotor
-from ..core.reflectors import Reflector
-from ..core.plugboards import PlugBoard
+from .exceptions import raiseBadInputException
+from core.machines import Machine
+from core.rotors import Rotor
+from core.reflectors import Reflector
+from core.plugboards import PlugBoard
 
 
 def getCapitalizedName(obj_ref):

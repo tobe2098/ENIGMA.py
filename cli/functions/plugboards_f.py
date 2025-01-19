@@ -1,9 +1,9 @@
 # from tkinter import Menubutton
 # from ast import unparse
-from ...core import plugboards
-from ...utils import utils
-from ...utils import utils_cli
-from ...utils.utils import (
+from core import plugboards
+from utils import utils
+from utils import utils_cli
+from utils.utils import (
     simplify_simple_dictionary_paired_unpaired,
 )
 

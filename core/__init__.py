@@ -1,10 +1,12 @@
-"""Library for the usage of ENIGMA machines"""
+"""Library for the usage of ENIGMA machines in denigma"""
 
-__version__ = "1.0.0"
+from utils.utils import Constants
 
-import machines
-import plugboards
-import reflectors
-import rotors
+__version__ = Constants.VERSION
 
-__all__ = ["machines", "rotors", "reflectors", "plugboards"]
+from .machines import Machine
+from .plugboards import PlugBoard
+from .rotors import Rotor
+from .reflectors import Reflector
+
+__all__ = ["Machine", "PlugBoard", "Rotor", "Reflector"]

@@ -1,8 +1,8 @@
-## What was I supposed to do here? Wrap the entire client? Should that not be done in __init__.py of this folder? Or is __init__.py just an import wrapper?
-## Here are the functions, which all stem from a run_client() function here, called in the paren __init__.py. This __init.py__ is just for imports.
+"""Start the CLI for denigma."""
 
-## THIS FILE SHOULD  BE OUTSIDE THIS FOLDER AND IMPORT THE CLIENT FOLDER? OR VICEVERSA
+from .menus.cli_m import _outer_cli_menu
+from utils.utils_cli import runNodeMenuObjectless
 
-## FLOW: Here we have the cli function that is called by parent __init__.py
 
-## TO EXIT PROGRAM
+def start_cl_interface():
+    runNodeMenuObjectless(_outer_cli_menu)

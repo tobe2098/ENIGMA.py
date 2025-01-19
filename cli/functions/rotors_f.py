@@ -6,9 +6,9 @@
 # Intern setup functions
 from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
-from ...core import rotors
-from ...utils import utils
-from ...utils import utils_cli
+from core import rotors
+from utils import utils
+from utils import utils_cli
 import string
 import os
 import pickle

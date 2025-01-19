@@ -1,10 +1,6 @@
-import os
-
 from utils.exceptions import FileIOErrorException
-from ...core import rotors
-from ...utils import utils_cli
-from ...utils import utils
-from ..functions.rotors_f import (
+from utils import utils_cli
+from cli.functions.rotors_f import (
     _change_rotor_name_rt,
     _change_position_rt,
     _change_notches_rt,

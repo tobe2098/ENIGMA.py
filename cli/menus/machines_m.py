@@ -2,7 +2,7 @@
 # ALL LOADING FUNCTIONS MUST BE HERE to load on the machine
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT to memory (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
 from utils.utils_cli import exitMenu
-from ..functions.machines_f import (
+from cli.functions.machines_f import (
     _append_rotors,  # Rotor
     _change_all_rotors_character_position,  # Rotor
     _change_a_rotor_character_position,  # Rotor

@@ -4,7 +4,7 @@ import random
 from core.abstract import AbstractBaseClass
 from utils.exceptions import raiseBadInputException
 
-from ..utils.utils import (
+from utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     is_valid_seed,

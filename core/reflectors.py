@@ -6,13 +6,13 @@ import string
 
 from core.abstract import AbstractBaseClass
 
-from ..utils.utils import (
+from utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     transform_single_dict,
     is_valid_seed,
 )
-from ..utils.exceptions import raiseBadInputException
+from utils.exceptions import raiseBadInputException
 
 
 class Reflector(AbstractBaseClass):

@@ -6,9 +6,9 @@ import string
 
 from utils.exceptions import FileIOErrorException
 from utils.types_utils import getLowerCaseName
-from ...core import reflectors
-from ...utils import utils
-from ...utils import utils_cli
+from core import reflectors
+from utils import utils
+from utils import utils_cli
 import pickle
 
 

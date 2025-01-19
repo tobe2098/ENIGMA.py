@@ -47,12 +47,25 @@ class Constants:
     MACHINES_FILE_HANDLE = "SAVED_MACHINES"
     CHARLISTS_HANDLE = "charlists.json"
     CONFIG_HANDLE = "config.json"
-    MODULE_PATH = os.dirname(os.dirname(os.path.abspath(__file__)))
+    MODULE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     ROTOR_FILE_PATH = os.path.join(MODULE_PATH, ROTORS_FILE_HANDLE)
     REFLECTOR_FILE_PATH = os.path.join(MODULE_PATH, REFLECTORS_FILE_HANDLE)
     MACHINE_FILE_PATH = os.path.join(MODULE_PATH, MACHINES_FILE_HANDLE)
     CHARLISTS_FILE_PATH = os.path.join(MODULE_PATH, CHARLISTS_HANDLE)
     CONFIG_FILE_PATH = os.path.join(MODULE_PATH, CONFIG_HANDLE)
+    VERSION = "0.1.0"
+    SCREEN_CLEAR_CONVENIENCE = True
+    SCREEN_CLEAR_SAFETY = True
+    is_cli_mode = False
+    is_gui_mode = False
+
+
+def get_is_cli_mode():
+    return Constants.is_cli_mode
+
+
+def get_is_gui_mode():
+    return Constants.is_gui_mode
 
 
 def my_quit_fn():  # This function should be in utils.py

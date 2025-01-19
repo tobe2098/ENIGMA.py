@@ -1,22 +1,20 @@
 import string
 from utils.exceptions import FileIOErrorException, ReturnToMenuException
 from utils.types_utils import getLowerCaseName
-from ...cli.functions.plugboards_f import _show_config_pb
-from ...cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
-from ...cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
+from cli.functions.plugboards_f import _show_config_pb
+from cli.functions.rotors_f import _show_config_rt, _load_saved_rotor
+from cli.functions.reflectors_f import _show_config_rf, _load_saved_reflector
 
-from .cli_f import _get_a_charlist_from_storage
+from cli.menus.rotors_m import _menu_rotor
+from cli.menus.reflectors_m import _menu_reflector
+from cli.menus.plugboards_m import _menu_plugboard
 
-from ...cli.menus.rotors_m import _menu_rotor
-from ...cli.menus.reflectors_m import _menu_reflector
-from ...cli.menus.plugboards_m import _menu_plugboard
-
-from ...utils.utils import (
+from utils.utils import (
     Constants,
     is_valid_filename,
     is_valid_seed,
 )
-from ...utils.utils_cli import (
+from utils.utils_cli import (
     askingInput,
     checkIfFileExists,
     checkInputValidity,
@@ -28,8 +26,9 @@ from ...utils.utils_cli import (
     printWarning,
     returningToMenu,
     runNodeMenu,
+    _get_a_charlist_from_storage,
 )
-from ...core import machines
+from core import machines
 
 import pandas as pd
 import os

@@ -1,25 +1,11 @@
 # main.py
 import argparse
 from cli.cli import start_cl_interface
-from utils.utils import my_quit_fn
+from utils.utils import my_quit_fn, Constants
 from utils.utils_cli import exitProgram, printOutput
-
-is_cli_mode = False
-is_gui_mode = False
-
-
-def get_is_cli_mode():
-    return is_cli_mode
-
-
-def get_is_gui_mode():
-    return is_gui_mode
 
 
 def main():
-    global is_cli_mode
-    global is_gui_mode
-
     parser = argparse.ArgumentParser(
         description="Your freedom-inspired ENIGMA machine emulator"
     )
@@ -43,14 +29,14 @@ def main():
         parser.error("The -w option can only be used with -m or -f")
     # Handle GUI mode first
     if args.gui:
-        is_gui_mode = True
+        Constants.is_gui_mode = True
         print(printOutput("I am very sorry, but for now there is no GUI"))
         my_quit_fn()
         return  # Add return to prevent further execution
 
     # Handle CLI operations
     if args.message or args.file:
-        is_cli_mode = True
+        Constants.is_cli_mode = True
         result = None
 
         if args.message:
@@ -71,7 +57,7 @@ def main():
             printOutput(result)
     else:
         # Interactive CLI mode
-        is_cli_mode = True
+        Constants.is_cli_mode = True
         printOutput("Running in CLI mode")
         start_cl_interface()
 

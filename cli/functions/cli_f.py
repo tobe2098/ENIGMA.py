@@ -17,16 +17,17 @@ from utils.utils import (
     _asign_defaults_to_config_json,
     save_config_json,
 )
-from ...utils.utils_cli import (
+from utils.utils_cli import (
     askingInput,
     checkInputValidity,
     get_a_charlist_and_name_from_user,
     printError,
-    printListOfOptions,
     printOutput,
     printWarning,
     returningToMenu,
     runNodeMenu,
+    _print_charlist_collection,
+    _get_a_charlist_from_storage,
 )
 
 
@@ -46,14 +47,6 @@ def create_a_new_random_machine():
     machine_ref = _create_a_new_random_machine()
     runNodeMenu(machine_ref, _outer_menu_machine)
     returningToMenu()
-
-
-def _print_charlist_collection(dictionary=None):
-    if not dictionary:
-        dictionary = get_charlist_json()
-    name_list = list(dictionary.keys())
-    printListOfOptions(name_list)
-    return name_list
 
 
 def _store_and_return_a_new_charlist():
@@ -85,21 +78,6 @@ def _delete_a_charlist():
 
 def _print_a_particular_character_list():
     printOutput(_get_a_charlist_from_storage())
-
-
-def _get_a_charlist_from_storage():
-    dictionary = get_charlist_json()
-    name_list = _print_charlist_collection(dictionary=dictionary)
-    name_index = askingInput("Input the index of the desired character list")
-    if not name_index:
-        returningToMenu()
-    name_list = checkInputValidity(name_index, int, (0, len(name_list)))
-    while not name_list:
-        name_index = askingInput("Input a valid index")
-        if not name_index:
-            returningToMenu()
-        name_list = checkInputValidity(name_index, int, (0, len(name_list)))
-    return dictionary[name_list[name_index]]
 
 
 def _print_help():

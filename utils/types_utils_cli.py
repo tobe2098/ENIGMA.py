@@ -1,10 +1,10 @@
-from ..utils.exceptions import raiseBadInputException
-from ..core.machines import Machine
-from ..core.rotors import Rotor
-from ..core.reflectors import Reflector
-from ..core.plugboards import PlugBoard
+from .exceptions import raiseBadInputException
+from core.machines import Machine
+from core.rotors import Rotor
+from core.reflectors import Reflector
+from core.plugboards import PlugBoard
 
-from ..cli.functions.rotors_f import _print_name_rt
+from cli.functions.rotors_f import _print_name_rt
 
 
 def wrapperCall(obj_ref):

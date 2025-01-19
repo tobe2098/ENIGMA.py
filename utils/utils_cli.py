@@ -5,61 +5,18 @@ import sys
 
 from core.abstract import AbstractBaseClass
 
-from ..utils.utils import is_valid_seed
-from ..utils.types_utils_cli import wrapperCall
-from exceptions import (
+from .utils import is_valid_seed, Constants, get_charlist_json
+from .types_utils_cli import wrapperCall
+from .exceptions import (
     BadInputExceptionCLI,
     MenuExitException,
     ReturnToMenuException,
 )
-
-SCREEN_CLEAR_CONVENIENCE = True
-SCREEN_CLEAR_SAFETY = True
+from .formatting import printOutput, printError, printWarning, printMenuOption
 
 
 def askForMenuOption():
     return askingInput("Choose a menu option: ")
-
-
-def formatAsOutput(args_tuple):
-    args_list = list(args_tuple)
-    args_list.insert(0, ">")
-    args_list.append(".")
-    prompt = ""
-    for i in args_list:
-        prompt += str(i)
-    return prompt
-
-
-def formatAsWarning(args_tuple):
-    args_list = list(args_tuple)
-    args_list.insert(0, "%.%Warning: ")
-    prompt = ""
-    for i in args_list:
-        prompt += str(i)
-    return prompt
-
-
-def formatAsError(args_tuple):
-    args_list = list(args_tuple)
-
-    args_list.insert(0, "$ERROR$: ")
-    prompt = ""
-    for i in args_list:
-        prompt += str(i)
-    return prompt
-
-
-def printOutput(*args):
-    print(formatAsOutput(args))
-
-
-def printWarning(*args):
-    print(formatAsWarning(args))
-
-
-def printError(*args):
-    print(formatAsError(args))
 
 
 def askingInput(*args):
@@ -70,16 +27,57 @@ def askingInput(*args):
     return input(prompt)
 
 
-def printMenuOption(*args):
-    print(">$ ", args)
+def exitProgram():
+    sys.exit(0)
+
+
+# def returningToMenu():
+#     raise ReturnToMenuException()
+
+
+def invalidChoice(*args):
+    printOutput("Choice was invalid")
+
+
+def printListOfOptions(list_):
+    for i in range(len(list_)):
+        print(i, ":", list_[i])
+
+
+# def getAnInputFromList(
+#     list_, message: str
+# ):  ## DO not use, this could open a window for induced stack overflowing
+#     inp = askingInput(message)
+#     if inp not in list_:
+#         printOutput("Invalid input")
+#         return getAnInputFromList(list_, message)
+
+
+def _print_charlist_collection(dictionary=None):
+    if not dictionary:
+        dictionary = get_charlist_json()
+    name_list = list(dictionary.keys())
+    printListOfOptions(name_list)
+    return name_list
+
+
+def _get_a_charlist_from_storage():
+    dictionary = get_charlist_json()
+    name_list = _print_charlist_collection(dictionary=dictionary)
+    name_index = askingInput("Input the index of the desired character list")
+    if not name_index:
+        returningToMenu()
+    name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+    while not name_list:
+        name_index = askingInput("Input a valid index")
+        if not name_index:
+            returningToMenu()
+        name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+    return dictionary[name_list[name_index]]
 
 
 def exitMenu(*args):
     raise MenuExitException()
-
-
-def exitProgram():
-    sys.exit(0)
 
 
 def returningToMenu(*args, output_type="o"):
@@ -105,37 +103,15 @@ def returningToMenu(*args, output_type="o"):
     raise ReturnToMenuException()
 
 
-# def returningToMenu():
-#     raise ReturnToMenuException()
-
-
-def invalidChoice(*args):
-    printOutput("Choice was invalid")
-
-
-def printListOfOptions(list_):
-    for i in range(len(list_)):
-        print(i, ":", list_[i])
-
-
-# def getAnInputFromList(
-#     list_, message: str
-# ):  ## DO not use, this could open a window for induced stack overflowing
-#     inp = askingInput(message)
-#     if inp not in list_:
-#         printOutput("Invalid input")
-#         return getAnInputFromList(list_, message)
-
-
 def clearScreenSafetyCLI():
-    if not SCREEN_CLEAR_SAFETY:
+    if not Constants.SCREEN_CLEAR_SAFETY:
         return
     _ = call("clear" if os.name == "posix" else "cls")
     printOutput("Screen cleared for safety purposes")
 
 
 def clearScreenConvenienceCli():
-    if not SCREEN_CLEAR_CONVENIENCE:
+    if not Constants.SCREEN_CLEAR_CONVENIENCE:
         return
     _ = call("clear" if os.name == "posix" else "cls")
     printOutput("Screen cleared for convenience")

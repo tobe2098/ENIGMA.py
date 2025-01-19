@@ -1,11 +1,10 @@
-from utils.utils_cli import exitMenu, exitProgram
-from ..menus.rotors_m import _load_saved_rotor_for_editing
-from ..menus.reflectors_m import _load_saved_reflector_for_editing
-from ..functions.cli_f import (
+from utils.utils_cli import exitMenu, exitProgram, _print_charlist_collection
+from cli.menus.rotors_m import _load_saved_rotor_for_editing
+from cli.menus.reflectors_m import _load_saved_reflector_for_editing
+from cli.functions.cli_f import (
     _delete_a_charlist,
     _print_a_particular_character_list,
     _store_and_return_a_new_charlist,
-    _print_charlist_collection,
     load_a_machine,
     create_a_new_machine_from_scratch_and_use,
     create_a_new_random_machine,
