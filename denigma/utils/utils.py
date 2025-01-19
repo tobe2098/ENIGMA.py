@@ -68,7 +68,7 @@ def get_is_gui_mode():
     return Constants.is_gui_mode
 
 
-def my_quit_fn():  # This function should be in utils.py
+def my_quit_fn():  # This function should be in denigma.utils.py
     raise SystemExit
 
 

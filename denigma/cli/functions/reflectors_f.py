@@ -4,11 +4,11 @@ import os
 import string
 
 
-from utils.exceptions import FileIOErrorException
-from utils.types_utils import getLowerCaseName
-from core import reflectors
-from utils import utils
-from utils import utils_cli
+from denigma.utils.exceptions import FileIOErrorException
+from denigma.utils.types_utils import getLowerCaseName
+from denigma.core import reflectors
+from denigma.utils import utils
+from denigma.utils import utils_cli
 import pickle
 
 
@@ -20,7 +20,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     """
 
     utils_cli.printOutput("Reflector name:", reflector_ref._name)
-    paired_df, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    paired_df, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
     utils_cli.printOutput("Reflector pairs:\n", paired_df)
@@ -36,7 +36,7 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
+    paired_df, _ = denigma.utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
 
@@ -83,7 +83,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
     if len(unpaired_list) < 2:
@@ -128,7 +128,7 @@ def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
     # if len(unpaired_list) < 2:
@@ -136,7 +136,7 @@ def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
     #         "There are no characters left to pair (one or fewer left unconnected)"
     #     )
     while True:
-        _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+        _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
             reflector_ref._reflector_dict
         )
         if len(unpaired_list) < 2:
@@ -180,7 +180,7 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
     _show_config_rf(reflector_ref)
-    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
     __connect_all_characters_rf(reflector_ref)
@@ -290,7 +290,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
         ).strip(chars=string.whitespace)
     reflector_ref._change_name(new_name)
 
-    path = utils.Constants.REFLECTOR_FILE_PATH
+    path = denigma.utils.Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         os.mkdir(path)
         utils_cli.printOutput(f"Directory '{path}' created")
@@ -328,7 +328,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
 def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
     if reflector_id and reflector_id.is_set_up():
         _save_reflector_in_its_folder(reflector_ref=reflector_id)
-    path = utils.Constants.REFLECTOR_FILE_PATH
+    path = denigma.utils.Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [
@@ -376,7 +376,7 @@ def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
 
 
 def _exitMenu_rf(reflector_ref: reflectors.Reflector):
-    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
     if not reflector_ref.is_set_up():

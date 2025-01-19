@@ -8,8 +8,8 @@ from denigma.cli.functions.machines_f import (
     _create_a_new_machine_from_scratch,
     _create_a_new_random_machine,
 )
-from core.machines import Machine
-from utils.utils import (
+from denigma.core.machines import Machine
+from denigma.utils.utils import (
     Constants,
     get_charlist_json,
     get_config_json,
@@ -17,7 +17,7 @@ from utils.utils import (
     _asign_defaults_to_config_json,
     save_config_json,
 )
-from utils.utils_cli import (
+from denigma.utils.utils_cli import (
     askingInput,
     checkInputValidity,
     get_a_charlist_and_name_from_user,

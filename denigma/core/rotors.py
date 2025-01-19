@@ -1,15 +1,15 @@
 import random
 import string
 
-from core.abstract import AbstractBaseClass
+from denigma.core.abstract import AbstractBaseClass
 
-from utils.utils import (
+from denigma.utils.utils import (
     create_dictionary_from_charlist,
     transform_single_dict,
     Constants,
     is_valid_seed,
 )
-from utils.exceptions import raiseBadInputException
+from denigma.utils.exceptions import raiseBadInputException
 
 
 class Rotor(AbstractBaseClass):

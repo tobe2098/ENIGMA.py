@@ -1,8 +1,8 @@
 """Start the CLI for denigma."""
 
 from .menus.cli_m import _outer_cli_menu
-from utils.utils_cli import runNodeMenuObjectless, clearScreen
-from utils.utils import (
+from denigma.utils.utils_cli import runNodeMenuObjectless, clearScreen
+from denigma.utils.utils import (
     get_charlist_json,
     get_config_json,
     save_charlist_json,

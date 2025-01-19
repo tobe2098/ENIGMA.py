@@ -1,10 +1,10 @@
 import copy
 import random
 
-from core.abstract import AbstractBaseClass
-from utils.exceptions import raiseBadInputException
+from denigma.core.abstract import AbstractBaseClass
+from denigma.utils.exceptions import raiseBadInputException
 
-from utils.utils import (
+from denigma.utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     is_valid_seed,

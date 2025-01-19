@@ -4,11 +4,11 @@
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
-from utils.exceptions import FileIOErrorException
-from utils.types_utils import getLowerCaseName
-from core import rotors
-from utils import utils
-from utils import utils_cli
+from denigma.utils.exceptions import FileIOErrorException
+from denigma.utils.types_utils import getLowerCaseName
+from denigma.core import rotors
+from denigma.utils import utils
+from denigma.utils import utils_cli
 import string
 import os
 import pickle
@@ -155,7 +155,7 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
     #     _,
     #     front_unformed,
     #     back_unformed,
-    # ) = utils.simplify_rotor_dictionary_paired_unpaired(
+    # ) = denigma.utils.simplify_rotor_dictionary_paired_unpaired(
     #     rotor_ref._forward_dict, rotor_ref._backward_dict
     # )
     # if len(front_unformed) == 0 and len(back_unformed) == 0:
@@ -218,7 +218,7 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
         rotor_ref (rotors.Rotor): _description_
     """
     _show_config_rt(rotor_ref)
-    # _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
     #     rotor_ref._board_dict
     # )
     _connect_all_characters_rt(rotor_ref)
@@ -524,7 +524,7 @@ def _exitMenu_rt(rotor_ref: rotors.Rotor):
     #     _,
     #     front_unformed,
     #     _,
-    # ) = utils.simplify_rotor_dictionary_paired_unpaired(
+    # ) = denigma.utils.simplify_rotor_dictionary_paired_unpaired(
     #     rotor_ref._forward_dict, rotor_ref._backward_dict
     # )
     if not rotor_ref.is_set_up():

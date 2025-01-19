@@ -1,9 +1,9 @@
 # from tkinter import Menubutton
 # from ast import unparse
-from core import plugboards
-from utils import utils
-from utils import utils_cli
-from utils.utils import (
+from denigma.core import plugboards
+from denigma.utils import utils
+from denigma.utils import utils_cli
+from denigma.utils.utils import (
     simplify_simple_dictionary_paired_unpaired,
 )
 
@@ -33,7 +33,7 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    paired_df, _ = utils.simplify_simple_dictionary_paired_unpaired(
+    paired_df, _ = denigma.utils.simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
 
@@ -80,7 +80,7 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     if len(unpaired_list) < 2:
@@ -116,7 +116,7 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
 #     Args:
 #         plugboard_ref (plugboards.PlugBoard): _description_
 #     """
-#     _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+#     _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
 #         plugboard_ref._board_dict
 #     )
 #     if len(unpaired_list) < 2:
@@ -157,7 +157,7 @@ def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref (plugboards.PlugBoard): _description_
     """
     _show_config_pb(plugboard_ref)
-    _, unpaired_list = utils.simplify_simple_dictionary_paired_unpaired(
+    _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     connections = input(

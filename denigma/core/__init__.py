@@ -1,6 +1,6 @@
 """Library for the usage of ENIGMA machines in denigma"""
 
-from utils.utils import Constants
+from denigma.utils.utils import Constants
 
 __version__ = Constants.VERSION
 

@@ -1,8 +1,8 @@
 from .exceptions import raiseBadInputException
-from core.machines import Machine
-from core.rotors import Rotor
-from core.reflectors import Reflector
-from core.plugboards import PlugBoard
+from denigma.core.machines import Machine
+from denigma.core.rotors import Rotor
+from denigma.core.reflectors import Reflector
+from denigma.core.plugboards import PlugBoard
 
 
 def getCapitalizedName(obj_ref):

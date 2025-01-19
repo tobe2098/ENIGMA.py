@@ -4,15 +4,15 @@ import random
 import copy
 import string
 
-from core.abstract import AbstractBaseClass
+from denigma.core.abstract import AbstractBaseClass
 
-from utils.utils import (
+from denigma.utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     transform_single_dict,
     is_valid_seed,
 )
-from utils.exceptions import raiseBadInputException
+from denigma.utils.exceptions import raiseBadInputException
 
 
 class Reflector(AbstractBaseClass):

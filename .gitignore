@@ -7,3 +7,4 @@ cli/menus/__pycache__/__init__.cpython-312.pyc
 /utils/__pycache__
 /cli/functions/__pycache__
 *.pyc
+/denigma.egg-info

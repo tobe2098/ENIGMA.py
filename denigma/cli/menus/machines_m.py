@@ -1,7 +1,7 @@
 # ALL MENUS MUST BE ABLE TO RETURN TO THE PREVIOUS MENU WITH THE SAME KEY?????
 # ALL LOADING FUNCTIONS MUST BE HERE to load on the machine
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT to memory (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
-from utils.utils_cli import exitMenu
+from denigma.utils.utils_cli import exitMenu
 from denigma.cli.functions.machines_f import (
     _append_rotors,  # Rotor
     _change_all_rotors_character_position,  # Rotor

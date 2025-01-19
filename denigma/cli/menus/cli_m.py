@@ -1,4 +1,4 @@
-from utils.utils_cli import exitMenu, exitProgram, _print_charlist_collection
+from denigma.utils.utils_cli import exitMenu, exitProgram, _print_charlist_collection
 from denigma.cli.menus.rotors_m import _load_saved_rotor_for_editing
 from denigma.cli.menus.reflectors_m import _load_saved_reflector_for_editing
 from denigma.cli.functions.cli_f import (

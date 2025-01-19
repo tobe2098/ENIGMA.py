@@ -1,5 +1,5 @@
-from utils.exceptions import FileIOErrorException
-from utils import utils_cli
+from denigma.utils.exceptions import FileIOErrorException
+from denigma.utils import utils_cli
 from denigma.cli.functions.rotors_f import (
     _change_rotor_name_rt,
     _change_position_rt,

@@ -6,10 +6,10 @@ import string
 # import sys
 
 from .abstract import AbstractBaseClass
-from utils.exceptions import raiseBadInputException, raiseBadSetupException
+from denigma.utils.exceptions import raiseBadInputException, raiseBadSetupException
 
 from .rotors import Rotor
-from utils.utils import (
+from denigma.utils.utils import (
     Constants,
     create_dictionary_from_charlist,
     is_valid_seed,

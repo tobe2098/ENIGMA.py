@@ -2,8 +2,8 @@
 # from numpy import format_float_positional
 import os
 
-from utils.exceptions import FileIOErrorException
-from utils import utils_cli
+from denigma.utils.exceptions import FileIOErrorException
+from denigma.utils import utils_cli
 from denigma.cli.functions.reflectors_f import (
     _change_reflector_name_rf,
     _randomize_name_rf,
