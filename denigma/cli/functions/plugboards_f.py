@@ -89,9 +89,6 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
         )
     printOutput("Unpaired characters:", unpaired_list)
     character1 = askingInput("Choose a character to pair")
-    if character1=="":
-        printError("Invalid input")
-    return False
     character1 = checkInputValidity(character1, rangein=unpaired_list)
     if not character1:
         printError("Invalid input")

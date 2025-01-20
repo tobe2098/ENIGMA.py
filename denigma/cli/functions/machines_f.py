@@ -630,6 +630,8 @@ def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
     noRotors = askingInput(
         f"Input the desired number of rotors for your machine (from 1 to {Constants.MAX_NO_ROTORS})"
     )
+    if noRotors=="":
+        returningToMenu()
     noRotors=checkInputValidity(noRotors, int, (1,Constants.MAX_NO_ROTORS))
     while noRotors==None:
         noRotors = askingInput(

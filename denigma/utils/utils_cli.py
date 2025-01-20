@@ -6,7 +6,6 @@ import sys
 from denigma.core.abstract import AbstractBaseClass
 
 from .utils import is_valid_seed, Constants, get_charlist_json
-from .types_utils_cli import wrapperCall
 from .exceptions import (
     BadInputExceptionCLI,
     MenuExitException,

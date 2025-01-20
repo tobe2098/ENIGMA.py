@@ -4,12 +4,12 @@
 ### ALSO EXCEPT ALL GENERALISTIC CONFIG CALLS
 ### PUT WARNING IN ALL MENUING RELATED TO JUMP (IN RANDOM JUMP IS ALWAYS 1?)never zero or no_chars%jump==0!!, write explanation of interplay between notches and jump
 # Intern setup functions
-from denigma.utils.exceptions import FileIOErrorException
-from denigma.utils.types_utils import getLowerCaseName
-from denigma.core import rotors
 from denigma.utils.utils import simplify_rotor_dictionary_paired_unpaired, Constants
 from denigma.utils.utils_cli import checkInputValidity, returningToMenu, askingInput, getSeedFromUser,checkIfFileExists,printListOfOptions, exitMenu
 from denigma.utils.formatting import printOutput, printWarning, printError
+from denigma.utils.exceptions import FileIOErrorException
+from denigma.utils.types_utils import getLowerCaseName
+from denigma.core import rotors
 import string
 import os
 import pickle
