@@ -66,14 +66,14 @@ def _get_a_charlist_from_storage():
     dictionary = get_charlist_json()
     name_list = _print_charlist_collection(dictionary=dictionary)
     name_index = askingInput("Input the index of the desired character list")
-    if not name_index:
-        returningToMenu()
     # print(name_index)
     # print(name_list)
+    if name_index=="":
+        returningToMenu()
     name_index = checkInputValidity(name_index, int, (0, len(name_list)))
-    while not name_index:
+    while name_index==None:
         name_index = askingInput("Input a valid index")
-        if not name_index:
+        if name_index=="":
             returningToMenu()
         name_index = checkInputValidity(name_index, int, (0, len(name_list)))
     return dictionary[name_list[name_index]]

@@ -7,8 +7,9 @@ import string
 from denigma.utils.exceptions import FileIOErrorException
 from denigma.utils.types_utils import getLowerCaseName
 from denigma.core import reflectors
-from denigma.utils import utils
-from denigma.utils import utils_cli
+from denigma.utils.utils import simplify_simple_dictionary_paired_unpaired,Constants
+from denigma.utils.utils_cli import returningToMenu, askingInput, checkInputValidity,clearScreenConvenienceCli,getSeedFromUser,checkIfFileExists,exitMenu,printListOfOptions
+from denigma.utils.formatting import printOutput, printError
 import pickle
 
 
@@ -19,15 +20,15 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
 
-    utils_cli.printOutput("Reflector name:", reflector_ref._name)
-    paired_df, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    printOutput("Reflector name:", reflector_ref._name)
+    paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
-    utils_cli.printOutput("Reflector pairs:\n", paired_df)
-    utils_cli.printOutput("Reflector unpaired:", unpaired_list)
+    printOutput("Reflector pairs:\n", paired_df)
+    printOutput("Reflector unpaired:", unpaired_list)
     if len(unpaired_list) < 2:
         reflector_ref.lacks_connections = False
-    utils_cli.returningToMenu()
+    returningToMenu()
 
 
 def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
@@ -36,25 +37,25 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    paired_df, _ = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    paired_df, _ = simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenu("There are no available connections to delete")
+        returningToMenu("There are no available connections to delete")
 
-    utils_cli.printOutput("Current connections are:\n", paired_df)
-    row = utils_cli.askingInput("Choose a connection to delete (by index)")
-    row = utils_cli.checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
+    printOutput("Current connections are:\n", paired_df)
+    row = askingInput("Choose a connection to delete (by index)")
+    row = checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
     if row:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(
             reflector_ref=reflector_ref, character1=paired_df.iloc[row][0]
         )
         reflector_ref.lacks_connections = True
-        utils_cli.returningToMenu("Connection was deleted")
+        returningToMenu("Connection was deleted")
     else:
-        utils_cli.returningToMenu("Index invalid", output_type="e")
+        returningToMenu("Index invalid", output_type="e")
 
 
 def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, character1: str):
@@ -83,40 +84,40 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    _, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
     if len(unpaired_list) < 2:
         reflector_ref.lacks_connections = False
-        utils_cli.returningToMenu(
+        returningToMenu(
             "There are no characters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired characters:", unpaired_list)
-    character1 = utils_cli.askingInput("Choose a character to pair")
-    character1 = utils_cli.checkInputValidity(character1, rangein=unpaired_list)
-    if not character1:
+    printOutput("Unpaired characters:", unpaired_list)
+    character1 = askingInput("Choose a character to pair")
+    character1 = checkInputValidity(character1, rangein=unpaired_list)
+    if character1==None:
         # if character1 not in unpaired_list:
-        utils_cli.printError("Invalid input")
+        printError("Invalid input")
         return False
-        # utils_cli.returningToMenu("Invalid input", output_type="e")
-    utils_cli.printOutput(
+        # returningToMenu("Invalid input", output_type="e")
+    printOutput(
         "Remaining characters:", list(set(unpaired_list) - set(character1))
     )
-    character2 = utils_cli.askingInput("Choose the second character:")
-    character2 = utils_cli.checkInputValidity(
+    character2 = askingInput("Choose the second character:")
+    character2 = checkInputValidity(
         character2, rangein=list(set(unpaired_list) - set(character1))
     )
     if not character2:
         # if character2 not in list(set(unpaired_list) - set(character1)):
-        utils_cli.printError("Invalid input")
+        printError("Invalid input")
         return False
-        # utils_cli.returningToMenu("Invalid input", output_type="e")
+        # returningToMenu("Invalid input", output_type="e")
     reflector_ref._reflector_dict[character1] = character2
     reflector_ref._reflector_dict[character2] = character1
     reflector_ref._update_dicts()
-    utils_cli.printOutput("The connection was formed")
+    printOutput("The connection was formed")
     return True
-    # utils_cli.returningToMenu("The connection was formed")
+    # returningToMenu("The connection was formed")
 
 
 # First get a character, show unconnected again, then choose to connect. If wrong choice, go back to start
@@ -128,49 +129,49 @@ def __connect_all_characters_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
     # if len(unpaired_list) < 2:
-    #     utils_cli.returningToMenuMessage(
+    #     returningToMenuMessage(
     #         "There are no characters left to pair (one or fewer left unconnected)"
     #     )
     while True:
-        _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+        _, unpaired_list = simplify_simple_dictionary_paired_unpaired(
             reflector_ref._reflector_dict
         )
         if len(unpaired_list) < 2:
             reflector_ref.lacks_connections = False
-            utils_cli.returningToMenu(
+            returningToMenu(
                 "There are no characters left to pair (one or fewer left unconnected)"
             )
-        utils_cli.printOutput("Unpaired characters:", unpaired_list)
-        utils_cli.printOutput(
+        printOutput("Unpaired characters:", unpaired_list)
+        printOutput(
             "If you want to stop configurating the board, press Enter"
         )
-        characters = utils_cli.askingInput("Input two characters to pair").strip(
+        characters = askingInput("Input two characters to pair").strip(
             chars=string.whitespace
         )
         if characters.isalpha() and len(characters) == 2:
             pass
         elif not characters:
-            utils_cli.returningToMenu()
+            returningToMenu()
         else:
-            utils_cli.printError("Input 2 characters please")
+            printError("Input 2 characters please")
             continue
         characters = list(characters)
         for i in range(2):
-            characters[i] = utils_cli.checkInputValidity(
+            characters[i] = checkInputValidity(
                 characters[i], rangein=unpaired_list
             )
         if not all(characters):
             # if not all(map(lambda v: v in characters, unpaired_list)):
-            utils_cli.printOutput("One of the characters is already connected")
+            printOutput("One of the characters is already connected")
             continue
         # break
         reflector_ref._reflector_dict[characters[0]] = characters[1]
         reflector_ref._reflector_dict[characters[1]] = characters[0]
-        utils_cli.printOutput("Connection formed")
+        printOutput("Connection formed")
 
 
 def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
@@ -180,11 +181,11 @@ def _form_all_connections_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
     _show_config_rf(reflector_ref)
-    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
     __connect_all_characters_rf(reflector_ref)
-    utils_cli.returningToMenu(
+    returningToMenu(
         "You exited without forming all connections!", output_type="w"
     )
 
@@ -209,8 +210,8 @@ def _form_n_connections_rf(reflector_ref: reflectors.Reflector, connections: int
     c = 0
     while connections - c:
         # for i in range(connections):
-        utils_cli.clearScreenConvenienceCli()
-        utils_cli.printOutput(f"Creating connection {c+1} of {connections}")
+        clearScreenConvenienceCli()
+        printOutput(f"Creating connection {c+1} of {connections}")
         if _create_a_connection_single_choice_rf(reflector_ref):
             c += 1
 
@@ -223,11 +224,11 @@ def _reset_and_form_all_connections_by_pairs_rf(reflector_ref: reflectors.Reflec
     """
     _reset_connections_rf(reflector_ref)
     while True:
-        accbool = utils_cli.askingInput(
+        accbool = askingInput(
             "Do you still want to make changes?[y/n]"
         ).lower()
         if accbool == "n":
-            utils_cli.returningToMenu()
+            returningToMenu()
         elif accbool == "y":
             break
     __connect_all_characters_rf(reflector_ref)
@@ -242,7 +243,7 @@ def _reset_and_randomize_connections_rf(reflector_ref: reflectors.Reflector):
     Args:
         reflector_ref (reflectors.Reflector): _description_
     """
-    seed = utils_cli.getSeedFromUser()
+    seed = getSeedFromUser()
     reflector_ref._reset_dictionaries()
     reflector_ref._random_setup(seed)
 
@@ -257,56 +258,56 @@ def _reset_connections_rf(reflector_ref: reflectors.Reflector):
 
 
 def _print_name_rf(reflector_ref: reflectors.Reflector):
-    utils_cli.printOutput("Reflector name:", reflector_ref._name)
+    printOutput("Reflector name:", reflector_ref._name)
 
 
 def _change_reflector_name_rf(reflector_ref: reflectors.Reflector):
-    new_name = utils_cli.askingInput("Input a new name for the reflector")
+    new_name = askingInput("Input a new name for the reflector")
     while not reflector_ref._is_name_valid(new_name):
         # while any(not c.isalnum() for c in new_name) or not new_name:
-        utils_cli.printOutput("Input only alphanumerical characters or underscore")
-        new_name = utils_cli.askingInput("Input a new name for the reflector")
+        printOutput("Input only alphanumerical characters or underscore")
+        new_name = askingInput("Input a new name for the reflector")
     reflector_ref._change_name(new_name)
-    utils_cli.returningToMenu("Reflector name changed to:", reflector_ref._name)
+    returningToMenu("Reflector name changed to:", reflector_ref._name)
 
 
 def _randomize_name_rf(reflector_ref: reflectors.Reflector):
     reflector_ref._random_name()
-    utils_cli.returningToMenu("Reflector's new name:", reflector_ref.name)
+    returningToMenu("Reflector's new name:", reflector_ref.name)
 
 
 def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     accbool = ""
     while not accbool == "n" or not accbool == "y":
-        accbool = utils_cli.askingInput(
+        accbool = askingInput(
             f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
         ).lower()
     if accbool == "n":
-        utils_cli.returningToMenu()
+        returningToMenu()
     new_name = reflector_ref.get_name()
     while not reflector_ref._is_name_valid(new_name):
-        new_name = utils_cli.askingInput(
+        new_name = askingInput(
             f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
         ).strip(string.whitespace)
     reflector_ref._change_name(new_name)
 
-    path = denigma.utils.Constants.REFLECTOR_FILE_PATH
+    path = Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         os.mkdir(path)
-        utils_cli.printOutput(f"Directory '{path}' created")
-    if utils_cli.checkIfFileExists(
+        printOutput(f"Directory '{path}' created")
+    if checkIfFileExists(
         path, reflector_ref._name, getLowerCaseName(reflector_ref)
     ):
-        utils_cli.printOutput(
+        printOutput(
             f"A {getLowerCaseName(reflector_ref)} with this name already exists"
         )
         accbool = ""
         while not accbool == "n" or not accbool == "y":
-            accbool = utils_cli.askingInput(
+            accbool = askingInput(
                 f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
             ).lower()
         if accbool == "n":
-            utils_cli.returningToMenu(
+            returningToMenu(
                 f"You discarded changes to the {getLowerCaseName(reflector_ref)}"
             )
     file_path = os.path.join(
@@ -320,7 +321,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
         raise FileIOErrorException(
             f"Failed to save the {getLowerCaseName(reflector_ref)} at {file_path}:{e}"
         )
-    utils_cli.returningToMenu(
+    returningToMenu(
         f"{reflector_ref._name} has been saved into {reflector_ref._name}.{getLowerCaseName(reflector_ref)} in {path}"
     )
 
@@ -328,30 +329,32 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
 def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
     if reflector_id and reflector_id.is_set_up():
         _save_reflector_in_its_folder(reflector_ref=reflector_id)
-    path = denigma.utils.Constants.REFLECTOR_FILE_PATH
+    path = Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
-        utils_cli.returningToMenu("There is no {} folder".format(path), output_type="e")
+        returningToMenu("There is no {} folder".format(path), output_type="e")
     list_of_files = [
         element.rsplit(".", 1)[0]
         for element in os.listdir(path)
         # if element.rsplit(".", 1)[1] == "reflector"
     ]
     if not list_of_files:
-        utils_cli.returningToMenu(f"There are no reflectors saved at {path}", "e")
-    utils_cli.printOutput("Your available reflectors are:")
-    utils_cli.printListOfOptions(list_of_files)
-    reflector_id = utils_cli.askingInput("Input reflector's position in the list:")
-    reflector_id = utils_cli.checkInputValidity(
+        returningToMenu(f"There are no reflectors saved at {path}", "e")
+    printOutput("Your available reflectors are:")
+    printListOfOptions(list_of_files)
+    reflector_id = askingInput("Input reflector's position in the list:")
+    if reflector_id=="":
+        returningToMenu()
+    reflector_id = checkInputValidity(
         reflector_id, int, rangein=(0, len(list_of_files))
     )
-    while not reflector_id:
+    while reflector_id==None:
         # while not isinstance(rotor, int) or rotor > len(list_of_files) - 1 or rotor < 0:
-        utils_cli.printError("Please input a valid index")
-        utils_cli.printListOfOptions(list_of_files)
-        reflector_id = utils_cli.askingInput("Input reflector's position in the list:")
-        if not reflector_id:
-            utils_cli.returningToMenu()
-        reflector_id = utils_cli.checkInputValidity(
+        printError("Please input a valid index")
+        printListOfOptions(list_of_files)
+        reflector_id = askingInput("Input reflector's position in the list:")
+        if reflector_id=="":
+            returningToMenu()
+        reflector_id = checkInputValidity(
             reflector_id, int, rangein=(0, len(list_of_files))
         )
     try:
@@ -364,23 +367,23 @@ def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
         reflector_ref = pickle.load(filehandler)
         filehandler.close()
     except Exception as e:
-        utils_cli.returningToMenu(
+        returningToMenu(
             f"Failed to read the file at {filehandler}:{e}", output_type="e"
         )
     if isinstance(reflector_ref, reflectors.Reflector):
         return reflector_ref
     else:
-        utils_cli.returningToMenu(
+        returningToMenu(
             f"A non-reflector type was loaded:{type(reflector_ref)}", output_type="e"
         )
 
 
 def _exitMenu_rf(reflector_ref: reflectors.Reflector):
-    # _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    # _, unpaired_list = denigma.simplify_simple_dictionary_paired_unpaired(
     #     reflector_ref._reflector_dict
     # )
     if not reflector_ref.is_set_up():
-        utils_cli.returningToMenu(
+        returningToMenu(
             "To avoid self-sabotage, an improper reflector is discouraged"
         )
-    utils_cli.exitMenu()
+    exitMenu()

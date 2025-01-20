@@ -63,14 +63,14 @@ def _delete_a_charlist():
     name_list = _print_charlist_collection(dictionary=dictionary)
     printWarning("Default character lists cannot be deleted")
     name_index = askingInput("Input the index of the character list to be deleted")
-    if not name_index:
+    if name_index=="":
         returningToMenu()
-    name_list = checkInputValidity(name_index, int, (0, len(name_list)))
-    while not name_list:
+    name_index = checkInputValidity(name_index, int, (0, len(name_list)))
+    while name_index==None:
         name_index = askingInput("Input a valid index")
-        if not name_index:
+        if name_index=="":
             returningToMenu()
-        name_list = checkInputValidity(name_index, int, (0, len(name_list)))
+        name_index = checkInputValidity(name_index, int, (0, len(name_list)))
     dictionary.pop(name_list[name_index])
     save_charlist_json(dictionary=dictionary)
     returningToMenu("Character list was deleted")

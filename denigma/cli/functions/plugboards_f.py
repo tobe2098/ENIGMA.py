@@ -1,11 +1,11 @@
 # from tkinter import Menubutton
 # from ast import unparse
 from denigma.core import plugboards
-from denigma.utils import utils
-from denigma.utils import utils_cli
+from denigma.utils.utils_cli import returningToMenu,askingInput,checkInputValidity,clearScreenConvenienceCli,getSeedFromUser
 from denigma.utils.utils import (
     simplify_simple_dictionary_paired_unpaired,
 )
+from denigma.utils.formatting import printOutput,printError
 
 
 def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
@@ -18,13 +18,13 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
-    utils_cli.printOutput("Paired characters:", paired_df)
-    utils_cli.printOutput("Unpaired characters:", unpaired_list)
-    utils_cli.printOutput(
+    printOutput("Paired characters:", paired_df)
+    printOutput("Unpaired characters:", unpaired_list)
+    printOutput(
         "Number of connections:",
         (len(plugboard_ref.get_charlist()) - len(unpaired_list)) / 2,
     )
-    utils_cli.returningToMenu()
+    returningToMenu()
 
 
 def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
@@ -33,25 +33,25 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    paired_df, _ = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    paired_df, _ = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
 
     if paired_df.shape[0] == 0:
-        utils_cli.returningToMenu("There are no available connections")
+        returningToMenu("There are no available connections")
 
-    utils_cli.printOutput("Current connections are:\n", paired_df)
-    row = utils_cli.askingInput("Choose a connection to delete (by index)")
-    row = utils_cli.checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
+    printOutput("Current connections are:\n", paired_df)
+    row = askingInput("Choose a connection to delete (by index)")
+    row = checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
 
     if row:
         _delete_a_connection_pb(
             plugboard_ref=plugboard_ref,
             character1=paired_df.iloc[row][0],
         )
-        utils_cli.returningToMenu("Connection was deleted")
+        returningToMenu("Connection was deleted")
     else:
-        utils_cli.returningToMenu("Index invalid", "e")
+        returningToMenu("Index invalid", "e")
 
 
 def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, character1: str):
@@ -80,30 +80,33 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    _, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     if len(unpaired_list) < 2:
-        utils_cli.returningToMenu(
+        returningToMenu(
             "There are no characters left to pair (one or fewer left unconnected)"
         )
-    utils_cli.printOutput("Unpaired characters:", unpaired_list)
-    character1 = utils_cli.askingInput("Choose a character to pair")
-    character1 = utils_cli.checkInputValidity(character1, rangein=unpaired_list)
+    printOutput("Unpaired characters:", unpaired_list)
+    character1 = askingInput("Choose a character to pair")
+    if character1=="":
+        printError("Invalid input")
+    return False
+    character1 = checkInputValidity(character1, rangein=unpaired_list)
     if not character1:
-        utils_cli.printError("Invalid input")
+        printError("Invalid input")
         return False
     remaining_characters = list(set(unpaired_list) - set(character1))
-    utils_cli.printOutput("Remaining characters:", remaining_characters)
-    character2 = utils_cli.askingInput("Choose the second character")
-    character2 = utils_cli.checkInputValidity(character2, rangein=remaining_characters)
+    printOutput("Remaining characters:", remaining_characters)
+    character2 = askingInput("Choose the second character")
+    character2 = checkInputValidity(character2, rangein=remaining_characters)
     if not character2:
-        utils_cli.printError("Invalid input")
+        printError("Invalid input")
         return False
     plugboard_ref._board_dict[character1] = character2
     plugboard_ref._board_dict[character2] = character1
     plugboard_ref._update_dicts()
-    utils_cli.printOutput("The connection was formed")
+    printOutput("The connection was formed")
     return True
 
 
@@ -116,38 +119,38 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
 #     Args:
 #         plugboard_ref (plugboards.PlugBoard): _description_
 #     """
-#     _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+#     _, unpaired_list = simplify_simple_dictionary_paired_unpaired(
 #         plugboard_ref._board_dict
 #     )
 #     if len(unpaired_list) < 2:
-#         utils_cli.returningToMenu(
+#         returningToMenu(
 #             "There are no characters left to pair (one or fewer left unconnected)"
 #         )
 #     while True:
-#         utils_cli.printOutput("Unpaired characters:", (unpaired_list))
-#         utils_cli.printOutput(
+#         printOutput("Unpaired characters:", (unpaired_list))
+#         printOutput(
 #             "If you want to stop configurating the board, press Enter"
 #         )
-#         characters = utils_cli.askingInput("Input two characters to pair:").strip().upper()
+#         characters = askingInput("Input two characters to pair:").strip().upper()
 #         if characters.isalpha() and len(characters) == 2:
 #             pass
 #         elif not characters:
-#             # utils_cli.returningToMenu("No input")
+#             # returningToMenu("No input")
 #             return
 #         else:
 #             print("Error: Input 2 characters please")
 #             continue
 #         characters = list(characters)
 #         for i in range(2):
-#             characters[i] = utils_cli.checkInputValidity(characters[i], _range=unpaired_list)
+#             characters[i] = checkInputValidity(characters[i], _range=unpaired_list)
 #         if not all(characters):
 #             # if not all(map(lambda v: v in characters, unpaired_list)):
-#             utils_cli.printOutput("One of the characters is already connected")
+#             printOutput("One of the characters is already connected")
 #             continue
 #         break
 #     plugboard_ref._board_dict[characters[0]] = characters[1]
 #     plugboard_ref._board_dict[characters[1]] = characters[0]
-#     utils_cli.printOutput("Connection formed")
+#     printOutput("Connection formed")
 
 
 def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
@@ -157,16 +160,16 @@ def _form_numbered_connections_pb(plugboard_ref: plugboards.PlugBoard):
         plugboard_ref (plugboards.PlugBoard): _description_
     """
     _show_config_pb(plugboard_ref)
-    _, unpaired_list = denigma.utils.simplify_simple_dictionary_paired_unpaired(
+    _, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
     connections = input(
-        utils_cli.askingInput(
+        askingInput(
             f"How many connections do you want to create (Max. {len(unpaired_list)/2})?"
         )
     )
     if connections > len(unpaired_list) / 2:
-        utils_cli.returningToMenu("Number exceeds the maximum", "e")
+        returningToMenu("Number exceeds the maximum", "e")
     _form_n_extra_connections_pb(plugboard_ref, connections)
 
 
@@ -189,8 +192,8 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
     """
     c = 0
     while connections - c:
-        utils_cli.clearScreenConvenienceCli()
-        utils_cli.printOutput(f"Creating connection {c+1} of {connections}")
+        clearScreenConvenienceCli()
+        printOutput(f"Creating connection {c+1} of {connections}")
         if _create_a_single_connection_pb(plugboard_ref):
             c += 1
 
@@ -203,11 +206,11 @@ def _form_n_extra_connections_pb(plugboard_ref: plugboards.PlugBoard, connection
 #     """
 #     _reset_connections_pb(plugboard_ref)
 #     while True:
-#         accbool = utils_cli.askingInput(
+#         accbool = askingInput(
 #             "Do you want to keep making changes?[y/n]"
 #         ).lower()
 #         if accbool == "n":
-#             utils_cli.returningToMenu()
+#             returningToMenu()
 #         elif accbool == "y":
 #             _create_a_single_connection_pb(plugboard_ref)
 
@@ -221,10 +224,10 @@ def _reset_and_randomize_connections_pb(plugboard_ref: plugboards.PlugBoard):
     Args:
         plugboard_ref (plugboards.PlugBoard): _description_
     """
-    seed = utils_cli.getSeedFromUser()
+    seed = getSeedFromUser()
     plugboard_ref._reset_dictionaries()
     plugboard_ref.random_setup(seed)
-    utils_cli.printOutput("Board random setup is done")
+    printOutput("Board random setup is done")
 
 
 def _reset_connections_pb(plugboard_ref: plugboards.PlugBoard):
