@@ -1,7 +1,7 @@
 import traceback
 from .formatting import formatAsError, formatAsOutput
 from .utils import get_is_cli_mode, get_is_gui_mode
-
+import inspect
 
 class ExceptionOfExceptions(Exception):
     def __init__(
@@ -29,34 +29,37 @@ class ReturnToMenuException(Exception):
 
 
 class DevOpsExceptionCLI(ReturnToMenuException):
-    def __init__(self, message=None):
+    def __init__(self, message=""):
         # message += "\n" + formatAsError(
         #     "Development oversight. Something happened here:"
         # )
-        super().__init__(message)
-        self.traceback = traceback.format_exc()
+        for i in inspect.stack():
+            message+=f" | {i.function}"
+        super().__init__(message+inspect.stack()[4].function)
+        # self.traceback = traceback.format_exc()
 
-    def __str__(self):
-        return f"{super().__str__()}\n{self.type_msg}\nTraceback:\n{self.traceback}"
+    # def __str__(self):
+    #     # print(traceback.format_exc())
+    #     return f"{super().__str__()}\n{self.args[0]}"
 
 
 class BadInputExceptionCLI(DevOpsExceptionCLI):
-    def __init__(self, message=None):
-        message += "\n" + formatAsError(
-            "An incorrect input was received in the following core function:"
+    def __init__(self, message=""):
+        message = "\n" + formatAsError(
+            f"Incorrect input: {message}. It was received in the following core function:"
         )
         super().__init__(message)
 
 
 class MachineBadSetupExceptionCLI(DevOpsExceptionCLI):
-    def __init__(self, message=None):
+    def __init__(self, message=""):
         message += "\n" + formatAsError("The machine was not properly set up")
         super().__init__(message)
 
 
-def raiseBadInputException():
+def raiseBadInputException(bad_input=""):
     if get_is_cli_mode():
-        raise BadInputExceptionCLI()
+        raise BadInputExceptionCLI(bad_input)
     elif get_is_gui_mode():
         raise ExceptionOfExceptions()
     else:

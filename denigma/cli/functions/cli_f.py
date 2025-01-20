@@ -155,7 +155,7 @@ def _encrypt_decrypt_file_to_file_cli():
 #     while not reflector_ref._is_name_valid(new_name):
 #         new_name = askingInput(
 #             f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
-#         ).strip(chars=string.whitespace)
+#         ).strip(string.whitespace)
 #     reflector_ref._change_name(new_name)
 
 #     if checkIfFileExists(
@@ -196,7 +196,7 @@ def _encrypt_decrypt_file_to_file_cli():
 #     while not rotor_ref._is_name_valid(new_name):
 #         new_name = askingInput(
 #             f"Please assign a new name to the {getLowerCaseName(rotor_ref)}"
-#         ).strip(chars=string.whitespace)
+#         ).strip(string.whitespace)
 #     rotor_ref._change_name(new_name)
 
 #     if not os.path.exists(path_to_export):
@@ -240,7 +240,7 @@ def _encrypt_decrypt_file_to_file_cli():
 #     while not machine_ref._is_name_valid(new_name):
 #         new_name = askingInput(
 #             f"Please assign a new name to the {getLowerCaseName(machine_ref)}"
-#         ).strip(chars=string.whitespace)
+#         ).strip(string.whitespace)
 #     machine_ref._change_name(new_name)
 
 #     if checkIfFileExists(

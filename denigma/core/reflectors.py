@@ -21,7 +21,7 @@ class Reflector(AbstractBaseClass):
         self._name = "name"
         self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._reflector_dict = dict(
-            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+            zip(copy.copy(self._charlist), copy.copy(self._charlist))
         )
         self._reflector_num_dict = {}
         self._update_dicts()
@@ -42,7 +42,7 @@ class Reflector(AbstractBaseClass):
             Exception: _description_
         """
 
-        new_name = new_name.strip(chars=string.whitespace)
+        new_name = new_name.strip(string.whitespace)
         if not self._is_name_valid(new_name):
             raiseBadInputException()
         self._name = new_name
@@ -57,7 +57,7 @@ class Reflector(AbstractBaseClass):
 
     def _reset_dictionaries(self):
         self._reflector_dict = dict(
-            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+            zip(copy.copy(self._charlist), copy.copy(self._charlist))
         )
         self._update_dicts()
 
@@ -101,8 +101,8 @@ class Reflector(AbstractBaseClass):
         if not is_valid_seed(seed):
             raiseBadInputException()
         random.seed(seed)
-        # character_list1 = [key for key, _ in self._characters_in_use]
-        character_list1 = copy.copy(self._characters_in_use)
+        # character_list1 = [key for key, _ in self._charlist]
+        character_list1 = copy.copy(self._charlist)
         random.shuffle(character_list1)
         # character_list2 = copy.copy(self.characters_in_use)
         # random.shuffle(character_list2)

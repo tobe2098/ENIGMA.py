@@ -49,7 +49,7 @@ class Machine(AbstractBaseClass):
     # # Basic functions
 
     # # def get_character_list(self):
-    # #     return self._characters_in_use
+    # #     return self._charlist
 
     def get_name(self):
         return self._name
@@ -69,7 +69,7 @@ class Machine(AbstractBaseClass):
             Exception: _description_
         """
 
-        new_name = new_name.strip(chars=string.whitespace)
+        new_name = new_name.strip(string.whitespace)
         if not self._is_name_valid(new_name):
             raiseBadInputException()
         self._name = new_name
@@ -213,7 +213,7 @@ class Machine(AbstractBaseClass):
         random.seed(self._seed)
         jump = random.randint(1, int(3e8))
         self._reflector._random_setup(self._seed * jump)
-        self._random_conf_rotors(jump)
+        self._random_setup_all_rotors(jump)
         self._plugboard.random_setup(self._seed / jump)
         # Generating the name
         # name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 20)]
@@ -240,7 +240,7 @@ class Machine(AbstractBaseClass):
         # print(self.rotor1._position)
         for char in text:
             character_out = self.type_character(char)
-            #     if char not in self._characters_in_use:
+            #     if char not in self._charlist:
             #         continue
             #     self._current_distance_from_original_state += 1
             #     # First, position changes in rotors.
@@ -271,7 +271,7 @@ class Machine(AbstractBaseClass):
     def type_character(self, character):
         if len(character) > 1:
             raiseBadInputException()
-        if character not in self._characters_in_use:
+        if character not in self._charlist:
             return ""
         # First, position changes in rotors.
         self._current_distance_from_original_state += 1
@@ -315,7 +315,7 @@ class Machine(AbstractBaseClass):
         if not destination:
             destination = self._current_distance_from_original_state
         if destination > 0:
-            plc_char = self._characters_in_use[0]
+            plc_char = self._charlist[0]
             for _ in range(destination):
                 self.type_character(plc_char)
         # For erasing all the input box in GUI, I can keep track of the inputs with an internal variable

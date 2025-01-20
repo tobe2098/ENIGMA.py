@@ -17,7 +17,7 @@ class PlugBoard(AbstractBaseClass):
         super().__init__(charlist=characters)
         self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._board_dict = dict(
-            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+            zip(copy.copy(self._charlist), copy.copy(self._charlist))
         )
         self._update_dicts()
 
@@ -33,7 +33,7 @@ class PlugBoard(AbstractBaseClass):
 
     def _reset_dictionaries(self):
         self._board_dict = dict(
-            zip(copy.copy(self._characters_in_use), copy.copy(self._characters_in_use))
+            zip(copy.copy(self._charlist), copy.copy(self._charlist))
         )
         self._update_dicts()
 
@@ -48,9 +48,9 @@ class PlugBoard(AbstractBaseClass):
 
         # Now set the connections
         ### !!! Make sure board is composed of pairs and is symmetrical!!! It is not as of now.
-        num_list = list(range(0, len(self._characters_in_use)))
+        num_list = list(range(0, len(self._charlist)))
         random.shuffle(num_list)
-        cable_num = random.randint(0, int(len(self._characters_in_use) / 2))
+        cable_num = random.randint(0, int(len(self._charlist) / 2))
         while cable_num > 0 and len(num_list) > 1:
             characterA = num_list.pop()
             characterB = num_list.pop()

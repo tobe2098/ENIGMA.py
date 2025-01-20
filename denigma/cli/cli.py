@@ -1,5 +1,5 @@
 """Start the CLI for denigma."""
-
+import traceback
 from .menus.cli_m import _outer_cli_menu
 from denigma.utils.utils_cli import runNodeMenuObjectless, clearScreen
 from denigma.utils.utils import (
@@ -19,3 +19,4 @@ def start_cl_interface():
         runNodeMenuObjectless(_outer_cli_menu)
     except Exception as e:
         print(e)
+        traceback.print_exc()

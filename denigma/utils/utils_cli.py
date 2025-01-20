@@ -42,7 +42,7 @@ def invalidChoice(*args):
 
 def printListOfOptions(list_):
     for i in range(len(list_)):
-        print(i, ":", list_[i])
+        print("|"+str(i)+"|"+ ":"+ str(list_[i]))
 
 
 # def getAnInputFromList(
@@ -68,8 +68,8 @@ def _get_a_charlist_from_storage():
     name_index = askingInput("Input the index of the desired character list")
     if not name_index:
         returningToMenu()
-    print(name_index)
-    print(name_list)
+    # print(name_index)
+    # print(name_list)
     name_index = checkInputValidity(name_index, int, (0, len(name_list)))
     while not name_index:
         name_index = askingInput("Input a valid index")
@@ -160,7 +160,7 @@ def getSeedFromUser(ask="seed"):
     """
     seed = "a"
     while not is_valid_seed(seed):
-        seed = askingInput(f"Introduce a positive integer as a {ask}:")
+        seed = askingInput(f"Introduce a positive integer as a {ask}")
         if not seed:
             returningToMenu()
         elif seed.isnumeric():
@@ -229,7 +229,7 @@ def get_a_charlist_and_name_from_user():
     charlist = list(
         askingInput(
             "Write a string of characters to create your list (only unique characters will be considered)"
-        ).strip(chars=string.whitespace)
+        ).strip(string.whitespace)
     )
     unique_charlist = []
     for i in charlist:

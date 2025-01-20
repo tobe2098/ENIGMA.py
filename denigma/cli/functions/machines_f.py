@@ -496,7 +496,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     while not machine_ref._is_name_valid(new_name):
         new_name = askingInput(
             f"Please assign a new name to the {getLowerCaseName(machine_ref)}"
-        ).strip(chars=string.whitespace)
+        ).strip(string.whitespace)
     machine_ref._change_name(new_name)
 
     path = Constants.MACHINE_FILE_PATH
@@ -614,8 +614,16 @@ def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
         charlist=charlist,
     )
     noRotors = askingInput(
-        f"Input the desired number of rotors for your machine (from 0 to {Constants.MAX_NO_ROTORS})"
+        f"Input the desired number of rotors for your machine (from 1 to {Constants.MAX_NO_ROTORS})"
     )
+    noRotors=checkInputValidity(noRotors, int, (1,Constants.MAX_NO_ROTORS))
+    while not noRotors:
+        noRotors = askingInput(
+        f"Input the a valid number of rotors for your machine (from 1 to {Constants.MAX_NO_ROTORS})"
+    )
+        if not noRotors:
+            returningToMenu()
+        noRotors=checkInputValidity(noRotors, int, (1,Constants.MAX_NO_ROTORS))
     machine_ref.setup_machine_randomly(noRotors=noRotors)
     return machine_ref
 

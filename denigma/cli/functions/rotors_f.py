@@ -184,7 +184,7 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
         )
         characters = utils_cli.askingInput(
             "Input one character from front side, one from back side (in order)"
-        ).strip(chars=string.whitespace)
+        ).strip(string.whitespace)
         characters = list(characters)
         if len(characters) == 2 and all(
             character in rotor_ref.get_charlist() for character in characters
@@ -257,9 +257,9 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
     character1 = utils_cli.checkInputValidity(
         character1, int, rangein=(0, paired_df.shape[0])
     )
-    # character1 = utils_cli.checkInputValidity(character1, _range=rotor_ref._characters_in_use)
+    # character1 = utils_cli.checkInputValidity(character1, _range=rotor_ref._charlist)
     if not character1:
-        # if character1 not in rotor_ref._characters_in_use:
+        # if character1 not in rotor_ref._charlist:
         utils_cli.printError("Invalid input")
         return
     character2 = utils_cli.askingInput(
@@ -268,9 +268,9 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
     character2 = utils_cli.checkInputValidity(
         character2, int, rangein=(0, paired_df.shape[0])
     )
-    # character2 = utils_cli.checkInputValidity(character2, _range=rotor_ref._characters_in_use)
+    # character2 = utils_cli.checkInputValidity(character2, _range=rotor_ref._charlist)
     if not character2:
-        # if character2 not in rotor_ref._characters_in_use:
+        # if character2 not in rotor_ref._charlist:
         utils_cli.printError("Invalid input")
         return
     (
@@ -433,7 +433,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
     while not rotor_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
             f"Please assign a new name to the {getLowerCaseName(rotor_ref)}"
-        ).strip(chars=string.whitespace)
+        ).strip(string.whitespace)
     rotor_ref._change_name(new_name)
 
     path = utils.Constants.ROTOR_FILE_PATH

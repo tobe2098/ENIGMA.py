@@ -287,7 +287,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
     while not reflector_ref._is_name_valid(new_name):
         new_name = utils_cli.askingInput(
             f"Please assign a new name to the {getLowerCaseName(reflector_ref)}"
-        ).strip(chars=string.whitespace)
+        ).strip(string.whitespace)
     reflector_ref._change_name(new_name)
 
     path = denigma.utils.Constants.REFLECTOR_FILE_PATH

@@ -26,10 +26,10 @@ class Rotor(AbstractBaseClass):
         self._notches = [
             self._no_characters - 1
         ]  # self.notch can be a list. When does the next rotor move relative to the notch?
-        self._forward_dict = dict(zip(self._characters_in_use, self._characters_in_use))
+        self._forward_dict = dict(zip(self._charlist, self._charlist))
 
         self._backward_dict = dict(
-            zip(self._characters_in_use, self._characters_in_use)
+            zip(self._charlist, self._charlist)
         )
         self.lacks_connections = True
         self._update_dicts()
@@ -82,7 +82,7 @@ class Rotor(AbstractBaseClass):
 
     def _is_name_valid(self, name):
         return (
-            name != "name" and name != "" and all(c.isalnum() or c == "_" for c in name)
+            name != "name" and name != "" and all([c  in Constants.FILESAFE_CHARS for c in name])
         )
 
     def _change_name(self, new_name):
@@ -95,14 +95,14 @@ class Rotor(AbstractBaseClass):
             Exception: _description_
         """
 
-        new_name = new_name.strip(chars=string.whitespace)
+        new_name = new_name.strip(string.whitespace)
         if not self._is_name_valid(new_name):
-            raiseBadInputException()
+            raiseBadInputException(new_name)
         self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
     def _is_jump_invalid(self, jump):
-        return jump == 0 or self._characters_in_use % jump == 0 and jump != 1
+        return jump == 0 or self._charlist % jump == 0 and jump != 1
 
     def _define_rotor_jump(self, jump):
         """Not active for now
@@ -122,7 +122,7 @@ class Rotor(AbstractBaseClass):
     # Do dictionaries of str(numbers) to the new number (or the number of the new character), and do 1 for each direction
 
     def _is_position_invalid(self, position):
-        return len(position) > 1 or position not in self._characters_in_use
+        return len(position) > 1 or position not in self._charlist
 
     def _define_position(self, position):
         """Sets the position of the rotor to the input value
@@ -144,9 +144,8 @@ class Rotor(AbstractBaseClass):
     def _are_notches_invalid(self, notches):
         return (
             not notches
-            or any(not i.isalpha() for i in notches)
             or any(len(i) > 1 for i in notches)
-            or any(i in self._characters_in_use for i in notches)
+            or any(i not in self._charlist for i in notches)
             or len(notches) >= self._no_characters
         )
 
@@ -158,12 +157,12 @@ class Rotor(AbstractBaseClass):
         """
         ##DEBUG
         if self._are_notches_invalid(positions):
-            raiseBadInputException()
+            raiseBadInputException(positions)
 
         notch_list = [
             self._conversion_in_use[notch]
             for notch in positions
-            if notch in self._characters_in_use and notch != ""
+            if notch in self._charlist and notch != ""
         ]
         self._notches = notch_list
         # print(
@@ -190,8 +189,8 @@ class Rotor(AbstractBaseClass):
 
     def _reset_dictionaries(self):
         empty_list = ["" for _ in range(self._no_characters)]
-        self._forward_dict = zip(self._characters_in_use, empty_list)
-        self._backward_dict = zip(self._characters_in_use, empty_list)
+        self._forward_dict = zip(self._charlist, empty_list)
+        self._backward_dict = zip(self._charlist, empty_list)
         self._update_dicts()
 
     def _random_name(self, seed=None):
@@ -199,27 +198,23 @@ class Rotor(AbstractBaseClass):
             raiseBadInputException()
         random.seed(seed)
         # Name generation
-        name_list = [
-            random.sample(range(0, self._no_characters), 1)[0] for _ in range(0, 13)
-        ]
-        name_list[0:9] = [self._conversion_in_use[num] for num in name_list[0:9]]
-        name_list[9:13] = [str(i % 10) for i in name_list[9:13]]
-        string1 = ""
-        name = string1.join(name_list)
+        name=""
+        for _ in range(13):
+            name+=random.sample(Constants.FILESAFE_CHARS, 1)[0]
         self._change_name(name)
 
     def _randomize_position(self, seed=None):
         if not is_valid_seed(seed):
             raiseBadInputException()
         random.seed(seed)
-        self._define_position(random.sample(self._characters_in_use, 1)[0])
+        self._define_position(random.sample(self._charlist, 1)[0])
 
     def _randomize_notches(self, seed=None):
         if not is_valid_seed(seed):
             raiseBadInputException()
         random.seed(seed)
         no_notches = random.randint(1, self._no_characters - 1)
-        notchlist = random.sample(self._characters_in_use, no_notches)
+        notchlist = random.sample(self._charlist, no_notches)
         self._define_notches(notchlist)
 
     def _randomize_dictionaries(self, seed=None):
