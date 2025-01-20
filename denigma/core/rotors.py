@@ -164,6 +164,7 @@ class Rotor(AbstractBaseClass):
             for notch in positions
             if notch in self._charlist and notch != ""
         ]
+        notch_list=list(set(notch_list))
         self._notches = notch_list
         # print(
         #     ">Now the rotor has {} notches in positions {}".format(

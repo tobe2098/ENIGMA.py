@@ -85,12 +85,15 @@ def exitMenu(*args):
 
 def returningToMenu(*args, output_type="o"):
     if args:
+        message=""
+        for i in args:
+            message+=i
         if output_type == "o":
-            printOutput(args)
+            printOutput(message)
         elif output_type == "e":
-            printError(args)
+            printError(message)
         elif output_type == "w":
-            printWarning(args)
+            printWarning(message)
         else:
             raise BadInputExceptionCLI()
     # args_list = list(args)

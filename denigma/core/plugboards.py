@@ -43,7 +43,7 @@ class PlugBoard(AbstractBaseClass):
     def random_setup(self, seed=None):
 
         if not is_valid_seed(seed):
-            raiseBadInputException()
+            raiseBadInputException(seed)
         random.seed(seed)
 
         # Now set the connections

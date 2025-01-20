@@ -100,10 +100,10 @@ class Machine(AbstractBaseClass):
         if obj:
             return self.get_charlist() == obj.get_charlist()
         return (
-            self.get_charlist == self._reflector.get_charlist()
+            self.get_charlist() == self._reflector.get_charlist()
             and self.get_charlist() == self._plugboard.get_charlist()
             and all(
-                rotor.get_charlist() == self.get_charlistt() for rotor in self._rotors
+                rotor.get_charlist() == self.get_charlist() for rotor in self._rotors
             )
         )
 
@@ -214,7 +214,7 @@ class Machine(AbstractBaseClass):
         jump = random.randint(1, int(3e8))
         self._reflector._random_setup(self._seed * jump)
         self._random_setup_all_rotors(jump)
-        self._plugboard.random_setup(self._seed / jump)
+        self._plugboard.random_setup(int(self._seed+(self._seed % jump)))
         # Generating the name
         # name_list = [random.sample(range(0, 26), 1)[0] for _ in range(0, 20)]
         # name_list[0:14] = [self._conversion_in_use[num] for num in name_list[0:14]]

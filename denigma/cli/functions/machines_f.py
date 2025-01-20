@@ -482,7 +482,7 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 
 def _save_machine_in_its_folder(machine_ref: machines.Machine):
     accbool = ""
-    while not accbool == "n" or not accbool == "y":
+    while not accbool == "n" and not accbool == "y":
         accbool = askingInput(
             f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
         ).lower()
@@ -490,7 +490,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
         returningToMenu()
     if not machine_ref._do_objects_have_identical_charlists():
         returningToMenu(
-            "Not all parts of the machine share the same character list", "e"
+            "Not all parts of the machine share the same character list", output_type="e"
         )
     new_name = machine_ref.get_name()
     while not machine_ref._is_name_valid(new_name):
@@ -506,7 +506,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
     if checkIfFileExists(path, machine_ref._name, getLowerCaseName(machine_ref)):
         printOutput(f"A {getLowerCaseName(machine_ref)} with this name already exists")
         accbool = ""
-        while not accbool == "n" or not accbool == "y":
+        while not accbool == "n" and not accbool == "y":
             accbool = askingInput(
                 f"Do you want to overwrite the saved {getLowerCaseName(machine_ref)}? [y/n]"
             ).lower()
