@@ -58,6 +58,7 @@ class Constants:
     SCREEN_CLEAR_SAFETY = True
     is_cli_mode = False
     is_gui_mode = False
+    menu_id_string="ID"
 
 
 def get_is_cli_mode():

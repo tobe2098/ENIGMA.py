@@ -1,5 +1,6 @@
 # from tkinter import Menubutton
 from denigma.utils import utils_cli
+from denigma.utils.utils import Constants
 from denigma.cli.functions.plugboards_f import (
     _show_config_pb,
     _choose_connection_to_delete_pb,
@@ -11,6 +12,7 @@ from denigma.cli.functions.plugboards_f import (
 
 
 _menu_plugboard = {
+    Constants.menu_id_string: "Plugboard",
     "1": ("Show current plugboard setup", _show_config_pb),
     "2": ("Delete a single connection", _choose_connection_to_delete_pb),
     "3": ("Create a single connection", _create_a_single_connection_pb),

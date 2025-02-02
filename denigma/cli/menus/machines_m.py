@@ -2,6 +2,7 @@
 # ALL LOADING FUNCTIONS MUST BE HERE to load on the machine
 # PUT A FUNCTION THAT SAVES EACH INDIVIDUAL COMPONENT to memory (EXCEPT THE PLUGBOARDS (AND ROTOR POSITIONS) FOR SAFETY PURPOSES)
 from denigma.utils.utils_cli import exitMenu
+from denigma.utils.utils import Constants
 from denigma.cli.functions.machines_f import (
     _append_rotors,  # Rotor
     _change_all_rotors_character_position,  # Rotor
@@ -35,6 +36,7 @@ from denigma.cli.functions.machines_f import (
 
 
 _menu_machines_rotors = {
+    Constants.menu_id_string: "Rotors",
     "1": (
         "Edit the configuration of a rotor",
         _edit_a_rotors_config,
@@ -64,6 +66,7 @@ _menu_machines_rotors = {
     "0": ("Exit menu", exitMenu),
 }
 _menu_machines_reflector_plugboard = {
+    Constants.menu_id_string: "Reflector and plugboard",
     "1": ("Edit plugboard configuration", _edit_plugboard_config),
     "2": ("Edit reflector configuration", _edit_reflector_config),
     "3": ("Load a saved reflector", _load_reflector),
@@ -75,6 +78,7 @@ _menu_machines_reflector_plugboard = {
     "0": ("Exit menu", exitMenu),
 }
 _menu_miscellaneous = {
+    Constants.menu_id_string: "Miscellaneous",
     "1": (
         "Set a new initial character position of the machine",
         _set_new_original_state,
@@ -93,6 +97,7 @@ _menu_miscellaneous = {
 }
 
 _outer_menu_machine = {
+    Constants.menu_id_string: "Machine",
     "1": ("Save machine", _save_machine_in_its_folder),
     "2": ("Access plugbaord and reflector menu", _menu_machines_reflector_plugboard),
     "3": ("Access rotor menu", _menu_machines_rotors),

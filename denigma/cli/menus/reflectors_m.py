@@ -4,6 +4,7 @@ import os
 
 from denigma.utils.exceptions import FileIOErrorException
 from denigma.utils import utils_cli
+from denigma.utils.utils import Constants
 from denigma.cli.functions.reflectors_f import (
     _change_reflector_name_rf,
     _randomize_name_rf,
@@ -22,12 +23,14 @@ from denigma.cli.functions.reflectors_f import (
 )
 
 _menu_reflector_name_options = {
+    Constants.menu_id_string: "Name",
     "1": ("Change name", _change_reflector_name_rf),
     "2": ("Randomize name", _randomize_name_rf),
     "0": ("Exit menu", utils_cli.exitMenu),
 }
 
 _menu_reflector_connections_options = {
+    Constants.menu_id_string: "Connections",
     "1": ("Delete a single connection", _choose_connection_to_delete_rf),
     "2": ("Create a single connection", _create_a_connection_single_choice_rf),
     "3": ("Form all connections left", _form_all_connections_rf),
@@ -35,6 +38,7 @@ _menu_reflector_connections_options = {
 }
 
 _menu_reflector_reset_options = {
+    Constants.menu_id_string: "Reset",
     "1": (
         "Reset and form max. connections",
         _reset_and_form_all_connections_by_pairs_rf,
@@ -79,6 +83,7 @@ def _load_saved_reflector_for_editing():
 
 
 _menu_reflector = {
+    Constants.menu_id_string: "Reflector",
     "1": ("Show current reflector setup", _show_config_rf),
     "2": ("Save rotor", _save_reflector_in_its_folder),
     "3": ("Naming menu", _menu_reflector_name_options),
