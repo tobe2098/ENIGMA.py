@@ -14,8 +14,13 @@ from .exceptions import (
 from .formatting import printOutput, printError, printWarning, printMenuOption
 
 
+menu_stack=[]
+
 def askForMenuOption():
-    return askingInput("Choose a menu option")
+    ans=askingInput("Choose a menu option")
+    if ans==Constants.menu_id_string:
+        return None
+    return ans
 
 
 def askingInput(*args):
@@ -83,6 +88,7 @@ def exitMenu(*args):
 
 
 def returningToMenu(*args, output_type="o"):
+    global menu_stack
     if args:
         message=""
         for i in args:
@@ -176,11 +182,14 @@ def getSeedFromUser(ask="seed"):
 
 
 def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
+    global menu_stack
     while True:
         try:
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
             # wrapperCall(object_for_call)
             for key in sorted(menu.keys()):
+                if key==Constants.menu_id_string:
+                    continue
                 printMenuOption(key, ":", menu[key][0])
 
             answer = askForMenuOption()
@@ -202,10 +211,13 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
 
 
 def runNodeMenuObjectless(menu: dict):
+    global menu_stack
     while True:
         try:
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
             for key in sorted(menu.keys()):
+                if key==Constants.menu_id_string:
+                    continue
                 printMenuOption(key, ":", menu[key][0])
 
             answer = askForMenuOption()
