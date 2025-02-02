@@ -18,11 +18,11 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
     paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         plugboard_ref._board_dict
     )
-    printOutput("Paired characters:", paired_df)
-    printOutput("Unpaired characters:", unpaired_list)
+    printOutput("Paired characters:\n", paired_df)
+    printOutput("Unpaired characters: ", unpaired_list)
     printOutput(
-        "Number of connections:",
-        (len(plugboard_ref.get_charlist()) - len(unpaired_list)) / 2,
+        "Number of connections: ",
+        int((len(plugboard_ref.get_charlist()) - len(unpaired_list)) / 2),
     )
     returningToMenu()
 
@@ -44,14 +44,14 @@ def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):
     row = askingInput("Choose a connection to delete (by index)")
     row = checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
 
-    if row:
+    if row!=None:
         _delete_a_connection_pb(
             plugboard_ref=plugboard_ref,
-            character1=paired_df.iloc[row][0],
+            character1=paired_df.iloc[row].iloc[0],
         )
         returningToMenu("Connection was deleted")
     else:
-        returningToMenu("Index invalid", "e")
+        returningToMenu("Index invalid", output_type="e")
 
 
 def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, character1: str):
@@ -61,14 +61,8 @@ def _delete_a_connection_pb(plugboard_ref: plugboards.PlugBoard, character1: str
         plugboard_ref (plugboards.PlugBoard): _description_
         connIndex (_type_): _description_
     """
-    # del plugboard_ref._board_dict[entry] #Requires testing
-    (
-        plugboard_ref._board_dict[character1],
-        plugboard_ref._board_dict[plugboard_ref._board_dict[character1]],
-    ) = (
-        plugboard_ref._board_dict[plugboard_ref._board_dict[character1]],
-        plugboard_ref._board_dict[character1],
-    )
+    plugboard_ref._board_dict[plugboard_ref._board_dict[character1]]=plugboard_ref._board_dict[character1]
+    plugboard_ref._board_dict[character1]=character1
 
     plugboard_ref._update_dicts()
     # del d['k2']
@@ -90,14 +84,14 @@ def _create_a_single_connection_pb(plugboard_ref: plugboards.PlugBoard):
     printOutput("Unpaired characters:", unpaired_list)
     character1 = askingInput("Choose a character to pair")
     character1 = checkInputValidity(character1, rangein=unpaired_list)
-    if not character1:
+    if character1==None:
         printError("Invalid input")
         return False
     remaining_characters = list(set(unpaired_list) - set(character1))
     printOutput("Remaining characters:", remaining_characters)
     character2 = askingInput("Choose the second character")
     character2 = checkInputValidity(character2, rangein=remaining_characters)
-    if not character2:
+    if character2==None:
         printError("Invalid input")
         return False
     plugboard_ref._board_dict[character1] = character2

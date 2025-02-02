@@ -494,8 +494,10 @@ def _change_machine_state_respect_to_origin(machine_ref: machines.Machine):
 # print id(foo2) == id(bar2.foo_ref) # True
 
 
-def _save_machine_in_its_folder(machine_ref: machines.Machine):
+def _save_machine_in_its_folder(machine_ref: machines.Machine,menu_call=True):
     accbool = ""
+    if menu_call:
+        accbool="y"
     while not accbool == "n" and not accbool == "y":
         accbool = askingInput(
             f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
@@ -543,7 +545,7 @@ def _save_machine_in_its_folder(machine_ref: machines.Machine):
 def _randomize_entire_machine(machine_ref: machines.Machine):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
-            _save_machine_in_its_folder(machine_ref=machine_ref)
+            _save_machine_in_its_folder(machine_ref=machine_ref, menu_call=False)
         except ReturnToMenuException as e:
             pass
     printWarning("The previous global seed will be replaced by the seed you input")
@@ -559,7 +561,7 @@ def _randomize_entire_machine(machine_ref: machines.Machine):
 def _re_randomize_with_global_seed_machine(machine_ref: machines.Machine):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
-            _save_machine_in_its_folder(machine_ref=machine_ref)
+            _save_machine_in_its_folder(machine_ref=machine_ref,menu_call=False)
         except ReturnToMenuException as e:
             pass
     if not machine_ref.seed_is_set():
@@ -573,7 +575,7 @@ def _re_randomize_with_global_seed_machine(machine_ref: machines.Machine):
 def _load_saved_machine(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
-            _save_machine_in_its_folder(machine_ref=machine_ref)
+            _save_machine_in_its_folder(machine_ref=machine_ref,menu_call=False)
         except ReturnToMenuException as e:
             pass
     module_path = Constants.MODULE_PATH
@@ -618,7 +620,7 @@ def _load_saved_machine(machine_ref: machines.Machine | None = None):
 def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
-            _save_machine_in_its_folder(machine_ref=machine_ref)
+            _save_machine_in_its_folder(machine_ref=machine_ref,menu_call=False)
         except ReturnToMenuException as e:
             pass
     seed = getSeedFromUser()
@@ -647,7 +649,7 @@ def _create_a_new_random_machine(machine_ref: machines.Machine | None = None):
 def _create_a_new_machine_from_scratch(machine_ref: machines.Machine | None = None):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
-            _save_machine_in_its_folder(machine_ref=machine_ref)
+            _save_machine_in_its_folder(machine_ref=machine_ref,menu_call=False)
         except ReturnToMenuException as e:
             pass
     machine_ref = machines.Machine()
@@ -666,7 +668,7 @@ def _create_a_new_machine_from_scratch(machine_ref: machines.Machine | None = No
 def exitMenu_machine(machine_ref: machines.Machine):
     if machine_ref and machine_ref._do_objects_have_identical_charlists():
         try:
-            _save_machine_in_its_folder(machine_ref=machine_ref)
+            _save_machine_in_its_folder(machine_ref=machine_ref,menu_call=False)
         except ReturnToMenuException as e:
             pass
     # if CONFIG.SETUP

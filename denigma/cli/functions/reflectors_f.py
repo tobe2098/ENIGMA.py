@@ -47,10 +47,10 @@ def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):
     printOutput("Current connections are:\n", paired_df)
     row = askingInput("Choose a connection to delete (by index)")
     row = checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
-    if row:
+    if row!=None:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
         __delete_a_connection_rf(
-            reflector_ref=reflector_ref, character1=paired_df.iloc[row][0]
+            reflector_ref=reflector_ref, character1=paired_df.iloc[row].iloc[0]
         )
         reflector_ref.lacks_connections = True
         returningToMenu("Connection was deleted")
@@ -107,7 +107,7 @@ def _create_a_connection_single_choice_rf(reflector_ref: reflectors.Reflector):
     character2 = checkInputValidity(
         character2, rangein=list(set(unpaired_list) - set(character1))
     )
-    if not character2:
+    if character2==None:
         # if character2 not in list(set(unpaired_list) - set(character1)):
         printError("Invalid input")
         return False

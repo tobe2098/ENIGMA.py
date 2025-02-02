@@ -79,9 +79,9 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
 
     row = checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
 
-    if row:
+    if row!=None:
         # if isinstance(row, int) and row > 0 and row < paired_df.shape[0]:
-        _delete_a_connection_rt(rotor_ref=rotor_ref, char1=paired_df.iloc[row][0])
+        _delete_a_connection_rt(rotor_ref=rotor_ref, char1=paired_df.iloc[row].iloc[0])
         returningToMenu("Connection was deleted")
     else:
         returningToMenu("Index invalid", output_type="e")
@@ -125,13 +125,13 @@ def _create_a_connection_single_choice_rt(rotor_ref: rotors.Rotor):
 
     character1 = askingInput("Choose a character to pair from front side")
     character1 = checkInputValidity(character1, rangein=front_unformed)
-    if not character1:
+    if character1==None:
         # if character1 not in front_unformed:
         returningToMenu("Invalid input", output_type="e")
     printOutput("Unpaired characters in back side:", back_unformed)
     character2 = askingInput("Choose the second character from the back side")
     character2 = checkInputValidity(character2, rangein=back_unformed)
-    if not character2:
+    if character2==None:
         # if character2 not in back_unformed:
         returningToMenu("Invalid input", output_type="e")
     rotor_ref._forward_dict[character1] = character2
