@@ -6,7 +6,7 @@
 # Intern setup functions
 from denigma.utils.utils import simplify_rotor_dictionary_paired_unpaired, Constants
 from denigma.utils.utils_cli import checkInputValidity, returningToMenu, askingInput, getSeedFromUser,checkIfFileExists,printListOfOptions, exitMenu
-from denigma.utils.formatting import printOutput, printWarning, printError
+from denigma.utils.formatting import printOutput, printWarning, printError,printListing
 from denigma.utils.exceptions import FileIOErrorException
 from denigma.utils.types_utils import getLowerCaseName
 from denigma.core import rotors
@@ -29,15 +29,15 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
         )
     )
     unpaired.extend(unformed)
-    printOutput(
-        "Rotor character position :",
+    printListing(
+        "Rotor character position",
         str(rotor_ref._conversion_in_use[rotor_ref._position]),
     )
-    printOutput("Rotor character jumps:", str(rotor_ref._jump))
+    printListing("Rotor character jumps", str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
-    printOutput("Rotor notches:", str(notchlist))
-    printOutput("Forward connections in the rotor:\n", paired_df)
-    printOutput("Bad connections (self or none) in the rotor:", str(unpaired))
+    printListing("Rotor notches", str(notchlist))
+    printListing("Forward connections in the rotor:\n", paired_df)
+    printListing("Bad connections (self or none) in the rotor", str(unpaired))
 
     # printOutput(
     #     "Backward connections in the rotor:", str(rotor_ref._backward_dict)
