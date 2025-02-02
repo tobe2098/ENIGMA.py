@@ -69,7 +69,7 @@ def _load_saved_reflector_for_editing():
     utils_cli.runNodeMenu(reflector, _menu_reflector)
     while True:
         try:
-            _save_reflector_in_its_folder(reflector)
+            _save_reflector_in_its_folder(reflector,menu_call=False)
             # utils_cli.returningToMenu() #Previous line has the exception inside
         except FileIOErrorException as e:
             utils_cli.printOutput(e)
@@ -85,7 +85,7 @@ def _load_saved_reflector_for_editing():
 _menu_reflector = {
     Constants.menu_id_string: "Reflector",
     "1": ("Show current reflector setup", _show_config_rf),
-    "2": ("Save rotor", _save_reflector_in_its_folder),
+    "2": ("Save reflector", _save_reflector_in_its_folder),
     "3": ("Naming menu", _menu_reflector_name_options),
     "4": ("Connections options menu", _menu_reflector_connections_options),
     "5": ("Resetting options menu", _menu_reflector_reset_options),

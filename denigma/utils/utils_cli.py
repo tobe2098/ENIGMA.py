@@ -183,8 +183,10 @@ def getSeedFromUser(ask="seed"):
 
 def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
     global menu_stack
+    menu_stack.append(menu[Constants.menu_id_string])
     while True:
         try:
+            print(menu_stack)
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
             # wrapperCall(object_for_call)
             for key in sorted(menu.keys()):
@@ -206,15 +208,18 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
         except ReturnToMenuException as e:
             print(e)
         except MenuExitException:
+            menu_stack.pop()
             clearScreenConvenienceCli()
             returningToMenu()
 
 
 def runNodeMenuObjectless(menu: dict):
     global menu_stack
+    menu_stack.append(menu[Constants.menu_id_string])
     while True:
         try:
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
+            print(menu_stack)
             for key in sorted(menu.keys()):
                 if key==Constants.menu_id_string:
                     continue
@@ -234,6 +239,7 @@ def runNodeMenuObjectless(menu: dict):
         except ReturnToMenuException as e:
             print(e)
         except MenuExitException:
+            menu_stack.pop()
             clearScreenConvenienceCli()
             returningToMenu()
 

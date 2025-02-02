@@ -276,11 +276,13 @@ def _randomize_name_rf(reflector_ref: reflectors.Reflector):
     returningToMenu("Reflector's new name:", reflector_ref.name)
 
 
-def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
+def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector, menu_call=True):
     accbool = ""
+    if menu_call:
+        accbool=="y"
     while not accbool == "n" or not accbool == "y":
         accbool = askingInput(
-            f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
+            f"Would you like to save the reflector in use? If not, unsaved changes will be discarded. [y/n]"
         ).lower()
     if accbool == "n":
         returningToMenu()
@@ -328,7 +330,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector):
 
 def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
     if reflector_id and reflector_id.is_set_up():
-        _save_reflector_in_its_folder(reflector_ref=reflector_id)
+        _save_reflector_in_its_folder(reflector_ref=reflector_id,menu_call=False)
     path = Constants.REFLECTOR_FILE_PATH
     if not os.path.exists(path):
         returningToMenu("There is no {} folder".format(path), output_type="e")
