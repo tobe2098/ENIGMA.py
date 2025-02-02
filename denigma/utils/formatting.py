@@ -5,6 +5,27 @@ def formatAsOutput(args_tuple):
     prompt+=".";
     return prompt
 
+def formatAsListing(args_tuple):
+    prompt = "--"+args_tuple[0]+"--\n"
+    for i in range(1,len(args_tuple)):
+        prompt += str(args_tuple[i])
+    return prompt
+
+def formatMenuStack(args_tuple):
+    prompt = "\n./"
+    for i in args_tuple[0]:
+        prompt += str(i)
+        prompt += "/"
+    prompt+='\n'
+    return prompt
+
+def formatMenuReturn(args_tuple):
+    prompt = "</"
+    for i in args_tuple:
+        prompt += str(i)
+    prompt+='/>\n'
+    return prompt
+
 
 def formatAsWarning(args_tuple):
     prompt = "%.%Warning: "
@@ -33,6 +54,15 @@ def formatAsMenuOption(args_tuple):
 
 def printOutput(*args):
     print(formatAsOutput(args))
+
+def printListing(*args):
+    print(formatAsListing(args))
+
+def printMenuStack(*args):
+    print(formatMenuStack(args))
+
+def printMenuReturn(*args):
+    print(formatMenuReturn(args))
 
 
 def printWarning(*args):

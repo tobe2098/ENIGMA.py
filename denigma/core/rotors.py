@@ -145,7 +145,7 @@ class Rotor(AbstractBaseClass):
     def _are_notches_invalid(self, notches):
         return (
             not notches
-            or any(len(i) > 1 for i in notches)
+            or any(type(i)==int for i in notches)
             or any(i not in self._charlist for i in notches)
             or len(notches) >= self._no_characters
         )

@@ -11,7 +11,7 @@ from .exceptions import (
     MenuExitException,
     ReturnToMenuException,
 )
-from .formatting import printOutput, printError, printWarning, printMenuOption
+from .formatting import printOutput, printError, printWarning, printMenuOption, printMenuStack,printMenuReturn
 
 
 menu_stack=[]
@@ -20,6 +20,7 @@ def askForMenuOption():
     ans=askingInput("Choose a menu option")
     if ans==Constants.menu_id_string:
         return None
+    print("\n")
     return ans
 
 
@@ -186,12 +187,10 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
     menu_stack.append(menu[Constants.menu_id_string])
     while True:
         try:
-            print(menu_stack)
+            printMenuStack(menu_stack)
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
             # wrapperCall(object_for_call)
-            for key in sorted(menu.keys()):
-                if key==Constants.menu_id_string:
-                    continue
+            for key in sorted([x for x in menu.keys() if x.isdigit()], key=int):
                 printMenuOption(key, ":", menu[key][0])
 
             answer = askForMenuOption()
@@ -206,7 +205,7 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
                 except MenuExitException:
                     pass
         except ReturnToMenuException as e:
-            print(e)
+            printMenuReturn(e, menu_stack[-1])
         except MenuExitException:
             menu_stack.pop()
             clearScreenConvenienceCli()
@@ -219,8 +218,8 @@ def runNodeMenuObjectless(menu: dict):
     while True:
         try:
             # Exit option check: ["0"]==exitMenu(), function should be universal? Or just try and get exception seems to work
-            print(menu_stack)
-            for key in sorted(menu.keys()):
+            printMenuStack(menu_stack)
+            for key in sorted([x for x in menu.keys() if x.isdigit()], key=int):
                 if key==Constants.menu_id_string:
                     continue
                 printMenuOption(key, ":", menu[key][0])
@@ -237,7 +236,7 @@ def runNodeMenuObjectless(menu: dict):
                 except MenuExitException:
                     pass
         except ReturnToMenuException as e:
-            print(e)
+            printMenuReturn(e, menu_stack[-1])
         except MenuExitException:
             menu_stack.pop()
             clearScreenConvenienceCli()

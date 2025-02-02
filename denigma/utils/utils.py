@@ -9,6 +9,7 @@ import json
 def create_dictionary_from_charlist(charlist: list):
     nums = list(range(len(charlist)))
     equivalence_dictionary = dict(zip(charlist, nums))
+    equivalence_dictionary["Empty"]="Empty"
     equivalence_dictionary.update(
         dict([reversed(i) for i in equivalence_dictionary.items()])
     )

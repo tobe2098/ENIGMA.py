@@ -73,8 +73,8 @@ class Reflector(AbstractBaseClass):
 
     def is_set_up(self):
         unpaired=0
-        for (key, stored) in self._reflector_num_dict:
-            if key==stored:
+        for key in self._reflector_num_dict:
+            if key==self._reflector_num_dict[key]:
                 unpaired+=1
         self.lacks_connections=(unpaired>1)
         return not self.lacks_connections

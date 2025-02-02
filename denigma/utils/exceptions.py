@@ -1,5 +1,4 @@
-import traceback
-from .formatting import formatAsError, formatAsOutput
+from .formatting import formatAsError, formatAsOutput, formatMenuReturn
 from .utils import get_is_cli_mode, get_is_gui_mode
 import inspect
 
@@ -24,7 +23,7 @@ class MenuExitException(Exception):
 
 
 class ReturnToMenuException(Exception):
-    def __init__(self, message=formatAsOutput("Returning to menu...")):
+    def __init__(self, message=("Returning to menu: ")):
         super().__init__(message)
 
 

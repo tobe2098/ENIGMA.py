@@ -9,7 +9,7 @@ from denigma.utils.types_utils import getLowerCaseName
 from denigma.core import reflectors
 from denigma.utils.utils import simplify_simple_dictionary_paired_unpaired,Constants
 from denigma.utils.utils_cli import returningToMenu, askingInput, checkInputValidity,clearScreenConvenienceCli,getSeedFromUser,checkIfFileExists,exitMenu,printListOfOptions
-from denigma.utils.formatting import printOutput, printError
+from denigma.utils.formatting import printOutput, printError, printListing
 import pickle
 
 
@@ -20,12 +20,12 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
         reflector_ref (reflectors.Reflector): _description_
     """
 
-    printOutput("Reflector name:", reflector_ref._name)
+    print("Reflector name:", reflector_ref._name)
     paired_df, unpaired_list = simplify_simple_dictionary_paired_unpaired(
         reflector_ref._reflector_dict
     )
-    printOutput("Reflector pairs:\n", paired_df)
-    printOutput("Reflector unpaired:", unpaired_list)
+    printListing("Reflector pairs:\n", paired_df)
+    printListing("Reflector unpaired:", unpaired_list)
     returningToMenu()
 
 
@@ -65,13 +65,9 @@ def __delete_a_connection_rf(reflector_ref: reflectors.Reflector, character1: st
     """
 
     # del reflector_ref._reflector_dict[entry] #Requires testing
-    (
-        reflector_ref._reflector_dict[character1],
-        reflector_ref._reflector_dict[reflector_ref._reflector_dict[character1]],
-    ) = (
-        reflector_ref._reflector_dict[reflector_ref._reflector_dict[character1]],
-        reflector_ref._reflector_dict[character1],
-    )
+    reflector_ref._reflector_dict[reflector_ref._reflector_dict[character1]]=reflector_ref._reflector_dict[character1]
+    reflector_ref._reflector_dict[character1]=character1
+    reflector_ref.lacks_connections=True
     reflector_ref._update_dicts()
     # del d['k2']
 
@@ -359,9 +355,7 @@ def _load_saved_reflector(reflector_id: reflectors.Reflector | None = None):
         )
     try:
         filehandler = open(
-            os.path.join(path, f"{list_of_files[reflector_id]}.rotor")(
-                path, list_of_files[reflector_id]
-            ),
+            os.path.join(path, f"{list_of_files[reflector_id]}.reflector"),
             "rb",
         )
         reflector_ref = pickle.load(filehandler)

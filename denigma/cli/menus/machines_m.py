@@ -42,7 +42,7 @@ _menu_machines_rotors = {
         _edit_a_rotors_config,
     ),
     "2": (
-        "Edit the configuration of the reference rotor rotor",
+        "Edit the configuration of the reference rotor",
         _edit_ref_rotor_config,
     ),
     "3": ("Append reference rotors", _append_rotors),

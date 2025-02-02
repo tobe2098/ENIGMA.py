@@ -94,9 +94,9 @@ def _delete_a_connection_rt(rotor_ref: rotors.Rotor, char1: str):
         rotor_ref (rotors.Rotor): _description_
         connIndex (_type_): _description_
     """
-    rotor_ref._backward_dict[rotor_ref._forward_dict[char1]] = ""
+    rotor_ref._backward_dict[rotor_ref._forward_dict[char1]] = "Empty"
     # del rotor_ref._board_dict[entry] #Requires testing
-    rotor_ref._forward_dict[char1] = ""
+    rotor_ref._forward_dict[char1] = "Empty"
     rotor_ref.lacks_connections = True
     rotor_ref._update_dicts()
     # del d['k2']
@@ -503,9 +503,7 @@ def _load_saved_rotor(rotor_id: rotors.Rotor | None = None):
         )
     try:
         filehandler = open(
-            os.path.join(path, f"{list_of_files[rotor_id]}.rotor")(
-                path, list_of_files[rotor_id]
-            ),
+            os.path.join(path, f"{list_of_files[rotor_id]}.rotor"),
             "rb",
         )
         rotor_ref = pickle.load(filehandler)

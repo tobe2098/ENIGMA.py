@@ -28,6 +28,7 @@ from denigma.utils.utils_cli import (
     runNodeMenu,
     _get_a_charlist_from_storage,
 )
+from denigma.utils.formatting import printListing
 from denigma.core import machines
 
 import pandas as pd
@@ -588,7 +589,7 @@ def _load_saved_machine(machine_ref: machines.Machine | None = None):
     ]  # if element.rsplit(".", 1)[1] == "machine"]
     if not list_of_files:
         returningToMenu("There are no machines saved", output_type="e")
-    printOutput("Your available machines are:")
+    printListing("Your available machines are")
     printListOfOptions(list_of_files)
     machine = askingInput("Input machine's position in the list")
     if machine=="":
