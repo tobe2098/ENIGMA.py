@@ -99,7 +99,7 @@ _menu_miscellaneous = {
 _outer_menu_machine = {
     Constants.menu_id_string: "Machine",
     "1": ("Save machine", _save_machine_in_its_folder),
-    "2": ("Access plugbaord and reflector menu", _menu_machines_reflector_plugboard),
+    "2": ("Access plugboard and reflector menu", _menu_machines_reflector_plugboard),
     "3": ("Access rotor menu", _menu_machines_rotors),
     "4": ("Access miscellaneous menu", _menu_miscellaneous),
     "5": ("Encrypt or decrypt message, console output", _encrypt_decrypt_cliout),

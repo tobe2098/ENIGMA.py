@@ -118,7 +118,7 @@ def simplify_rotor_dictionary_paired_unpaired(forward_dict, backward_dict):
             unpaired_list.append(character_a)
             pairs.append([character_a, character_a])
 
-        elif character_b == "":
+        elif character_b == "Empty":
             unformed.append(character_a)
 
         else:
@@ -130,7 +130,7 @@ def simplify_rotor_dictionary_paired_unpaired(forward_dict, backward_dict):
             continue
         elif character_b == character_a:
             continue
-        elif character_b == "":
+        elif character_b == "Empty":
             back_unformed.append(character_a)
         seenb.append(character_a)
         # seen.append(character_b)

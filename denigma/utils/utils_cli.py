@@ -11,7 +11,7 @@ from .exceptions import (
     MenuExitException,
     ReturnToMenuException,
 )
-from .formatting import printOutput, printError, printWarning, printMenuOption, printMenuStack,printMenuReturn
+from .formatting import printOutput, printError, printWarning, printMenuOption, printMenuStack,formatMenuReturn
 
 
 menu_stack=[]
@@ -20,7 +20,6 @@ def askForMenuOption():
     ans=askingInput("Choose a menu option")
     if ans==Constants.menu_id_string:
         return None
-    print("\n")
     return ans
 
 
@@ -29,7 +28,9 @@ def askingInput(*args):
     for arg in args:
         prompt += arg
     prompt += ": "
-    return str(input(prompt))
+    ans=str(input(prompt))
+    print("\n")
+    return ans
 
 
 def exitProgram():
@@ -131,7 +132,7 @@ def clearScreenConvenienceCli():
     if not Constants.SCREEN_CLEAR_CONVENIENCE:
         return
     clearScreen()
-    printOutput("Screen cleared for convenience")
+    printOutput("Screen cleared for convenience\n")
 
 
 def checkIfFileExists(path, name=None, suffix=None):
@@ -205,7 +206,7 @@ def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
                 except MenuExitException:
                     pass
         except ReturnToMenuException as e:
-            printMenuReturn(e, menu_stack[-1])
+            print(e,formatMenuReturn(menu_stack[-1]))
         except MenuExitException:
             menu_stack.pop()
             clearScreenConvenienceCli()
@@ -236,7 +237,7 @@ def runNodeMenuObjectless(menu: dict):
                 except MenuExitException:
                     pass
         except ReturnToMenuException as e:
-            printMenuReturn(e, menu_stack[-1])
+            print(e,formatMenuReturn(menu_stack[-1]),"\n")
         except MenuExitException:
             menu_stack.pop()
             clearScreenConvenienceCli()

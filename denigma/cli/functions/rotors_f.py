@@ -36,8 +36,8 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     printListing("Rotor character jumps", str(rotor_ref._jump))
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
     printListing("Rotor notches", str(notchlist))
-    printListing("Forward connections in the rotor:\n", paired_df)
-    printListing("Bad connections (self or none) in the rotor", str(unpaired))
+    printListing("Forward connections in the rotor", paired_df)
+    printListing("Bad connections (self or unconnected) in the rotor", unpaired or "None")
 
     # printOutput(
     #     "Backward connections in the rotor:", str(rotor_ref._backward_dict)
@@ -533,6 +533,6 @@ def _exitMenu_rt(rotor_ref: rotors.Rotor):
     if not rotor_ref.is_set_up():
         returningToMenu(
             "Due to implementation reasons, an improperly setup rotor is not allowed",
-            "e",
+            output_type="e",
         )
     exitMenu()
