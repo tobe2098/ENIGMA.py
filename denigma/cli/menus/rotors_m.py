@@ -57,7 +57,7 @@ def _load_saved_rotor_for_editing():
     utils_cli.runNodeMenu(rotor, _menu_rotor)
     while True:
         try:
-            _save_rotor_in_its_folder(rotor)
+            _save_rotor_in_its_folder(rotor,menu_call=False)
             # utils_cli.returningToMenu() #Previous line has the exception inside
         except FileIOErrorException as e:
             utils_cli.printOutput(e)

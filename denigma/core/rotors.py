@@ -8,6 +8,7 @@ from denigma.utils.utils import (
     transform_single_dict,
     Constants,
     is_valid_seed,
+    simplify_rotor_dictionary_paired_unpaired
 )
 from denigma.utils.exceptions import raiseBadInputException
 
@@ -240,6 +241,15 @@ class Rotor(AbstractBaseClass):
         #     self._forward_dict, self._backward_dict
         # )
         # unpaired.extend(unformed)
+        (
+        _,
+        unpaired,
+        unformed,
+        _,
+        ) = simplify_rotor_dictionary_paired_unpaired(
+            self._forward_dict, self._backward_dict
+        )
+        self.lacks_connections=(len(unformed)!=0)
         return not (
             self.lacks_connections
             or self._are_notches_invalid(self._notches)

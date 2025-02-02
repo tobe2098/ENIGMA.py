@@ -26,8 +26,6 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     )
     printOutput("Reflector pairs:\n", paired_df)
     printOutput("Reflector unpaired:", unpaired_list)
-    if len(unpaired_list) < 2:
-        reflector_ref.lacks_connections = False
     returningToMenu()
 
 
@@ -280,7 +278,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector, menu_call
     accbool = ""
     if menu_call:
         accbool=="y"
-    while not accbool == "n" or not accbool == "y":
+    while not accbool == "n" and not accbool == "y":
         accbool = askingInput(
             f"Would you like to save the reflector in use? If not, unsaved changes will be discarded. [y/n]"
         ).lower()
@@ -304,7 +302,7 @@ def _save_reflector_in_its_folder(reflector_ref: reflectors.Reflector, menu_call
             f"A {getLowerCaseName(reflector_ref)} with this name already exists"
         )
         accbool = ""
-        while not accbool == "n" or not accbool == "y":
+        while not accbool == "n" and not accbool == "y":
             accbool = askingInput(
                 f"Do you want to overwrite the saved {getLowerCaseName(reflector_ref)}? [y/n]"
             ).lower()

@@ -72,10 +72,11 @@ class Reflector(AbstractBaseClass):
             )
 
     def is_set_up(self):
-        # (_, unpaired, unformed, _) = simplify_rotor_dictionary_paired_unpaired(
-        #     self._forward_dict, self._backward_dict
-        # )
-        # unpaired.extend(unformed)
+        unpaired=0
+        for (key, stored) in self._reflector_num_dict:
+            if key==stored:
+                unpaired+=1
+        self.lacks_connections=(unpaired>1)
         return not self.lacks_connections
 
     # def export_reflector(self):

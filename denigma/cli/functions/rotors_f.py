@@ -43,14 +43,14 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     #     "Backward connections in the rotor:", str(rotor_ref._backward_dict)
     # )
     printOutput("Rotor name:", str(rotor_ref._name))
-    (
-        _,
-        unpaired,
-        unformed,
-        _,
-    ) = simplify_rotor_dictionary_paired_unpaired(
-        rotor_ref._forward_dict, rotor_ref._backward_dict
-    )
+    # (
+    #     _,
+    #     unpaired,
+    #     unformed,
+    #     _,
+    # ) = simplify_rotor_dictionary_paired_unpaired(
+    #     rotor_ref._forward_dict, rotor_ref._backward_dict
+    # )
     if not unformed:
         rotor_ref.lacks_connections = False
     if len(unpaired) > 0:
@@ -422,9 +422,11 @@ def _randomize_position_rt(rotor_ref: rotors.Rotor):
     returningToMenu("Rotor position set to:", rotor_ref.get_charposition())
 
 
-def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
+def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor,menu_call=True):
     accbool = ""
-    while not accbool == "n" or not accbool == "y":
+    if menu_call:
+        accbool="y"
+    while not accbool == "n" and not accbool == "y":
         accbool = askingInput(
             f"Would you like to save the machine in use? If not, unsaved changes will be discarded. [y/n]"
         ).lower()
@@ -446,7 +448,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
             f"A {getLowerCaseName(rotor_ref)} with this name already exists"
         )
         accbool = ""
-        while not accbool == "n" or not accbool == "y":
+        while not accbool == "n" and not accbool == "y":
             accbool = askingInput(
                 f"Do you want to overwrite the saved {getLowerCaseName(rotor_ref)}? [y/n]"
             ).lower()
@@ -470,7 +472,7 @@ def _save_rotor_in_its_folder(rotor_ref: rotors.Rotor):
 
 def _load_saved_rotor(rotor_id: rotors.Rotor | None = None):
     if rotor_id and rotor_id.is_set_up():
-        _save_rotor_in_its_folder(rotor_ref=rotor_id)
+        _save_rotor_in_its_folder(rotor_ref=rotor_id,menu_call=False)
     path = Constants.ROTOR_FILE_PATH
     if not os.path.exists(path):
         returningToMenu("There is no {} folder".format(path), output_type="e")
