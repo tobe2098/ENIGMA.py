@@ -103,7 +103,7 @@ class Rotor(AbstractBaseClass):
         # print(">Now name of the reflector is:", self._name)
 
     def _is_jump_invalid(self, jump):
-        return jump == 0 or self._charlist % jump == 0 and jump != 1
+        return jump == 0 or self._no_characters % jump == 0 and jump != 1
 
     def _define_rotor_jump(self, jump):
         """Not active for now
@@ -123,7 +123,7 @@ class Rotor(AbstractBaseClass):
     # Do dictionaries of str(numbers) to the new number (or the number of the new character), and do 1 for each direction
 
     def _is_position_invalid(self, position):
-        return len(position) > 1 or position not in self._charlist
+        return (type(position)==str and len(position) > 1) or (type(position)==int and position not in range(self._no_characters))
 
     def _define_position(self, position):
         """Sets the position of the rotor to the input value
@@ -145,8 +145,8 @@ class Rotor(AbstractBaseClass):
     def _are_notches_invalid(self, notches):
         return (
             not notches
-            or (any(type(i)!=int for i in notches) and (any(len(i)>1 for i in notches)))
-            or any(i not in self._charlist for i in notches)
+            or (all(type(i)==str for i in notches) and (any(len(i)>1 for i in notches)))
+            or (all (type(i)==int for i in notches) and any(i not in range(self._no_characters) for i in notches))
             or len(notches) >= self._no_characters
         )
 
