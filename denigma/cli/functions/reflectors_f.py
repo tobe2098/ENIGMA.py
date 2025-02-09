@@ -26,7 +26,7 @@ def _show_config_rf(reflector_ref: reflectors.Reflector):
     )
     printListing("Reflector pairs:\n", paired_df)
     printListing("Reflector unpaired:", unpaired_list)
-    returningToMenu()
+    # returningToMenu()
 
 
 def _choose_connection_to_delete_rf(reflector_ref: reflectors.Reflector):

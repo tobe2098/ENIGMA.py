@@ -24,7 +24,7 @@ def _show_config_pb(plugboard_ref: plugboards.PlugBoard):
         "Number of connections: ",
         int((len(plugboard_ref.get_charlist()) - len(unpaired_list)) / 2),
     )
-    returningToMenu()
+    # returningToMenu()
 
 
 def _choose_connection_to_delete_pb(plugboard_ref: plugboards.PlugBoard):

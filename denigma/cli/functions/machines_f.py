@@ -52,7 +52,7 @@ def _show_full_config_machine(machine_ref: machines.Machine):
     printOutput(
         f"The machine is {machine_ref.get_char_distance()} backspaces from its original state"
     )
-    returningToMenu()
+    # returningToMenu()
 
 
 def _show_simple_config_machine(machine_ref: machines.Machine):
@@ -69,7 +69,7 @@ def _show_simple_config_machine(machine_ref: machines.Machine):
     printOutput("Rotor config:")
     print(config)
     printOutput("Machine name:", machine_ref.get_name())
-    returningToMenu()
+    # returningToMenu()
 
 
 def _random_setup_single_rotor_machine(machine_ref: machines.Machine):

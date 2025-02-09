@@ -23,12 +23,13 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    (paired_df, unpaired, unformed, _) = (
+    (paired_df, unpaired, unformed, backward_unformed) = (
         simplify_rotor_dictionary_paired_unpaired(
             rotor_ref._forward_dict, rotor_ref._backward_dict
         )
     )
-    unpaired.extend(unformed)
+    printOutput("Rotor name: ", str(rotor_ref._name))
+    # unpaired.extend(unformed)
     printListing(
         "Rotor character position",
         str(rotor_ref._conversion_in_use[rotor_ref._position]),
@@ -37,12 +38,13 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
     notchlist = [rotor_ref._conversion_in_use[i] for i in rotor_ref._notches]
     printListing("Rotor notches", str(notchlist))
     printListing("Forward connections in the rotor", paired_df)
-    printListing("Bad connections (self or unconnected) in the rotor", unpaired or "None")
+    printListing("Bad connections (self) in the rotor", unpaired or "None")
+    printListing("Forward unconnected letters", unformed or "None")
+    printListing("Backward unconnected letters", backward_unformed or "None")
 
     # printOutput(
     #     "Backward connections in the rotor:", str(rotor_ref._backward_dict)
     # )
-    printOutput("Rotor name:", str(rotor_ref._name))
     # (
     #     _,
     #     unpaired,
@@ -57,7 +59,7 @@ def _show_config_rt(rotor_ref: rotors.Rotor):
         printWarning(
             "One or more connections are self-connections. This may go against proper practice"
         )
-    returningToMenu()
+    # returningToMenu()
 
 
 # For now, in text, there will be no connection deletion? Or will there?
@@ -74,7 +76,7 @@ def _choose_connection_to_delete_rt(rotor_ref: rotors.Rotor):
     if paired_df.shape[0] == 0:
         returningToMenu("There are no available connections")
 
-    printOutput("Current connections are:\n", paired_df)
+    printListing("Current connections", paired_df)
     row = askingInput("Choose a connection to delete (by index)")
 
     row = checkInputValidity(row, int, rangein=(0, paired_df.shape[0]))
@@ -164,6 +166,7 @@ def _connect_all_characters_rt(rotor_ref: rotors.Rotor):
     #     returningToMenuMessage(
     #         "There are no characters left to pair (one or fewer left unconnected)"
     #     )
+    print("Inside")
     while True:
         (
             _,
@@ -218,7 +221,7 @@ def _form_all_connections_rt(rotor_ref: rotors.Rotor):
     Args:
         rotor_ref (rotors.Rotor): _description_
     """
-    _show_config_rt(rotor_ref)
+    # _show_config_rt(rotor_ref)
     # _, unpaired_list = denigma.simplify_simple_dictionary_paired_unpaired(
     #     rotor_ref._board_dict
     # )
@@ -274,17 +277,15 @@ def _swap_two_connections_rt(rotor_ref: rotors.Rotor):
         # if character2 not in rotor_ref._charlist:
         printError("Invalid input")
         return
-    (
-        rotor_ref._backward_dict[rotor_ref._forward_dict[character1]],
-        rotor_ref._backward_dict[rotor_ref._forward_dict[character2]],
-    ) = (
-        rotor_ref._backward_dict[rotor_ref._forward_dict[character2]],
-        rotor_ref._backward_dict[rotor_ref._forward_dict[character1]],
-    )
-    rotor_ref._forward_dict[character1], rotor_ref._forward_dict[character2] = (
-        rotor_ref._forward_dict[character2],
-        rotor_ref._forward_dict[character1],
-    )
+    
+    front1=rotor_ref._backward_dict[rotor_ref._forward_dict[character1]]
+    rotor_ref._backward_dict[rotor_ref._forward_dict[character1]]=rotor_ref._backward_dict[rotor_ref._forward_dict[character2]]
+    rotor_ref._backward_dict[rotor_ref._forward_dict[character2]]=front1
+    
+    front1=rotor_ref._forward_dict[character1]
+    rotor_ref._forward_dict[character1]=rotor_ref._forward_dict[character2]
+    rotor_ref._forward_dict[character2]=front1
+
     rotor_ref._update_dicts()
     printOutput("The connection was swapped")
 
