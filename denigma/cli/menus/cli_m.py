@@ -16,6 +16,7 @@ from denigma.cli.functions.cli_f import (
 
 
 _charlist_dict_menu = {
+    Constants.menu_obj_base_string: False,
     Constants.menu_id_string: "Character list",
     "1": (
         "Print the names of currently saved character lists",
@@ -30,6 +31,7 @@ _charlist_dict_menu = {
     "0": ("Exit menu", exitMenu),
 }
 _menu_cli_set_machine = {
+    Constants.menu_obj_base_string: False,
     Constants.menu_id_string: "Setting machine",
     "1": ("Return all configuration to its default", _set_defaults_config),
     "2": ("Set a machine for CLI usage", _set_cli_machine),
@@ -41,6 +43,7 @@ _menu_cli_set_machine = {
 }
 
 _outer_cli_menu = {  # Here we have to be able to delete saved machines
+    Constants.menu_obj_base_string: False,
     Constants.menu_id_string: "Main",
     "1": (
         "Access character list menu",

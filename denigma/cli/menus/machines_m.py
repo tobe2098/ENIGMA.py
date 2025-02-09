@@ -36,6 +36,7 @@ from denigma.cli.functions.machines_f import (
 
 
 _menu_machines_rotors = {
+    Constants.menu_obj_base_string: False,
     Constants.menu_id_string: "Rotors",
     "1": (
         "Edit the configuration of a rotor",
@@ -66,6 +67,7 @@ _menu_machines_rotors = {
     "0": ("Exit menu", exitMenu),
 }
 _menu_machines_reflector_plugboard = {
+    Constants.menu_obj_base_string: False,
     Constants.menu_id_string: "Reflector and plugboard",
     "1": ("Edit plugboard configuration", _edit_plugboard_config),
     "2": ("Edit reflector configuration", _edit_reflector_config),
@@ -78,6 +80,7 @@ _menu_machines_reflector_plugboard = {
     "0": ("Exit menu", exitMenu),
 }
 _menu_miscellaneous = {
+    Constants.menu_obj_base_string: False,
     Constants.menu_id_string: "Miscellaneous",
     "1": (
         "Set a new initial character position of the machine",
@@ -98,6 +101,7 @@ _menu_miscellaneous = {
 
 _outer_menu_machine = {
     Constants.menu_id_string: "Machine",
+    Constants.menu_obj_base_string: True,
     "1": ("Save machine", _save_machine_in_its_folder),
     "2": ("Access plugboard and reflector menu", _menu_machines_reflector_plugboard),
     "3": ("Access rotor menu", _menu_machines_rotors),

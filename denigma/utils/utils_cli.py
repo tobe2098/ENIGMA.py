@@ -29,7 +29,7 @@ def askingInput(*args):
         prompt += arg
     prompt += ": "
     ans=str(input(prompt))
-    print("\n")
+    print("")
     return ans
 
 
@@ -185,7 +185,10 @@ def getSeedFromUser(ask="seed"):
 
 def runNodeMenu(object_for_call: AbstractBaseClass, menu: dict):
     global menu_stack
-    menu_stack.append(menu[Constants.menu_id_string])
+    if menu[Constants.menu_obj_base_string]:
+        menu_stack.append(menu[Constants.menu_id_string]+":"+object_for_call.get_name())
+    else:
+        menu_stack.append(menu[Constants.menu_id_string])
     while True:
         try:
             printMenuStack(menu_stack)
