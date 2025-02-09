@@ -60,6 +60,7 @@ class Constants:
     is_cli_mode = False
     is_gui_mode = False
     menu_id_string="ID"
+    menu_obj_base_string="is_baseobj"
 
 
 def get_is_cli_mode():

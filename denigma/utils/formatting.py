@@ -12,10 +12,10 @@ def formatAsListing(args_tuple):
     return prompt
 
 def formatMenuStack(args_tuple):
-    prompt = "./"
+    prompt = ""
     for i in args_tuple[0]:
+        prompt += "->"
         prompt += str(i)
-        prompt += "/"
     prompt+='\n'
     return prompt
 
