@@ -18,7 +18,6 @@ from denigma.utils.exceptions import raiseBadInputException
 class Reflector(AbstractBaseClass):
     def __init__(self, characters=Constants.UPP_LETTERS):
         super().__init__(charlist=characters)
-        self._name = "name"
         self._conversion_in_use = create_dictionary_from_charlist(characters)
         self._reflector_dict = dict(
             zip(copy.copy(self._charlist), copy.copy(self._charlist))
@@ -27,28 +26,8 @@ class Reflector(AbstractBaseClass):
         self._update_dicts()
         self.lacks_connections = True
 
-    def _is_name_valid(self, name):
-        return (
-            name != "name" and name != "" and all(c.isalnum() or c == "_" for c in name)
-        )
 
-    def _change_name(self, new_name):
-        """_summary_
 
-        Args:
-            new_name (_type_): _description_
-
-        Raises:
-            Exception: _description_
-        """
-
-        new_name = new_name.strip(string.whitespace)
-        if not self._is_name_valid(new_name):
-            raiseBadInputException()
-        self._name = new_name
-
-    def get_name(self):
-        return self._name
 
     def reflect(self, input_character_number):
         # input_character_number -= prev_rotor_position

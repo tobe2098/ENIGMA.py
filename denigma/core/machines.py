@@ -21,8 +21,7 @@ from .plugboards import PlugBoard
 class Machine(AbstractBaseClass):
 
     def __init__(self, name="name", seed=None, charlist=Constants.UPP_LETTERS):
-        super().__init__(charlist)
-        self._name = name
+        super().__init__(charlist=charlist,name=name)
         # Include seed storages?
         # Write a default config
         self._ref_rotor = Rotor(characters=charlist)
@@ -49,31 +48,6 @@ class Machine(AbstractBaseClass):
     # # Basic functions
 
     # # def get_character_list(self):
-    # #     return self._charlist
-
-    def get_name(self):
-        return self._name
-
-    def _is_name_valid(self, name):
-        return (
-            name != "name" and name != "" and all(c.isalnum() or c == "_" for c in name)
-        )
-
-    def _change_name(self, new_name):
-        """_summary_
-
-        Args:
-            new_name (_type_): _description_
-
-        Raises:
-            Exception: _description_
-        """
-
-        new_name = new_name.strip(string.whitespace)
-        if not self._is_name_valid(new_name):
-            raiseBadInputException()
-        self._name = new_name
-        # print(">Now name of the reflector is:", self._name)
 
     def get_seed(self):
         return self.seed

@@ -17,7 +17,6 @@ class Rotor(AbstractBaseClass):
     def __init__(self, characters=Constants.UPP_LETTERS):
         # Note: variables can be defined on the fly
         super().__init__(charlist=characters)
-        self._name = "name"  # randomly generating a name is going to happen I guess
 
         self._position = 0  # Can go from 1 to _no_characters
         self._jump = 1  # Jump between positions. Can be changed for extra randomness, but carefully, never zero or 26
@@ -35,8 +34,6 @@ class Rotor(AbstractBaseClass):
         self.lacks_connections = True
         self._update_dicts()
 
-    def get_name(self):
-        return self._name
 
     def get_charposition(self):
         return self._conversion_in_use[self._position]
@@ -80,26 +77,6 @@ class Rotor(AbstractBaseClass):
         output_number -= self._position
         output_number %= self._no_characters
         return output_number
-
-    def _is_name_valid(self, name):
-        return (
-            name != "name" and name != "" and all([c  in Constants.FILESAFE_CHARS for c in name])
-        )
-
-    def _change_name(self, new_name):
-        """_summary_
-
-        Args:
-            new_name (_type_): _description_
-
-        Raises:
-            Exception: _description_
-        """
-
-        new_name = new_name.strip(string.whitespace)
-        if not self._is_name_valid(new_name):
-            raiseBadInputException(new_name)
-        self._name = new_name
         # print(">Now name of the reflector is:", self._name)
 
     def _is_jump_invalid(self, jump):
