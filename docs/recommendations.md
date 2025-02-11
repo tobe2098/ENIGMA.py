@@ -3,21 +3,7 @@
 - Point to the letter frequency weakness if you stay close to the seed you used to initially generate the ENIGMA machine. Using the frequency count of characters you can essentially explore the seed space to get a configuration where the character count score is the highest. N-grams, chi-squared testing... ([Like here](https://crypto.stackexchange.com/questions/30209/developing-algorithm-for-detecting-plain-text-via-frequency-analysis)) can allow an attacker to get close to your configuration by exploring the seed space. The variable number of rotors complicates this process, as the attacker has to explore the seed space over each number of rotors. Possibly checking yourself would be best, but a manual configuration, or multiple alterations on a seeded machine should be enough to render this attack unfruitful. 
 - It is better if all elements except the plugboard alter all characters, as the closer to the plaintext the cyphertext is, the more vulnerable it is. If one of the rotors only changes a single character in each direction, most of the message could be decrypted without using it, which means that a machine with one less rotor could effectively decrypt the message, as only sporadic characters would be encrypted, and they could be inferred from the rest of the message.
 - Try to not be repetitive in your plaintext, and do not include greetings or goodbyes in them, you can expect those to be used in plaintext attacks. If your character list is odd, the plaintext attacks are less effective, but it is better to be safe than sorry.
-- If you have the option, never set the rotors to jump a divisor of the number of characters the rotor presents. That would reduce the  amount of positions the rotor can be in.
-- 
-
-print(
-    """>RECOMMENDATIONS FOR USE:
--No writing down the seed, no sending it over unsecured channels. Preferably agree on a modification of the seed-generated machine.
--Read README.md
--Always keep a security copy of the machine.
--Short messages are more secure. Changing the machine periodically, or its settings is recommended. Once you have an open comm channel that should not be a problem.
--Passing the pickled machine on a USB is possibly the safest way to do it.
--Save the module and the pickled objects in a separate folder if possible.
--Do NOT write repeated sequences of words or predictable things like calling by name, saying "Hi", or "Goodbye".
--Remember that using simple or small seeds is going to make your channel more easy to crack, as a simple programme iterating this code could do it.
--Read the rest of the python files! I wrote a ton of functions to alter and personalize your machine, as well as tools to make it harder to crack.
--As far as I am aware, unless you commit predictable mistakes, your channel should not be cracked in any realistic framework.
--Communicate safely!
-"""
-)
+- If you have the option, never set the rotors to jump a divisor of the number of characters the rotor presents. That would reduce the amount of positions the rotor can be in.
+- Always keep a security copy of the machine.
+- Passing the pickled machine on a USB is possibly the safest way to do it. Keeping them in a separate USB and copying them over for usage would also prevent attacks to a degree.
+- Do NOT write repeated sequences of words or predictable things like calling by name, saying "Hi", or "Goodbye".
