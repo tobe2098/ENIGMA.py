@@ -42,17 +42,15 @@ class Rotor(AbstractBaseClass):
         return [self._conversion_in_use[i] for i in self._notches]
 
     def notch_check_move_forward(self):
-        if any(
+        # print(self._notches,self._position)
+        accbool=any(
             (notch - self._position) % self._no_characters < self._jump
-            for notch in self._notches
-        ):  # This was double-checked
-            self._position += self._jump
-            self._position %= self._no_characters
-            return True
-        else:
-            self._position += self._jump
-            self._position %= self._no_characters
-            return False
+            for notch in self._notches  
+        )
+          # This was double-checked
+        self._position += self._jump
+        self._position %= self._no_characters
+        return accbool
 
     def backspace(self):
         self._position -= self._jump

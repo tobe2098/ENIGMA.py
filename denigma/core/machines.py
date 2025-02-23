@@ -214,6 +214,7 @@ class Machine(AbstractBaseClass):
         # print(self.rotor1._position)
         for char in text:
             character_out = self.type_character(char)
+            #print(char+"->"+character_out)
             #     if char not in self._charlist:
             #         continue
             #     self._current_distance_from_original_state += 1
@@ -235,12 +236,12 @@ class Machine(AbstractBaseClass):
             #     backward_output = self._plugboard._input_output(backward_output)
 
             #     character_out = self._conversion_in_use[backward_output]
-            output_message.append(character_out)
-            self.backspace_to_original_state_or_destination(
-                previous_distance_from_origin
-                - self._current_distance_from_original_state
-            )
-            return output_message
+            output_message+=character_out
+        self.backspace_to_original_state_or_destination(
+            previous_distance_from_origin
+            - self._current_distance_from_original_state
+        )
+        return output_message
 
     def type_character(self, character):
         if len(character) > 1:
@@ -261,7 +262,7 @@ class Machine(AbstractBaseClass):
         for i in range(len(self._rotors)):
             forward_output = self._rotors[i].forward_pass(forward_output)
         backward_output = self._reflector.reflect(forward_output)
-        for i in range(len(self._rotors)):
+        for i in reversed(range(len(self._rotors))):
             backward_output = self._rotors[i].backward_pass(backward_output)
         backward_output = self._plugboard._input_output(backward_output)
 
